@@ -1,0 +1,120 @@
+.employee-section {
+  padding: 24px 16px;
+
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 20px;
+
+    h2 {
+      margin: 0;
+      font-size: 1.6rem;
+      color: #1a1a2e;
+    }
+
+    .badge {
+      background: #4f46e5;
+      color: #fff;
+      font-size: 0.75rem;
+      font-weight: 600;
+      padding: 4px 10px;
+      border-radius: 20px;
+    }
+  }
+
+  .table-wrapper {
+    overflow-x: auto;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  }
+
+  .employee-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: #ffffff;
+    font-size: 0.9rem;
+
+    thead tr {
+      background: linear-gradient(135deg, #4f46e5, #7c3aed);
+      color: #ffffff;
+
+      th {
+        padding: 14px 16px;
+        text-align: left;
+        font-weight: 600;
+        letter-spacing: 0.04em;
+        white-space: nowrap;
+      }
+    }
+
+    tbody tr {
+      border-bottom: 1px solid #e5e7eb;
+      transition: background 0.2s ease, transform 0.1s ease;
+
+      &:last-child {
+        border-bottom: none;
+      }
+
+      &.row-even {
+        background: #f0f4ff;
+      }
+
+      &.row-odd {
+        background: #fdf4ff;
+      }
+
+      &:hover {
+        background: #dbeafe !important;
+        transform: scale(1.005);
+        box-shadow: 0 2px 8px rgba(79, 70, 229, 0.12);
+      }
+
+      td {
+        padding: 13px 16px;
+        color: #374151;
+        vertical-align: middle;
+      }
+    }
+
+    .id-cell {
+      font-weight: 700;
+      color: #6b7280;
+      width: 40px;
+    }
+
+    .name-cell {
+      font-weight: 600;
+      color: #1a1a2e;
+    }
+
+    .email-cell {
+      color: #4f46e5;
+      font-size: 0.85rem;
+    }
+
+    .salary-cell {
+      font-weight: 600;
+      color: #059669;
+    }
+
+    .status-badge {
+      display: inline-block;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 0.78rem;
+      font-weight: 600;
+      letter-spacing: 0.03em;
+
+      &.active {
+        background: #d1fae5;
+        color: #065f46;
+      }
+
+      &.inactive {
+        background: #fee2e2;
+        color: #991b1b;
+      }
+    }
+  }
+}

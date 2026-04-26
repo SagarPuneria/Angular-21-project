@@ -1,0 +1,39 @@
+<section class="employee-section">
+  <div class="section-header">
+    <h2>Employee Directory</h2>
+    <span class="badge">{{ employees.length }} Employees</span>
+  </div>
+
+  <div class="table-wrapper">
+    <table class="employee-table">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Name</th>
+          <th>Department</th>
+          <th>Role</th>
+          <th>Email</th>
+          <th>Salary</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (emp of employees; track emp.id; let even = $even) {
+        <tr [class.row-even]="even" [class.row-odd]="!even">
+          <td class="id-cell">{{ emp.id }}</td>
+          <td class="name-cell">{{ emp.name }}</td>
+          <td>{{ emp.department }}</td>
+          <td>{{ emp.role }}</td>
+          <td class="email-cell">{{ emp.email }}</td>
+          <td class="salary-cell">{{ emp.salary | currency: 'USD' : 'symbol' : '1.0-0' }}</td>
+          <td>
+            <span class="status-badge" [class.active]="emp.status === 'Active'" [class.inactive]="emp.status === 'Inactive'">
+              {{ emp.status }}
+            </span>
+          </td>
+        </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+</section>
