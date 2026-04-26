@@ -1,0 +1,248 @@
+<div class="data-binding-container">
+  <h1>{{ title }}</h1>
+
+  <!-- 1. INTERPOLATION EXAMPLES -->
+  <section class="binding-section">
+    <h2>1. Interpolation Binding {{ '{' }}{{ '{' }} {{ '}' }}{{ '}' }}</h2>
+    <div class="examples">
+      <p><strong>User Name:</strong> {{ userName }}</p>
+      <p><strong>Current Date:</strong> {{ currentDate | date: 'full' }}</p>
+      <p><strong>Dynamic DateTime:</strong> {{ getCurrentDateTime() }}</p>
+      <p><strong>Math Operation:</strong> 5 × 3 = {{ getMultipliedValue(5, 3) }}</p>
+      <p><strong>String Manipulation:</strong> {{ userName.toUpperCase() }}</p>
+      <p><strong>Conditional:</strong> {{ isEven(clickCount) ? 'Even clicks' : 'Odd clicks' }}</p>
+    </div>
+  </section>
+
+  <!-- 2. PROPERTY BINDING EXAMPLES -->
+  <section class="binding-section">
+    <h2>2. Property Binding [property]</h2>
+    <div class="examples">
+      <!-- Image property binding -->
+      <div class="example-item">
+        <h4>Image Properties:</h4>
+        <img
+          [src]="imageUrl"
+          alt="Angular red shield icon"
+          [title]="'Angular Framework - ' + title"
+          class="demo-image"
+        />
+      </div>
+
+      <!-- Button properties -->
+      <div class="example-item">
+        <h4>Button Properties:</h4>
+        <button
+          [disabled]="isButtonDisabled"
+          [title]="isButtonDisabled ? 'Button is disabled' : 'Button is enabled'"
+        >
+          {{ isButtonDisabled ? 'Disabled Button' : 'Enabled Button' }}
+        </button>
+        <button (click)="toggleButtonState()" class="toggle-btn">Toggle Button State</button>
+      </div>
+
+      <!-- Class and style binding -->
+      <div class="example-item">
+        <h4>Class and Style Binding:</h4>
+        <p [class]="dynamicClass" [style]="dynamicStyles">This text has dynamic class and styles</p>
+        <p [class.highlight]="clickCount > 5" [style.color]="clickCount > 10 ? 'green' : 'orange'">
+          Click count: {{ clickCount }} (Changes color and class based on count)
+        </p>
+        <button (click)="changeStyle()">Change Styles</button>
+      </div>
+
+      <!-- Input properties -->
+      <div class="example-item">
+        <h4>Input Properties:</h4>
+        <input [value]="userInput" [placeholder]="'Enter text here...'" readonly />
+        <input
+          [type]="isChecked ? 'password' : 'text'"
+          [value]="'Type changes based on checkbox'"
+        />
+      </div>
+    </div>
+  </section>
+
+  <!-- 3. EVENT BINDING EXAMPLES -->
+  <section class="binding-section">
+    <h2>3. Event Binding (event)</h2>
+    <div class="examples">
+      <!-- Button click events -->
+      <div class="example-item">
+        <h4>Click Events:</h4>
+        <button (click)="onButtonClick()" class="primary-btn">
+          Click Me! (Clicked: {{ clickCount }} times)
+        </button>
+      </div>
+
+      <!-- Mouse events -->
+      <div class="example-item">
+        <h4>Mouse Events:</h4>
+        <div class="mouse-area" (mousemove)="onMouseMove($event)">
+          Move mouse here - Position: X: {{ mousePosition.x }}, Y: {{ mousePosition.y }}
+        </div>
+      </div>
+
+      <!-- Input events -->
+      <div class="example-item">
+        <h4>Input Events:</h4>
+        <input
+          (input)="onInputChange($event)"
+          (keyup)="onKeyUp($event)"
+          (focus)="onFocus()"
+          (blur)="onBlur()"
+          placeholder="Type something..."
+          class="demo-input"
+          [value]="inputValue"
+        />
+        <p>You typed: {{ inputValue }}</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4. TWO-WAY DATA BINDING EXAMPLES -->
+  <section class="binding-section">
+    <h2>4. Two-Way Data Binding [(ngModel)]</h2>
+    <div class="examples">
+      <!-- Text input -->
+      <div class="example-item">
+        <h4>Text Input:</h4>
+        <input [(ngModel)]="userInput" placeholder="Two-way binding demo" class="demo-input" />
+        <p>Live update: {{ userInput }}</p>
+      </div>
+
+      <!-- Select dropdown -->
+      <div class="example-item">
+        <h4>Select Dropdown:</h4>
+        <select [(ngModel)]="selectedOption" class="demo-select">
+          <option value="option1">Option 1</option>
+          <option value="option2">Option 2</option>
+          <option value="option3">Option 3</option>
+        </select>
+        <p>Selected: {{ selectedOption }}</p>
+      </div>
+
+      <!-- Checkbox -->
+      <div class="example-item">
+        <h4>Checkbox:</h4>
+        <label>
+          <input type="checkbox" [(ngModel)]="isChecked" />
+          Check me ({{ isChecked ? 'Checked' : 'Unchecked' }})
+        </label>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5. STRUCTURAL DIRECTIVES WITH DATA BINDING -->
+  <section class="binding-section">
+    <h2>5. Structural Directives with Data Binding</h2>
+    <div class="examples">
+      <!-- *ngIf -->
+      <div class="example-item">
+        <h4>*ngIf Conditional Rendering:</h4>
+        <div *ngIf="isChecked; else uncheckedTemplate" class="conditional-content">
+          ✅ Checkbox is checked! This content is visible.
+        </div>
+        <ng-template #uncheckedTemplate>
+          <div class="conditional-content">❌ Checkbox is unchecked. Different content shown.</div>
+        </ng-template>
+      </div>
+
+      <!-- *ngFor -->
+      <div class="example-item">
+        <h4>*ngFor List Rendering:</h4>
+        <h5>Fruits List:</h5>
+        <ul>
+          <li *ngFor="let fruit of fruits; index as i; even as isEven" [class.even-item]="isEven">
+            {{ i + 1 }}. {{ fruit }} {{ isEven ? '(even)' : '(odd)' }}
+          </li>
+        </ul>
+
+        <h5>Users Table:</h5>
+        <table class="users-table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Name</th>
+              <th>Email</th>
+              <th>Status</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let user of users; trackBy: trackByUserId" [class.inactive]="!user.active">
+              <td>{{ user.id }}</td>
+              <td>{{ user.name }}</td>
+              <td>{{ user.email }}</td>
+              <td>
+                <span [class.active]="user.active" [class.inactive]="!user.active">
+                  {{ user.active ? 'Active' : 'Inactive' }}
+                </span>
+              </td>
+              <td>
+                <button (click)="toggleUserStatus(user)" class="small-btn">
+                  {{ user.active ? 'Deactivate' : 'Activate' }}
+                </button>
+                <button (click)="removeUser(user.id)" class="small-btn danger">Remove</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <button (click)="addUser()" class="primary-btn">Add User</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- 6. LIFECYCLE HOOKS DEMONSTRATION -->
+  <section class="binding-section">
+    <h2>6. Component Lifecycle Hooks</h2>
+    <div class="examples">
+      <div class="example-item">
+        <h4>Lifecycle Events Log:</h4>
+        <button (click)="clearLifecycleEvents()" class="small-btn">Clear Log</button>
+        <div class="lifecycle-log">
+          <div *ngFor="let event of lifecycleEvents" class="log-entry">
+            {{ event }}
+          </div>
+        </div>
+        <div class="lifecycle-info">
+          <h5>Lifecycle Hooks Explained:</h5>
+          <ul>
+            <li><strong>Constructor:</strong> Called when the component is instantiated</li>
+            <li><strong>ngOnInit:</strong> Called after the component is initialized</li>
+            <li><strong>ngOnChanges:</strong> Called when input properties change</li>
+            <li><strong>ngAfterContentInit:</strong> Called after content is projected</li>
+            <li><strong>ngAfterViewInit:</strong> Called after the view is initialized</li>
+            <li><strong>ngOnDestroy:</strong> Called just before the component is destroyed</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SUMMARY -->
+  <section class="binding-section">
+    <h2>📋 Data Binding Summary</h2>
+    <div class="summary">
+      <div class="summary-item">
+        <h4>1. Interpolation {{ '{' }}{{ '{' }} {{ '}' }}{{ '}' }}</h4>
+        <p>One-way binding from component to view. Displays component data in the template.</p>
+      </div>
+      <div class="summary-item">
+        <h4>2. Property Binding [property]</h4>
+        <p>One-way binding from component to view. Sets element properties with component data.</p>
+      </div>
+      <div class="summary-item">
+        <h4>3. Event Binding (event)</h4>
+        <p>
+          One-way binding from view to component. Responds to user events and calls component
+          methods.
+        </p>
+      </div>
+      <div class="summary-item">
+        <h4>4. Two-way Binding [(ngModel)]</h4>
+        <p>Combines property and event binding. Synchronizes data between view and component.</p>
+      </div>
+    </div>
+  </section>
+</div>

@@ -1,0 +1,24 @@
+<!-- Angular 21 Data Binding Demo Application -->
+<div class="app-container">
+  <!-- Header -->
+  <header class="app-header">
+    <h1>🚀 Angular 21 - Data Binding & Components Demo</h1>
+    <p>
+      Comprehensive examples of interpolation, property binding, event binding, two-way binding, and
+      lifecycle hooks
+    </p>
+  </header>
+
+  <!-- Child Component Demo -->
+  <section style="padding: 0 16px;">
+    <h2>Parent → Child (@Input) & Child → Parent (@Output)</h2>
+    <p><strong>Message received from Child:</strong> {{ messageFromChild || 'No message yet' }}</p>
+    <app-child
+      [parentMessage]="messageToChild"
+      (childEvent)="onChildEvent($event)"
+    />
+  </section>
+
+  <!-- Main Data Binding Demo Component -->
+  <app-data-binding-demo></app-data-binding-demo>
+</div>
