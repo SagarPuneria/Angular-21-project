@@ -2,6 +2,7 @@ import { Component, Input, Output, EventEmitter } from '@angular/core';
 
 @Component({
   selector: 'app-child',
+  // standalone: true  ← not needed in Angular 19+
   imports: [],
   templateUrl: './child.html',
   styles: ``,
