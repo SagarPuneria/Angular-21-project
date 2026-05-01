@@ -153,6 +153,7 @@
         <h4>*ngFor List Rendering:</h4>
         <h5>Fruits List:</h5>
         <ul>
+          <!-- Old angular version(< Angular 17) uses *ngFor -->
           <li *ngFor="let fruit of fruits; index as i; even as isEven" [class.even-item]="isEven">
             {{ i + 1 }}. {{ fruit }} {{ isEven ? '(even)' : '(odd)' }}
           </li>
@@ -170,7 +171,7 @@
             </tr>
           </thead>
           <tbody>
-            <!-- Old angular version uses *ngFor
+            <!-- Old angular version(< Angular 17) uses *ngFor
             <tr *ngFor="let user of users; trackBy: trackByUserId" [class.inactive]="!user.active"> -->
             @for (user of users; track user.id) {
             <tr [class.inactive]="!user.active">
@@ -205,6 +206,7 @@
         <h4>Lifecycle Events Log:</h4>
         <button (click)="clearLifecycleEvents()" class="small-btn">Clear Log</button>
         <div class="lifecycle-log">
+          <!-- Old angular version(< Angular 17) uses *ngFor -->
           <div *ngFor="let event of lifecycleEvents" class="log-entry">
             {{ event }}
           </div>

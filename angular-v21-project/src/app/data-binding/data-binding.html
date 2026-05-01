@@ -18,6 +18,7 @@
         </tr>
       </thead>
       <tbody>
+        <!-- Old angular version(< Angular 17) uses *ngFor -->
         <!-- @for (emp of employees; track emp.id) {
         <tr> -->
         @for (emp of employees; track emp.id; let even = $even) {
