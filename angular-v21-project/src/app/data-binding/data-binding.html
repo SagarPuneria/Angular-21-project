@@ -18,7 +18,10 @@
         </tr>
       </thead>
       <tbody>
+        <!-- @for (emp of employees; track emp.id) {
+        <tr> -->
         @for (emp of employees; track emp.id; let even = $even) {
+          <!-- Copilot Prompt: add table with color full styles and alternate rows should show different colors -->
         <tr [class.row-even]="even" [class.row-odd]="!even">
           <td class="id-cell">{{ emp.id }}</td>
           <td class="name-cell">{{ emp.name }}</td>

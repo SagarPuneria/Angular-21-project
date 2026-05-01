@@ -170,7 +170,10 @@
             </tr>
           </thead>
           <tbody>
-            <tr *ngFor="let user of users; trackBy: trackByUserId" [class.inactive]="!user.active">
+            <!-- Old angular version uses *ngFor
+            <tr *ngFor="let user of users; trackBy: trackByUserId" [class.inactive]="!user.active"> -->
+            @for (user of users; track user.id) {
+            <tr [class.inactive]="!user.active">
               <td>{{ user.id }}</td>
               <td>{{ user.name }}</td>
               <td>{{ user.email }}</td>
@@ -186,6 +189,7 @@
                 <button (click)="removeUser(user.id)" class="small-btn danger">Remove</button>
               </td>
             </tr>
+          }
           </tbody>
         </table>
         <button (click)="addUser()" class="primary-btn">Add User</button>
