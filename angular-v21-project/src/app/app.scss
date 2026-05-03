@@ -1,0 +1,23 @@
+.app-header {
+  background: linear-gradient(135deg, #6a8fd8 0%, #8b5fcf 100%);
+  border-radius: 16px;
+  padding: 40px 48px;
+  margin: 24px auto;
+  max-width: 1100px;
+  text-align: center;
+  color: #ffffff;
+
+  h1 {
+    font-size: 2rem;
+    font-weight: 700;
+    margin: 0 0 8px;
+    letter-spacing: -0.5px;
+  }
+
+  p {
+    font-size: 0.95rem;
+    margin: 0;
+    opacity: 0.75;
+    font-weight: 400;
+  }
+}
