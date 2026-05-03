@@ -1,15 +1,16 @@
+<div class="app-container">
 <!-- app-container | Session 3 - Topics:
  * Data binding — interpolation, property binding, two-way data binding
  * Structural directives — @if, @for
  * Class binding & style binding
+ * Lifecycle hooks — ngOnInit, ngOnChanges, ngDoCheck, ngAfterViewInit, ngAfterViewChecked, ngAfterContentInit, ngAfterContentChecked, ngOnDestroy
  * Parent & Child components — how to establish communication between them
  * Services — high-level introduction (deeper dive next session 4)
  * Component creation using Copilot prompts — created a component contextually without manually writing boilerplate
 -->
-<div class="app-container">
   <!-- Header -->
   <header class="app-header">
-    <h1>🚀 Angular 21 - Data Binding & Components Demo</h1>
+    <h1>🚀 Angular 21 - Session 3</h1>
     <p>
       Comprehensive examples of interpolation, property binding, event binding, two-way binding, and
       lifecycle hooks
@@ -33,7 +34,6 @@
   <!-- Employee Data Binding Component -->
   <app-data-binding />
 
-</div>
 
 <!-- Session 4 - Topics:
  * Services — in-depth overview
@@ -44,3 +44,19 @@
  * HTTP Interceptors
  * CRUD operations using JSONPlaceholder API (no DB required)
 -->
+  <header class="app-header">
+    <h1>🚀 Angular 21 - Session 4</h1>
+    <p>
+      In-depth exploration of services, dependency injection, RxJS, and asynchronous programming in Angular
+    </p>
+  </header>
+  <!-- Service-Based Communication (MessageService — no Observables) -->
+  <section style="padding: 0 16px;">
+    <h2>Sibling Communication via Shared Service (MessageService)</h2>
+    <p>Sender and Receiver are siblings. They share state through a plain service property — no Observables, no async pipe.</p>
+    <app-sender />
+    <app-receiver />
+  </section>
+
+
+</div>
