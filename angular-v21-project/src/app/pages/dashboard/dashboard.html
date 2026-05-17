@@ -1,0 +1,32 @@
+<div class="dashboard-page">
+  <div class="dashboard-hero">
+    <div class="hero-icon">🔒</div>
+    <div>
+      <h2>Dashboard</h2>
+      <p>Protected by <code>authGuard</code>. Access granted — you are authenticated.</p>
+    </div>
+  </div>
+  <div class="status-bar">
+    <span class="status-dot"></span> All systems operational
+  </div>
+
+  <div class="stats-grid">
+    <div class="stat-card stat-purple">
+      <div class="stat-value">3</div>
+      <div class="stat-label">PRODUCTS</div>
+    </div>
+    <div class="stat-card stat-purple">
+      <div class="stat-value">1</div>
+      <div class="stat-label">USER</div>
+    </div>
+    <div class="stat-card stat-green">
+      <div class="stat-value">100%</div>
+      <div class="stat-label">UPTIME</div>
+    </div>
+  </div>
+
+  <div class="session-box">
+    <p>Session active. Click logout to return to the login page.</p>
+    <button class="logout-btn" (click)="auth.logout()">→ Logout</button>
+  </div>
+</div>

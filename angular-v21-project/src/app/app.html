@@ -1,5 +1,7 @@
 <div class="app-container">
-<!-- app-container | Session 3 - Topics:
+<!-- Auth Top Bar -->
+
+  <!-- app-container | Session 3 - Topics:
  * Data binding — interpolation, property binding, two-way data binding
  * Structural directives — @if, @for
  * Class binding & style binding
@@ -58,5 +60,45 @@
     <app-receiver />
   </section>
 
+<!-- Session 5 - Topics:
+ * Routing — child routes, lazy loading, withComponentInputBinding()
+-->
+  <header class="app-header">
+    <h1>🗺️ Angular 21 - Session 5 · Routing</h1>
+    <p>Child routes · Lazy loading · <code>withComponentInputBinding()</code></p>
+  </header>
+
+  <!-- Copilot Prompt: 
+  Create a routing with angular 21 features, with 4 following tabs:
+  1. Home,
+  2. About,
+  3. Courses,
+  4. Enroll lazy.
+  Courses tab has 2 child routes(Overview, Details) and Enroll lazy tab has lazy loaded.
+  Add attractive colorful fonts. -->
+  <section class="routing-section">
+    <div class="routing-heading">
+      <h2>🗺️ Angular 21 Routing Demo</h2>
+      <p>Child routes on Courses · Lazy loaded Courses & Enroll · <code>withComponentInputBinding()</code> enabled</p>
+    </div>
+
+    <nav class="tab-nav">
+      <a routerLink="/home"    routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" class="tab-home">🏠 Home</a>
+      <a routerLink="/about"   routerLinkActive="active" class="tab-about">👥 About</a>
+      <a routerLink="/courses" routerLinkActive="active" class="tab-courses">📚 Courses <span class="lazy-tag">lazy</span></a>
+      <a routerLink="/enroll"  routerLinkActive="active" class="tab-enroll">🎓 Enroll <span class="lazy-tag">lazy</span></a>
+      <!-- Copilot Prompt: Implement canActivate route guard for Dashboard component to implement login and logout functionality.-->
+      @if (auth.loggedIn()) {
+        <a routerLink="/dashboard" routerLinkActive="active" class="tab-dashboard">🔐 Dashboard</a>
+        <button class="nav-logout-btn" (click)="auth.logout()">→ Logout</button>
+      } @else {
+        <a routerLink="/login" routerLinkActive="active" class="tab-login">🔑 Login</a>
+      }
+    </nav>
+
+    <div class="outlet-wrapper">
+      <router-outlet />
+    </div>
+  </section>
 
 </div>

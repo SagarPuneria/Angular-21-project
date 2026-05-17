@@ -1,0 +1,69 @@
+<div class="about-page">
+  <div class="about-header">
+    <h2>👥 About This Project</h2>
+    <p>A hands-on Angular 21 learning series — from fundamentals to production-ready patterns.</p>
+  </div>
+
+  <div class="about-grid">
+    <div class="about-card card-blue">
+      <h3>🎯 Goal</h3>
+      <p>Learn Angular 21 progressively across structured sessions — from data binding to advanced routing, services, and HTTP.</p>
+    </div>
+    <div class="about-card card-green">
+      <h3>🛠️ Tech Stack</h3>
+      <ul>
+        <li>Angular <strong>21.2</strong></li>
+        <li>TypeScript <strong>5.9</strong></li>
+        <li>RxJS <strong>7.8</strong></li>
+        <li>Vitest <strong>4.x</strong></li>
+        <li>SCSS</li>
+      </ul>
+    </div>
+    <div class="about-card card-purple">
+      <h3>📅 Sessions</h3>
+      <ul>
+        <li>Session 3 — Data Binding & Directives</li>
+        <li>Session 4 — Services, DI, Routing</li>
+        <li>Session 5 — HTTP &amp; CRUD (upcoming)</li>
+      </ul>
+    </div>
+    <div class="about-card card-orange">
+      <h3>🤖 Copilot-Driven</h3>
+      <p>Components and services generated with GitHub Copilot agent mode using contextual prompts — demonstrating AI-assisted Angular development.</p>
+    </div>
+  </div>
+
+  <div class="instructor-box">
+    <div class="instructor-avatar">👨‍🏫</div>
+    <div>
+      <h4>Learning Series</h4>
+      <p>Built with Angular CLI · Standalone components only · No NgModules</p>
+    </div>
+  </div>
+
+  <div class="nav-explainer">
+    <h4>How Navigation Works</h4>
+    <ul class="nav-list">
+      <li>
+        <strong>routerLink</strong> – Binds a route path to an element.
+        <div class="inline-code">&lt;a routerLink="/home"&gt;Home&lt;/a&gt;</div>
+      </li>
+      <li>
+        <strong>routerLinkActive</strong> – Applies a CSS class when the route is active.
+        <div class="inline-code">&lt;a routerLink="/about" routerLinkActive="active"&gt;About&lt;/a&gt;</div>
+      </li>
+      <li>
+        <strong>Router.navigate()</strong> – Programmatic navigation from TypeScript.
+        <div class="inline-code">this.router.navigate(['/courses']);</div>
+      </li>
+      <li>
+        <strong>redirectTo</strong> – Redirects one path to another.
+        <div class="inline-code">&#123; path: '', redirectTo: '/home', pathMatch: 'full' &#125;</div>
+      </li>
+      <li>
+        <strong>wildcard route</strong> – Catches unmatched paths (404).
+        <div class="inline-code">&#123; path: '**', component: NotFoundComponent &#125;</div>
+      </li>
+    </ul>
+  </div>
+</div>

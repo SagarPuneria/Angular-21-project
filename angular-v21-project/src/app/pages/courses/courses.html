@@ -1,0 +1,15 @@
+<div class="courses-page">
+  <div class="courses-header">
+    <h2>📚 Courses</h2>
+    <p>Explore session topics — switch between Overview and Details using child routes.</p>
+  </div>
+
+  <nav class="child-tab-nav">
+    <a routerLink="overview" routerLinkActive="active">📋 Overview</a>
+    <a routerLink="details"  routerLinkActive="active">📊 Details</a>
+  </nav>
+
+  <div class="child-outlet-wrapper">
+    <router-outlet />
+  </div>
+</div>

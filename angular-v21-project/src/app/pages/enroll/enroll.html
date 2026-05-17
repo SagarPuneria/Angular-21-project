@@ -1,0 +1,91 @@
+<div class="enroll-page">
+  <div class="enroll-header">
+    <div class="lazy-badge">⚡ Lazy Loaded Route</div>
+    <h2>🎓 Enroll Now</h2>
+    <p>This component is <strong>lazy loaded</strong> — the JavaScript bundle is only fetched when you navigate here.</p>
+  </div>
+
+  <div class="lazy-explainer">
+    <h4>How Lazy Loading Works</h4>
+    <p>
+      Instead of importing the component directly (eager load), the route uses
+      <code>loadComponent</code> with a dynamic <code>import()</code>:
+    </p>
+    <pre class="code-block"><code>&#123;
+  path: 'enroll',
+  loadComponent: () =&gt;
+    import('./enroll/enroll')
+      .then(m =&gt; m.Enroll)
+&#125;</code></pre>
+
+    <h4>Eager vs Lazy</h4>
+    <ul class="lazy-list">
+      <li>
+        <strong>Eager (normal import)</strong> – Component is bundled into the main chunk.
+        Downloaded on first page load regardless of whether the user visits that route.
+      </li>
+      <li>
+        <strong>Lazy (<code>loadComponent</code>)</strong> – Component is split into a separate chunk.
+        Only downloaded when the user navigates to that route. Improves initial load time.
+      </li>
+    </ul>
+
+    <h4>Verify it in DevTools</h4>
+    <p>
+      Open the browser's Network tab → filter by <strong>JS</strong> → click the Enroll tab for the first time.
+      You will see a new <code>.js</code> chunk appear in the network requests.
+    </p>
+  </div>
+
+  @if (!submitted()) {
+    <form class="enroll-form" (ngSubmit)="submit()">
+      <div class="form-group">
+        <label for="name">👤 Your Name</label>
+        <input
+          id="name"
+          type="text"
+          [ngModel]="name()"
+          (ngModelChange)="name.set($event)"
+          name="name"
+          placeholder="e.g. John Doe"
+          required
+        />
+      </div>
+      <div class="form-group">
+        <label for="email">📧 Email Address</label>
+        <input
+          id="email"
+          type="email"
+          [ngModel]="email()"
+          (ngModelChange)="email.set($event)"
+          name="email"
+          placeholder="e.g. john@example.com"
+          required
+        />
+      </div>
+      <div class="form-group">
+        <label for="course">📚 Select Course</label>
+        <select
+          id="course"
+          [ngModel]="course()"
+          (ngModelChange)="course.set($event)"
+          name="course"
+          required
+        >
+          <option value="">-- Choose a course --</option>
+          <option value="angular-fundamentals">Angular 21 Fundamentals</option>
+          <option value="angular-advanced">Angular 21 Advanced</option>
+          <option value="rxjs-signals">RxJS &amp; Signals</option>
+        </select>
+      </div>
+      <button type="submit" class="enroll-btn">Enroll →</button>
+    </form>
+  } @else {
+    <div class="success-box">
+      <div class="success-icon">🎉</div>
+      <h3>You're enrolled!</h3>
+      <p><strong>{{ name() }}</strong> — see you in <em>{{ course() }}</em>!</p>
+      <button class="reset-btn" (click)="reset()">Enroll Another</button>
+    </div>
+  }
+</div>
