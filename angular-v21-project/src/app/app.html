@@ -87,7 +87,7 @@
       <a routerLink="/about"   routerLinkActive="active" class="tab-about">👥 About</a>
       <a routerLink="/courses" routerLinkActive="active" class="tab-courses">📚 Courses <span class="lazy-tag">lazy</span></a>
       <a routerLink="/enroll"  routerLinkActive="active" class="tab-enroll">🎓 Enroll <span class="lazy-tag">lazy</span></a>
-      <!-- Copilot Prompt: Implement canActivate route guard for Dashboard component to implement login and logout functionality.-->
+      <!-- Copilot Prompt: I want to implement Dashboard component that should use canActivate route guard to implement login and logout functionality.-->
       @if (auth.loggedIn()) {
         <a routerLink="/dashboard" routerLinkActive="active" class="tab-dashboard">🔐 Dashboard</a>
         <button class="nav-logout-btn" (click)="auth.logout()">→ Logout</button>
