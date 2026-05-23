@@ -2,6 +2,16 @@
 **Trainer:** Chandishwar (Chandi) | **Series:** Angular Workshops – FullStack TFG (April 13–17, 2026)  
 **Topic:** Angular 21 vs Angular 16, Data Binding (All Types), Lifecycle Hooks, Parent-Child Communication, Dependency Injection
 
+## Series Navigation
+
+| Session | Core Topics | Demo / Focus Area |
+|---|---|---|
+| [Session 1](KT-Session-1.md) | JS & TypeScript Prerequisites | ES6+, TypeScript types, OOP, decorators, generics |
+| [Session 2](KT-Session-2.md) | Angular Architecture & Setup | SPA vs MPA, CLI, project structure, building blocks |
+| **Session 3 ←** | **Data Binding & Lifecycle Hooks** | **All binding types, `@if`/`@for`, lifecycle hooks, parent-child** |
+| [Session 4](KT-Session-4.md) | Services, RxJS & HttpClient | DI, Observables, BehaviorSubject, HTTP CRUD, interceptors |
+| [Session 5](KT-Session-5.md) | Routing, Guards & Forms | Route config, canActivate, lazy loading, Reactive Forms |
+
 ---
 
 ## Table of Contents

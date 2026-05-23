@@ -2,6 +2,16 @@
 **Trainer:** Chandishwar (Chandi) | **Series:** Angular Workshops – FullStack TFG (April 13–17, 2026)  
 **Topic:** Angular Architecture, Building Blocks, Project Setup & Core Concepts
 
+## Series Navigation
+
+| Session | Core Topics | Demo / Focus Area |
+|---|---|---|
+| [Session 1](KT-Session-1.md) | JS & TypeScript Prerequisites | ES6+, TypeScript types, OOP, decorators, generics |
+| **Session 2 ←** | **Angular Architecture & Setup** | **SPA vs MPA, CLI, project structure, building blocks** |
+| [Session 3](KT-Session-3.md) | Data Binding & Lifecycle Hooks | All binding types, `@if`/`@for`, lifecycle hooks, parent-child |
+| [Session 4](KT-Session-4.md) | Services, RxJS & HttpClient | DI, Observables, BehaviorSubject, HTTP CRUD, interceptors |
+| [Session 5](KT-Session-5.md) | Routing, Guards & Forms | Route config, canActivate, lazy loading, Reactive Forms |
+
 ---
 
 ## Table of Contents
