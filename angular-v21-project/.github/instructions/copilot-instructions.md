@@ -17,12 +17,68 @@ applyTo: "**"
 
 ---
 
+## Commands
+
+```bash
+npm start          # Dev server → http://localhost:4200
+npm run build      # Production build → dist/
+npm test           # Run all tests with Vitest
+npm run watch      # Dev build in watch mode
+```
+
+Run a single test file with Vitest directly:
+```bash
+npx vitest run src/app/app.spec.ts
+```
+
+Format code with Prettier:
+```bash
+npx prettier --write "src/**/*.{ts,html,scss}"
+```
+
+---
+
+## Architecture
+
+```
+src/app/
+├── app.ts / app.html / app.routes.ts / app.config.ts   ← root component & bootstrap
+├── auth/                  ← AuthService (signal-based) + functional authGuard
+├── services/              ← EmployeeService (static in-memory data)
+├── CommunicationWithService/  ← MessageService + Sender/Receiver demo components
+├── data-binding/          ← Data binding demo components
+├── data-binding-demo/
+├── child/                 ← Parent↔child input/output demo
+└── pages/                 ← Routed page components
+    ├── home/
+    ├── about/
+    ├── courses/           ← Has nested child routes (overview, details)
+    ├── enroll/
+    ├── dashboard/         ← Protected by authGuard
+    └── login/             ← Handles ?returnUrl redirect after guard
+```
+
+**Routing strategy:** `home` and `about` are eagerly loaded; all other pages use `loadComponent` lazy loading. The `courses` route uses nested `loadComponent` child routes. Route params bind directly to component inputs via `withComponentInputBinding()` in `app.config.ts`.
+
+**Auth flow:** `AuthService` holds a `signal(false)` for login state. The functional `authGuard` (`CanActivateFn`) redirects unauthenticated users to `/login?returnUrl=<attempted-path>`. After login, `Login` component reads `returnUrl` from query params and navigates there. Mock credentials: `admin` / `1234`.
+
+---
+
 ## Core Rules (All Modes)
 
 - **Always target Angular 21.x** — never suggest syntax, APIs, or patterns from Angular versions below 17.
 - **Never suggest NgModules** — this project uses standalone components exclusively (`standalone: true` is the default in Angular 19+; no decorator flag is needed).
 - **Never suggest `@NgModule`, `declarations`, `imports` in module files** — there is no `app.module.ts`.
 - **Never suggest `CommonModule`** — directives like `NgIf`, `NgFor` are not needed; use built-in control flow instead.
+
+---
+
+## File and Class Naming
+
+Components drop the `Component` suffix in both the filename and class name:
+- `dashboard.ts` → `export class Dashboard` (not `DashboardComponent`)
+- `login.ts` → `export class Login`
+- Files are named `<feature>.ts`, not `<feature>.component.ts`
 
 ---
 
@@ -77,11 +133,13 @@ import { Component, input, output } from '@angular/core';
   imports: [],
   templateUrl: './example.html',
 })
-export class ExampleComponent {
+export class Example {
   title = input<string>('');
   clicked = output<string>();
 }
 ```
+
+> Note: `child.ts` still uses `@Input()` / `@Output()` decorators as a learning example — new code should use signal APIs.
 
 ---
 
@@ -140,7 +198,7 @@ constructor(private myService: MyService) {}
 - Use `HttpClient` via `inject(HttpClient)`.
 - Provide HTTP via `provideHttpClient(withFetch())` in `app.config.ts`.
 - Use `toSignal(this.http.get(...))` to convert HTTP observables to signals where appropriate.
-- Use `httpInterceptorFns` (functional interceptors) — not class-based interceptors.
+- Use functional interceptors (`HttpInterceptorFn` type, registered via `withInterceptors()`) — not class-based interceptors.
 
 ---
 
@@ -157,6 +215,16 @@ constructor(private myService: MyService) {}
 - Stylesheet format is **SCSS** (configured in `angular.json`).
 - Use component-level `styleUrl` (singular) — not `styleUrls` (array).
 - Global styles go in `src/styles.scss`.
+- Prettier: single quotes, 100-char print width, `angular` parser for HTML files.
+
+---
+
+## Services
+
+- Use `providedIn: 'root'` in `@Injectable` for singleton services.
+- Use `inject()` for all dependency injection inside services.
+- Data services currently use in-memory arrays (no HTTP backend).
+- When adding HTTP: provide via `provideHttpClient(withFetch())` in `app.config.ts` and use functional interceptors.
 
 ---
 
@@ -179,5 +247,7 @@ constructor(private myService: MyService) {}
 | `BehaviorSubject` for component state | `signal()` |
 | Constructor injection | `inject()` function |
 | `standalone: true` in decorator | Omit (default in Angular 19+) |
-| Class-based HTTP interceptors | Functional interceptors |
+| Class-based HTTP interceptors | Functional interceptors (`HttpInterceptorFn`) |
 | Karma / Jasmine | Vitest |
+| `<feature>.component.ts` filenames | `<feature>.ts` |
+| `export class DashboardComponent` | `export class Dashboard` |
