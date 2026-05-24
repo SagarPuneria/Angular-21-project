@@ -1,0 +1,18 @@
+<div class="page">
+  <a routerLink="/products" class="back-link">← Back to Products</a>
+
+  @if (product()) {
+    <div class="product-card">
+      <p class="product-id">Product ID #{{ product()!.id }}</p>
+      <h2 class="product-name">{{ product()!.name }}</h2>
+      <p class="category">Digital Product</p>
+      <p class="price">${{ product()!.price }}</p>
+    </div>
+  } @else {
+    <div class="not-found">
+      <span class="icon">🔍</span>
+      <h3>Product Not Found</h3>
+      <p>No product with ID <strong>{{ id() }}</strong> exists.</p>
+    </div>
+  }
+</div>

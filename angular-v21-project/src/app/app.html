@@ -61,7 +61,7 @@
   </section>
 
 <!-- Session 5 - Topics:
- * Routing — child routes, lazy loading, withComponentInputBinding()
+ * Routing — child routes, lazy loading, withComponentInputBinding(), route params
 -->
   <header class="app-header">
     <h1>🗺️ Angular 21 - Session 5 · Routing</h1>
@@ -83,10 +83,21 @@
     </div>
 
     <nav class="tab-nav">
-      <a routerLink="/home"    routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" class="tab-home">🏠 Home</a>
-      <a routerLink="/about"   routerLinkActive="active" class="tab-about">👥 About</a>
-      <a routerLink="/courses" routerLinkActive="active" class="tab-courses">📚 Courses <span class="lazy-tag">lazy</span></a>
-      <a routerLink="/enroll"  routerLinkActive="active" class="tab-enroll">🎓 Enroll <span class="lazy-tag">lazy</span></a>
+      <a routerLink="/home"     routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" class="tab-home">🏠 Home</a>
+      <a routerLink="/about"    routerLinkActive="active" class="tab-about">👥 About</a>
+      <!-- Copilot Prompt: 
+      I need to:
+        1. Create ProductList component with 3 products
+        2. Create ProductDetail component using input() for the route param :id (since withComponentInputBinding() is enabled)
+        3. Update app.routes.ts to add /products and /products/:id routes
+        4. Add a Products link to the nav in app.html
+        5. Style the product cards with SCSS to match the design—each showing the product name, "Digital Product • ID #X", and price badge
+        6. Use computed() to look up the product by ID and display "Product Not Found" if it doesn't exist
+        7. Leverage modern Angular 21 features like input(), computed(), RouterLink, and @for for the implementation Setting up the ProductDetail component... Setting up the input binding...
+      -->
+      <a routerLink="/products" routerLinkActive="active" class="tab-products">🛒 Products <span class="lazy-tag">lazy</span></a>
+      <a routerLink="/courses"  routerLinkActive="active" class="tab-courses">📚 Courses <span class="lazy-tag">lazy</span></a>
+      <a routerLink="/enroll"   routerLinkActive="active" class="tab-enroll">🎓 Enroll <span class="lazy-tag">lazy</span></a>
       <!-- Copilot Prompt: I want to implement Dashboard component that should use canActivate route guard to implement login and logout functionality.-->
       @if (auth.loggedIn()) {
         <a routerLink="/dashboard" routerLinkActive="active" class="tab-dashboard">🔐 Dashboard</a>

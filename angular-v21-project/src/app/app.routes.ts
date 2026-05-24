@@ -30,6 +30,19 @@ export const routes: Routes = [
     ],
   },
 
+  // Products list — lazy loaded
+  {
+    path: 'products',
+    loadComponent: () => import('./pages/product-list/product-list').then(m => m.ProductList),
+  },
+
+  // Product detail — route param :id bound automatically via withComponentInputBinding()
+  {
+    path: 'products/:id',
+    loadComponent: () =>
+      import('./pages/product-detail/product-detail').then(m => m.ProductDetail),
+  },
+
   // Enroll — explicitly lazy loaded (separate JS chunk, fetched only on navigation)
   {
     path: 'enroll',

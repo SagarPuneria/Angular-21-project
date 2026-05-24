@@ -1,0 +1,23 @@
+<div class="page">
+  <div class="header">
+    <h2>🛒 Products</h2>
+    <p class="sub">Click any product to see its detail via route parameter.</p>
+  </div>
+
+  <ul>
+    @for (product of products; track product.id) {
+      <li>
+        <a [routerLink]="['/products', product.id]" class="product-card">
+          <div class="info">
+            <span class="name">{{ product.name }}</span>
+            <span class="category">Digital Product &bull; ID #{{ product.id }}</span>
+          </div>
+          <div class="right">
+            <span class="price">${{ product.price }}</span>
+            <span class="arrow">&#8594;</span>
+          </div>
+        </a>
+      </li>
+    }
+  </ul>
+</div>
