@@ -1,0 +1,31 @@
+<section class="card">
+  <h2>Controls Demo</h2>
+  <p class="hint">A quick demo of FormControl state tracking with Reactive Forms.</p>
+
+  <form [formGroup]="controlsForm" novalidate>
+    <label>
+      Topic
+      <input type="text" formControlName="topic" />
+    </label>
+
+    <label>
+      Level
+      <select formControlName="level">
+        <option value="Beginner">Beginner</option>
+        <option value="Intermediate">Intermediate</option>
+        <option value="Advanced">Advanced</option>
+      </select>
+    </label>
+
+    <label class="checkbox-row">
+      <input type="checkbox" formControlName="acceptTerms" />
+      <span>I understand this is a demo form.</span>
+    </label>
+
+    <div class="state-grid">
+      <div><strong>Valid:</strong> {{ state().valid }}</div>
+      <div><strong>Dirty:</strong> {{ state().dirty }}</div>
+      <div><strong>Touched:</strong> {{ state().touched }}</div>
+    </div>
+  </form>
+</section>

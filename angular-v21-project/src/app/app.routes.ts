@@ -43,6 +43,25 @@ export const routes: Routes = [
       import('./pages/product-detail/product-detail').then(m => m.ProductDetail),
   },
 
+  // Reactive forms + shared data demo routes
+  {
+    path: 'register',
+    loadComponent: () => import('./pages/register/register').then(m => m.Register),
+  },
+  {
+    path: 'form-array',
+    loadComponent: () => import('./pages/form-array/form-array').then(m => m.FormArrayExample),
+  },
+  {
+    path: 'summary',
+    loadComponent: () => import('./pages/summary/summary').then(m => m.Summary),
+  },
+  {
+    path: 'controls-demo',
+    loadComponent: () =>
+      import('./pages/controls-demo/controls-demo').then(m => m.ControlsDemo),
+  },
+
   // Enroll — explicitly lazy loaded (separate JS chunk, fetched only on navigation)
   {
     path: 'enroll',

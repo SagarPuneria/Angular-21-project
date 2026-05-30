@@ -1,0 +1,48 @@
+<section class="card">
+  <h2>Session Registration (Reactive Form)</h2>
+  <p class="hint">Fill this form and navigate to the next route to review shared data.</p>
+
+  <form [formGroup]="registrationForm" (ngSubmit)="submit()" novalidate>
+    <label>
+      Full Name
+      <input type="text" formControlName="fullName" />
+      @if (showError('fullName')) {
+        <small>Full Name is required (min 3 characters).</small>
+      }
+    </label>
+
+    <label>
+      Email
+      <input type="email" formControlName="email" />
+      @if (showError('email')) {
+        <small>Enter a valid email address.</small>
+      }
+    </label>
+
+    <label>
+      City
+      <input type="text" formControlName="city" />
+      @if (showError('city')) {
+        <small>City is required.</small>
+      }
+    </label>
+
+    <label>
+      Attendance Mode
+      <select formControlName="attendanceMode">
+        <option value="">Select mode</option>
+        @for (mode of attendanceModes; track mode) {
+          <option [value]="mode">{{ mode }}</option>
+        }
+      </select>
+      @if (showError('attendanceMode')) {
+        <small>Please choose an attendance mode.</small>
+      }
+    </label>
+
+    <div class="actions">
+      <button type="button" (click)="loadDemoData()">Load Demo Data</button>
+      <button type="submit">Submit &amp; Go To Summary Route</button>
+    </div>
+  </form>
+</section>

@@ -1,0 +1,39 @@
+<section class="card">
+  <h2>Form Array Example</h2>
+  <p class="hint">Add or remove dynamic controls with FormArray.</p>
+
+  <form [formGroup]="skillsForm" novalidate>
+    <label>
+      Attendee Name
+      <input type="text" formControlName="attendee" />
+    </label>
+
+    <div class="skills-block">
+      <div class="skills-header">
+        <h3>Skills</h3>
+        <button type="button" (click)="addSkill()">+ Add Skill</button>
+      </div>
+      
+      <div class="skills-list">
+        @for (control of skills.controls; track control; let i = $index) {
+          <div class="skill-row">
+            <!-- Avoid using $any(control) and instead use a proper typed approach.
+             <input [formControl]="❌$any(control)❌" placeholder="Enter skill" /> -->
+            <input [formControl]="skillControl(i)" placeholder="Enter skill" />
+            <button type="button" (click)="removeSkill(i)">Remove</button>
+          </div>
+        }
+      </div>
+      <!-- <div formArrayName="skills" class="skills-list">
+        @for (control of skills.controls; track control; let i = $index) {
+          <div class="skill-row">
+            <input [formControlName]="i" placeholder="Enter skill" />
+            <button type="button" (click)="removeSkill(i)">Remove</button>
+          </div>
+        }
+      </div> -->
+    </div>
+
+    <button type="button" (click)="loadDemoData()">Load Demo Data</button>
+  </form>
+</section>

@@ -63,6 +63,10 @@
 
     &.tab-home    { background: #fee2e2; color: #dc2626; border-color: #fca5a5; }
     &.tab-about   { background: #dbeafe; color: #2563eb; border-color: #93c5fd; }
+    &.tab-register { background: #dbeafe; color: #1d4ed8; border-color: #93c5fd; }
+    &.tab-form-array { background: #e0e7ff; color: #4338ca; border-color: #a5b4fc; }
+    &.tab-summary { background: #dcfce7; color: #15803d; border-color: #86efac; }
+    &.tab-controls { background: #ffedd5; color: #c2410c; border-color: #fdba74; }
     &.tab-courses { background: #dcfce7; color: #16a34a; border-color: #86efac; }
     &.tab-enroll  { background: #f3e8ff; color: #9333ea; border-color: #d8b4fe; }
     &.tab-dashboard { background: #ede9fe; color: #7c3aed; border-color: #c4b5fd; }
@@ -70,6 +74,10 @@
 
     &.tab-home.active,      &.tab-home:hover      { background: #dc2626; color: #fff; border-color: #dc2626; }
     &.tab-about.active,     &.tab-about:hover     { background: #2563eb; color: #fff; border-color: #2563eb; }
+    &.tab-register.active,  &.tab-register:hover  { background: #1d4ed8; color: #fff; border-color: #1d4ed8; }
+    &.tab-form-array.active,&.tab-form-array:hover{ background: #4338ca; color: #fff; border-color: #4338ca; }
+    &.tab-summary.active,   &.tab-summary:hover   { background: #15803d; color: #fff; border-color: #15803d; }
+    &.tab-controls.active,  &.tab-controls:hover  { background: #c2410c; color: #fff; border-color: #c2410c; }
     &.tab-courses.active,   &.tab-courses:hover   { background: #16a34a; color: #fff; border-color: #16a34a; }
     &.tab-enroll.active,    &.tab-enroll:hover    { background: #9333ea; color: #fff; border-color: #9333ea; }
     &.tab-dashboard.active, &.tab-dashboard:hover { background: #7c3aed; color: #fff; border-color: #7c3aed; }

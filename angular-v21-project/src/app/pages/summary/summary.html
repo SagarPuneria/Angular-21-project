@@ -1,0 +1,20 @@
+<section class="card">
+  <h2>Summary Route</h2>
+  <p class="hint">This data is shared from the previous route via a singleton service.</p>
+
+  @if (hasData()) {
+    <div class="rows">
+      <p><strong>Full Name:</strong> {{ data()!.fullName }}</p>
+      <p><strong>Email:</strong> {{ data()!.email }}</p>
+      <p><strong>City:</strong> {{ data()!.city }}</p>
+      <p><strong>Attendance:</strong> {{ data()!.attendanceMode }}</p>
+    </div>
+
+    <div class="actions">
+      <button type="button" (click)="edit()">Edit on Form Route</button>
+      <button type="button" (click)="clear()">Clear Shared Data</button>
+    </div>
+  } @else {
+    <p class="empty">No shared data available yet. Submit the registration form first.</p>
+  }
+</section>
