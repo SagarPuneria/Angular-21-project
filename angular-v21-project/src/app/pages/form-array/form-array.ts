@@ -20,7 +20,7 @@ export class FormArrayExample {
   // Both approaches below produce the identical runtime result:
 
   // ✅ Using FormBuilder (shorthand — preferred)
-  readonly skillsForm = this.formBuilder.group({
+  readonly skillsForm = this.formBuilder.group({ // ✅ modern approach
     name:     ['', [Validators.required]],
     email:    ['', [Validators.required, Validators.email]],
     attendee: ['', [Validators.required]],
@@ -33,7 +33,7 @@ export class FormArrayExample {
   });
 
   // 📖 Equivalent without FormBuilder (verbose — for learning)
-  /* readonly skillsForm = new FormGroup({
+  /* readonly skillsForm = new FormGroup({ // ❌ Old approach
     name:  new FormControl('', [Validators.required]),
     email: new FormControl('', [Validators.required, Validators.email]),
     attendee: new FormControl('', [Validators.required]),
