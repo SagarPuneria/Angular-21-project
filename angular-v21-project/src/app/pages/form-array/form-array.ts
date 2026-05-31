@@ -21,7 +21,12 @@ export class FormArrayExample {
 
   // ✅ Using FormBuilder (shorthand — preferred)
   readonly skillsForm = this.formBuilder.group({
+    name:     ['', [Validators.required]],
+    email:    ['', [Validators.required, Validators.email]],
     attendee: ['', [Validators.required]],
+    // phoneNumbers is a FormArray of FormGroups — each entry has `number` + `type`.
+    // This demonstrates a nested structure: FormArray → FormGroup → FormControl
+    phoneNumbers: this.formBuilder.array([this.createPhoneNumber()]),
     skills: this.formBuilder.array([
       this.formBuilder.control('', [Validators.required, Validators.minLength(2)]),
     ]),
@@ -29,11 +34,52 @@ export class FormArrayExample {
 
   // 📖 Equivalent without FormBuilder (verbose — for learning)
   /* readonly skillsForm = new FormGroup({
+    name:  new FormControl('', [Validators.required]),
+    email: new FormControl('', [Validators.required, Validators.email]),
     attendee: new FormControl('', [Validators.required]),
+    phoneNumbers: new FormArray([
+      new FormGroup({
+        number: new FormControl('', [Validators.required, Validators.pattern(/^\d{10}$/)]),
+        type:   new FormControl('mobile', Validators.required),
+      })
+    ]),
     skills: new FormArray([
         new FormControl('', [Validators.required, Validators.minLength(2)])
     ])
   }); */
+
+  // --- Phone Numbers (FormArray of FormGroups) ---
+
+  // Factory method: produces a fresh FormGroup for one phone entry.
+  // Called both at initialisation and whenever "+ Add Phone" is clicked.
+  createPhoneNumber(): FormGroup {
+    return this.formBuilder.group({
+      number: ['', [Validators.required, Validators.pattern(/^\d{10}$/)]],
+      type:   ['mobile', Validators.required],
+    });
+  }
+
+  get phoneNumbers(): FormArray {
+    return this.skillsForm.get('phoneNumbers') as FormArray;
+  }
+
+  // Returns a typed FormGroup instead of AbstractControl so the template
+  // can use [formGroup]="phoneGroup(i)" without $any() casts.
+  phoneGroup(index: number): FormGroup {
+    return this.phoneNumbers.at(index) as FormGroup;
+  }
+
+  addPhoneNumber(): void {
+    this.phoneNumbers.push(this.createPhoneNumber());
+  }
+
+  removePhoneNumber(index: number): void {
+    if (this.phoneNumbers.length > 1) {
+      this.phoneNumbers.removeAt(index);
+    }
+  }
+
+  // --- Skills (FormArray of FormControls) ---
 
   get skills(): FormArray {
     return this.skillsForm.get('skills') as FormArray;
@@ -63,7 +109,16 @@ export class FormArrayExample {
   }
 
   loadDemoData(): void {
-    this.skillsForm.patchValue({ attendee: 'Chandishwar Chittimalla' });
+    this.skillsForm.patchValue({ name: 'Sagar Puneria', email: 'sagar.puneria@gmail.com', attendee: 'Sagar Puneria' });
+    this.phoneNumbers.clear();
+    for (const phone of [
+      { number: '8978697470', type: 'mobile' },
+      { number: '8074443909', type: 'work' },
+    ]) {
+      const group = this.createPhoneNumber();
+      group.patchValue(phone);
+      this.phoneNumbers.push(group);
+    }
     this.skills.clear();
     for (const skill of ['Angular', 'TypeScript', 'RxJS']) {
       this.skills.push(this.formBuilder.control(skill, [Validators.required, Validators.minLength(2)]));

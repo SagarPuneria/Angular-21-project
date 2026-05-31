@@ -3,10 +3,62 @@
   <p class="hint">Add or remove dynamic controls with FormArray.</p>
 
   <form [formGroup]="skillsForm" novalidate>
-    <label>
-      Attendee Name
-      <input type="text" formControlName="attendee" />
-    </label>
+
+    <!-- Basic Information -->
+    <div class="form-section">
+      <h3>Basic Information</h3>
+      <label>
+        Name *
+        <input type="text" formControlName="name" placeholder="Enter your name" />
+      </label>
+      <label>
+        Email *
+        <input type="email" formControlName="email" placeholder="your.email@example.com" />
+      </label>
+      <label>
+        Attendee Name
+        <input type="text" formControlName="attendee" placeholder="Enter attendee name" />
+      </label>
+    </div>
+
+    <!-- Phone Numbers — FormArray of FormGroups (nested structure) -->
+    <div class="phone-section">
+      <div class="section-header">
+        <h3>Phone Numbers</h3>
+        <button type="button" class="btn-add" (click)="addPhoneNumber()">+ Add Phone</button>
+      </div>
+
+      <div class="phone-list">
+        @for (phone of phoneNumbers.controls; track phone; let i = $index) {
+          <!-- Each phone entry is a FormGroup — use [formGroup] to set its context directly.
+               phoneGroup(i) returns FormGroup (typed), avoiding formArrayName + formGroupName -->
+          <div [formGroup]="phoneGroup(i)" class="phone-card">
+            <div class="phone-card-header">
+              <span class="phone-title">Phone {{ i + 1 }}</span>
+              <button type="button" class="btn-remove" (click)="removePhoneNumber(i)" [disabled]="phoneNumbers.length === 1">
+                &times; Remove
+              </button>
+            </div>
+            <div class="phone-fields">
+              <label class="phone-field-number">
+                Phone Number *
+                <input type="text" formControlName="number" placeholder="1234567890" />
+              </label>
+              <label class="phone-field-type">
+                Type *
+                <select formControlName="type">
+                  <option value="mobile">Mobile</option>
+                  <option value="home">Home</option>
+                  <option value="work">Work</option>
+                </select>
+              </label>
+            </div>
+          </div>
+        }
+      </div>
+    </div>
+
+    <hr class="section-divider" />
 
     <div class="skills-block">
       <div class="skills-header">
