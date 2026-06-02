@@ -10,7 +10,8 @@
       <label>
         First Name
         <input type="text" formControlName="firstName" placeholder="Enter first name" />
-        @if (profileForm.get('firstName')!.invalid && profileForm.get('firstName')!.touched) {
+        <!-- ❌ Not recommended(Not fully typed): @if (profileForm.get('firstName')!.invalid && profileForm.get('firstName')!.touched) { -->
+        @if (profileForm.controls.firstName.invalid && profileForm.controls.firstName.touched) {
           <small class="error">First name is required (min 2 characters).</small>
         }
       </label>
@@ -18,7 +19,8 @@
       <label>
         Age
         <input type="number" formControlName="age" placeholder="Enter age" />
-        @if (profileForm.get('age')!.invalid && profileForm.get('age')!.touched) {
+        <!-- ❌ Not recommended(Not fully typed): @if (profileForm.get('age')!.invalid && profileForm.get('age')!.touched) { -->
+        @if (profileForm.controls.age.invalid && profileForm.controls.age.touched) {
           <small class="error">Age is required (0–120).</small>
         }
       </label>
