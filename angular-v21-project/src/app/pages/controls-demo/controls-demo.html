@@ -4,7 +4,7 @@
 
   <!-- Section 1: FormGroup Example -->
   <section class="form-block" aria-label="form-group-example">
-    <h3>FormGroup Example</h3>
+    <h3>FormGroup — direct constructor</h3>
 
     <form [formGroup]="profileForm" (ngSubmit)="submitProfileForm()" novalidate>
       <label>
@@ -37,7 +37,7 @@
 
   <!-- Section 2: Standalone FormControl Example -->
   <section class="form-block" aria-label="single-control-example">
-    <h3>FormControl Example</h3>
+    <h3>FormControl — standalone, direct constructor</h3>
 
     <label>
       Email
@@ -58,7 +58,7 @@
 
   <!-- Section 3: FormControl state tracking -->
   <section class="form-block" aria-label="state-tracking">
-    <h3>State Tracking</h3>
+    <h3>FormBuilder(FormGroup + FormControl) — convenience shorthand ✅ Recommended for most cases</h3>
 
     <form [formGroup]="controlsForm" novalidate>
       <label>

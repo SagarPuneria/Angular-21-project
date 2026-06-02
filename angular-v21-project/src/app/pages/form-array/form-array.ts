@@ -19,43 +19,47 @@ export class FormArrayExample {
   //
   // Both approaches below produce the identical runtime result:
 
-  // ✅ Using FormBuilder (shorthand — preferred)
+  // ✅ Using FormBuilder (shorthand — preferred for most cases)
   readonly skillsForm = this.formBuilder.group({ // ✅ Recommended approach
     name:     ['', [Validators.required]],
     email:    ['', [Validators.required, Validators.email]],
     attendee: ['', [Validators.required]],
     // phoneNumbers is a FormArray of FormGroups — each entry has `number` + `type`.
     // This demonstrates a nested structure: FormArray → FormGroup → FormControl
-    phoneNumbers: this.formBuilder.array([this.createPhoneNumber()]),
+    phoneNumbers: this.formBuilder.array([this.createPhoneNumberFormBuilder()]),
     skills: this.formBuilder.array([
       this.formBuilder.control('', [Validators.required, Validators.minLength(2)]),
     ]),
   });
 
   // 📖 Equivalent without FormBuilder (verbose — for learning)
-  /* readonly skillsForm = new FormGroup({ // ❌ Old approach
-    name:  new FormControl('', [Validators.required]),
-    email: new FormControl('', [Validators.required, Validators.email]),
+  /* readonly skillsForm = new FormGroup({ // verbose — using direct constructors (what FormBuilder wraps)
+    name:     new FormControl('', [Validators.required]),
+    email:    new FormControl('', [Validators.required, Validators.email]),
     attendee: new FormControl('', [Validators.required]),
-    phoneNumbers: new FormArray([
-      new FormGroup({
-        number: new FormControl('', [Validators.required, Validators.pattern(/^\d{10}$/)]),
-        type:   new FormControl('mobile', Validators.required),
-      })
-    ]),
+    // phoneNumbers is a FormArray of FormGroups — each entry has `number` + `type`.
+    // This demonstrates a nested structure: FormArray → FormGroup → FormControl
+    phoneNumbers: new FormArray([this.createPhoneNumberFormGroup()]),
     skills: new FormArray([
-        new FormControl('', [Validators.required, Validators.minLength(2)])
-    ])
+      new FormControl('', [Validators.required, Validators.minLength(2)]),
+    ]),
   }); */
 
   // --- Phone Numbers (FormArray of FormGroups) ---
 
   // Factory method: produces a fresh FormGroup for one phone entry.
   // Called both at initialisation and whenever "+ Add Phone" is clicked.
-  createPhoneNumber(): FormGroup {
+  createPhoneNumberFormBuilder(): FormGroup {
     return this.formBuilder.group({
       number: ['', [Validators.required, Validators.pattern(/^\d{10}$/)]],
       type:   ['mobile', Validators.required],
+    });
+  }
+
+  createPhoneNumberFormGroup(): FormGroup {
+    return new FormGroup({
+      number: new FormControl('', [Validators.required, Validators.pattern(/^\d{10}$/)]),
+      type:   new FormControl('mobile', Validators.required),
     });
   }
 
@@ -70,7 +74,8 @@ export class FormArrayExample {
   }
 
   addPhoneNumber(): void {
-    this.phoneNumbers.push(this.createPhoneNumber());
+    this.phoneNumbers.push(this.createPhoneNumberFormBuilder());
+    // this.phoneNumbers.push(this.createPhoneNumberFormGroup());
   }
 
   removePhoneNumber(index: number): void {
@@ -100,6 +105,7 @@ export class FormArrayExample {
 
   addSkill(): void {
     this.skills.push(this.formBuilder.control('', [Validators.required, Validators.minLength(2)]));
+    // this.skills.push(new FormControl('', [Validators.required, Validators.minLength(2)]));
   }
 
   removeSkill(index: number): void {
@@ -115,13 +121,15 @@ export class FormArrayExample {
       { number: '8978697470', type: 'mobile' },
       { number: '8074443909', type: 'work' },
     ]) {
-      const group = this.createPhoneNumber();
+      const group = this.createPhoneNumberFormBuilder();
+      // const group = this.createPhoneNumberFormGroup();
       group.patchValue(phone);
       this.phoneNumbers.push(group);
     }
     this.skills.clear();
     for (const skill of ['Angular', 'TypeScript', 'RxJS']) {
       this.skills.push(this.formBuilder.control(skill, [Validators.required, Validators.minLength(2)]));
+      // this.skills.push(new FormControl(skill, [Validators.required, Validators.minLength(2)]));
     }
   }
 }
