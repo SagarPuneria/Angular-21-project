@@ -4,6 +4,8 @@
   border: 1px solid #e5e7eb;
   border-radius: 14px;
   padding: 20px;
+  display: grid;
+  gap: 16px;
 
   h2 {
     margin: 0 0 8px;
@@ -20,21 +22,22 @@
 }
 
 .section-divider {
-  border: none;
-  border-top: 1px solid #e5e7eb;
-  margin: 0;
+  display: none;
 }
 
 .form-block {
   display: grid;
   gap: 14px;
-  padding: 16px 0;
+  padding: 16px 20px;
+  border: 1px dashed #cbd5e1;
+  border-radius: 12px;
+  background: #fafafa;
 
   h3 {
     margin: 0;
     font-size: 1.1rem;
     font-weight: 800;
-    color: #1e293b;
+    color: #1f2937;
   }
 
   form {
@@ -93,37 +96,6 @@
   border-radius: 8px;
   color: #166534;
   font-weight: 600;
-}
-
-.checkbox-row {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-
-  input {
-    width: 18px;
-    height: 18px;
-  }
-
-  span {
-    font-weight: 600;
-  }
-}
-
-.state-grid {
-  margin-top: 8px;
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 10px;
-
-  div {
-    border: 1px solid #dbeafe;
-    background: #eff6ff;
-    color: #1e3a8a;
-    border-radius: 10px;
-    padding: 10px;
-    font-size: 0.95rem;
-  }
 }
 
 .checkbox-row {
