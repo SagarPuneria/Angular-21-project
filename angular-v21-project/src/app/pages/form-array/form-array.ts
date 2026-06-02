@@ -49,7 +49,7 @@ export class FormArrayExample {
 
   // Factory method: produces a fresh FormGroup for one phone entry.
   // Called both at initialisation and whenever "+ Add Phone" is clicked.
-  createPhoneNumberFormBuilder(): FormGroup {
+  createPhoneNumberFormBuilder(): FormGroup { // ✅ Recommended approach
     return this.formBuilder.group({
       number: ['', [Validators.required, Validators.pattern(/^\d{10}$/)]],
       type:   ['mobile', Validators.required],
@@ -74,7 +74,7 @@ export class FormArrayExample {
   }
 
   addPhoneNumber(): void {
-    this.phoneNumbers.push(this.createPhoneNumberFormBuilder());
+    this.phoneNumbers.push(this.createPhoneNumberFormBuilder()); // ✅ Recommended approach
     // this.phoneNumbers.push(this.createPhoneNumberFormGroup());
   }
 
@@ -104,7 +104,8 @@ export class FormArrayExample {
   }
 
   addSkill(): void {
-    this.skills.push(this.formBuilder.control('', [Validators.required, Validators.minLength(2)]));
+    this.skills.push(this.formBuilder.control('', 
+      [Validators.required, Validators.minLength(2)])); // ✅ Recommended approach
     // this.skills.push(new FormControl('', [Validators.required, Validators.minLength(2)]));
   }
 
@@ -121,14 +122,15 @@ export class FormArrayExample {
       { number: '8978697470', type: 'mobile' },
       { number: '8074443909', type: 'work' },
     ]) {
-      const group = this.createPhoneNumberFormBuilder();
+      const group = this.createPhoneNumberFormBuilder(); // ✅ Recommended approach
       // const group = this.createPhoneNumberFormGroup();
       group.patchValue(phone);
       this.phoneNumbers.push(group);
     }
     this.skills.clear();
     for (const skill of ['Angular', 'TypeScript', 'RxJS']) {
-      this.skills.push(this.formBuilder.control(skill, [Validators.required, Validators.minLength(2)]));
+      this.skills.push(this.formBuilder.control(skill, 
+        [Validators.required, Validators.minLength(2)])); // ✅ Recommended approach
       // this.skills.push(new FormControl(skill, [Validators.required, Validators.minLength(2)]));
     }
   }
