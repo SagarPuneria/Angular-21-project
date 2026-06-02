@@ -1,31 +1,88 @@
 <section class="card">
-  <h2>Controls Demo</h2>
+  <h2>FormGroup + FormControl Demo</h2>
   <p class="hint">A quick demo of FormControl state tracking with Reactive Forms.</p>
 
-  <form [formGroup]="controlsForm" novalidate>
-    <label>
-      Topic
-      <input type="text" formControlName="topic" />
-    </label>
+  <!-- Section 1: FormGroup Example -->
+  <section class="form-block" aria-label="form-group-example">
+    <h3>FormGroup Example</h3>
+
+    <form [formGroup]="profileForm" (ngSubmit)="submitProfileForm()" novalidate>
+      <label>
+        First Name
+        <input type="text" formControlName="firstName" placeholder="Enter first name" />
+        @if (profileForm.get('firstName')!.invalid && profileForm.get('firstName')!.touched) {
+          <small class="error">First name is required (min 2 characters).</small>
+        }
+      </label>
+
+      <label>
+        Age
+        <input type="number" formControlName="age" placeholder="Enter age" />
+        @if (profileForm.get('age')!.invalid && profileForm.get('age')!.touched) {
+          <small class="error">Age is required (0–120).</small>
+        }
+      </label>
+
+      <button type="submit">Submit FormGroup</button>
+    </form>
+
+    @if (profileResult) {
+      <p class="result">Submitted: {{ profileResult.firstName }} (age: {{ profileResult.age }})</p>
+    }
+  </section>
+
+  <hr class="section-divider" />
+
+  <!-- Section 2: Standalone FormControl Example -->
+  <section class="form-block" aria-label="single-control-example">
+    <h3>FormControl Example</h3>
 
     <label>
-      Level
-      <select formControlName="level">
-        <option value="Beginner">Beginner</option>
-        <option value="Intermediate">Intermediate</option>
-        <option value="Advanced">Advanced</option>
-      </select>
+      Email
+      <input type="email" [formControl]="emailControl" placeholder="your@email.com" />
+      @if (emailControl.touched && emailControl.invalid) {
+        <small class="error">Enter a valid email address.</small>
+      }
     </label>
 
-    <label class="checkbox-row">
-      <input type="checkbox" formControlName="acceptTerms" />
-      <span>I understand this is a demo form.</span>
-    </label>
+    <button type="button" (click)="submitEmail()">Submit FormControl</button>
 
-    <div class="state-grid">
-      <div><strong>Valid:</strong> {{ state().valid }}</div>
-      <div><strong>Dirty:</strong> {{ state().dirty }}</div>
-      <div><strong>Touched:</strong> {{ state().touched }}</div>
-    </div>
-  </form>
+    @if (emailResult) {
+      <p class="result">Submitted: {{ emailResult }}</p>
+    }
+  </section>
+
+  <hr class="section-divider" />
+
+  <!-- Section 3: FormControl state tracking -->
+  <section class="form-block" aria-label="state-tracking">
+    <h3>State Tracking</h3>
+
+    <form [formGroup]="controlsForm" novalidate>
+      <label>
+        Topic
+        <input type="text" formControlName="topic" />
+      </label>
+
+      <label>
+        Level
+        <select formControlName="level">
+          <option value="Beginner">Beginner</option>
+          <option value="Intermediate">Intermediate</option>
+          <option value="Advanced">Advanced</option>
+        </select>
+      </label>
+
+      <label class="checkbox-row">
+        <input type="checkbox" formControlName="acceptTerms" />
+        <span>I understand this is a demo form.</span>
+      </label>
+
+      <div class="state-grid">
+        <div><strong>Valid:</strong> {{ state().valid }}</div>
+        <div><strong>Dirty:</strong> {{ state().dirty }}</div>
+        <div><strong>Touched:</strong> {{ state().touched }}</div>
+      </div>
+    </form>
+  </section>
 </section>

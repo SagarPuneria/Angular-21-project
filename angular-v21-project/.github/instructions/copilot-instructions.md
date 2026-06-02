@@ -150,6 +150,13 @@ export class Example {
 - Use `linkedSignal()` for dependent state that resets when its source changes.
 - Use `resource()` / `rxResource()` for async data loading with signals.
 
+> **`computed()` guard — mandatory check before use:**
+> Before writing `computed(() => ...)`, verify that **every value read inside the callback is a `signal()`**.
+> `FormGroup` / `FormControl` properties (`valid`, `dirty`, `touched`, `value`) are **plain class getters — not signals**.
+> `computed()` establishes zero reactive dependencies on them and will never re-run after init.
+> ✅ Use `toSignal(form.events.pipe(map(...)))` for any `FormGroup`/`FormControl` state.
+> ✅ Use `computed()` only when all inputs are actual `signal()` instances.
+
 ```typescript
 import { signal, computed, effect } from '@angular/core';
 
@@ -245,6 +252,7 @@ constructor(private myService: MyService) {}
 | `CommonModule` | Built-in control flow |
 | `@Input()` / `@Output()` decorators | `input()` / `output()` signals |
 | `BehaviorSubject` for component state | `signal()` |
+| `computed()` reading `FormGroup`/`FormControl` properties | `toSignal(form.events.pipe(map(...)))` |
 | Constructor injection | `inject()` function |
 | `standalone: true` in decorator | Omit (default in Angular 19+) |
 | Class-based HTTP interceptors | Functional interceptors (`HttpInterceptorFn`) |

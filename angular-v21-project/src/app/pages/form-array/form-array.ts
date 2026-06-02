@@ -20,7 +20,7 @@ export class FormArrayExample {
   // Both approaches below produce the identical runtime result:
 
   // ✅ Using FormBuilder (shorthand — preferred)
-  readonly skillsForm = this.formBuilder.group({ // ✅ modern approach
+  readonly skillsForm = this.formBuilder.group({ // ✅ Recommended approach
     name:     ['', [Validators.required]],
     email:    ['', [Validators.required, Validators.email]],
     attendee: ['', [Validators.required]],
