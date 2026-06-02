@@ -1,0 +1,133 @@
+<div class="page-wrapper">
+  <header class="page-header">
+    <h1>Angular 21 &mdash; Signal Forms</h1>
+    <p class="page-subtitle">
+      Reactive forms using <code>signal()</code>, <code>computed()</code>, and <code>effect()</code>
+    </p>
+  </header>
+
+  <div class="form-card">
+
+    <!-- ─── Success panel ──────────────────────────────────────────────── -->
+    @if (submitted()) {
+      <div class="success-panel">
+        <div class="success-icon">✓</div>
+        <h2>Registration Successful!</h2>
+        <div class="submitted-values">
+          <p><span>Name:</span> {{ submittedData()?.name }}</p>
+          <p><span>Email:</span> {{ submittedData()?.email }}</p>
+          <p><span>Password:</span> {{ '•'.repeat(submittedData()?.password?.length ?? 0) }}</p>
+        </div>
+        <button class="btn btn-secondary" type="button" (click)="reset()">Register Again</button>
+      </div>
+    }
+
+    <!-- ─── Registration form ──────────────────────────────────────────── -->
+    @if (!submitted()) {
+      <h2 class="form-title"><span class="badge">Angular 21</span> Signal Forms</h2>
+      <p class="form-subtitle">
+        Form state managed entirely with <code>signal()</code> and <code>computed()</code> — no
+        <code>FormControl</code> needed.
+      </p>
+
+      <form (ngSubmit)="onSubmit()" novalidate>
+
+        <!-- Name -->
+        <div class="field" [class.invalid]="touched().name && nameError()">
+          <label for="name">Full Name</label>
+          <input
+            id="name"
+            type="text"
+            placeholder="Jane Doe"
+            [value]="name()"
+            (input)="updateName($event)"
+            (blur)="markTouched('name')"
+          />
+          @if (touched().name && nameError()) {
+            <span class="error-msg">⚠ {{ nameError() }}</span>
+          }
+        </div>
+
+        <!-- Email -->
+        <div class="field" [class.invalid]="touched().email && emailError()">
+          <label for="email">Email Address</label>
+          <input
+            id="email"
+            type="email"
+            placeholder="jane@example.com"
+            [value]="email()"
+            (input)="updateEmail($event)"
+            (blur)="markTouched('email')"
+          />
+          @if (touched().email && emailError()) {
+            <span class="error-msg">⚠ {{ emailError() }}</span>
+          }
+        </div>
+
+        <!-- Password -->
+        <div class="field" [class.invalid]="touched().password && passwordError()">
+          <label for="password">Password</label>
+          <input
+            id="password"
+            type="password"
+            placeholder="Min. 8 characters"
+            [value]="password()"
+            (input)="updatePassword($event)"
+            (blur)="markTouched('password')"
+          />
+
+          <!-- Password strength bar -->
+          @if (password()) {
+            <div class="strength-bar">
+              <div
+                class="strength-fill"
+                [class.weak]="passwordStrength() === 1"
+                [class.fair]="passwordStrength() === 2"
+                [class.good]="passwordStrength() === 3"
+                [class.strong]="passwordStrength() === 4"
+                [style.width.%]="passwordStrength() * 25"
+              ></div>
+            </div>
+            <span class="strength-label" [class]="passwordStrengthLabel().toLowerCase()">
+              {{ passwordStrengthLabel() }}
+            </span>
+          }
+
+          @if (touched().password && passwordError()) {
+            <span class="error-msg">⚠ {{ passwordError() }}</span>
+          }
+        </div>
+
+        <!-- Form-level hint -->
+        @if (!formValid() && (touched().name || touched().email || touched().password)) {
+          <p class="form-hint">◉ Please fill in all required fields correctly.</p>
+        }
+
+        <button class="btn btn-primary" type="submit" [disabled]="!formValid()">
+          Register
+        </button>
+
+      </form>
+
+      <!-- ─── Signal State Inspector (debug) ──────────────────────────── -->
+      <details class="inspector">
+        <summary>▶ Signal State Inspector</summary>
+        <div class="inspector-grid">
+          <div><strong>name</strong><code>{{ name() || '—' }}</code></div>
+          <div><strong>email</strong><code>{{ email() || '—' }}</code></div>
+          <div><strong>password</strong><code>{{ password() ? '•'.repeat(password().length) : '—' }}</code></div>
+          <div><strong>touched.name</strong><code>{{ touched().name }}</code></div>
+          <div><strong>touched.email</strong><code>{{ touched().email }}</code></div>
+          <div><strong>touched.password</strong><code>{{ touched().password }}</code></div>
+          <div><strong>nameError</strong><code>{{ nameError() ?? 'null' }}</code></div>
+          <div><strong>emailError</strong><code>{{ emailError() ?? 'null' }}</code></div>
+          <div><strong>passwordError</strong><code>{{ passwordError() ?? 'null' }}</code></div>
+          <div><strong>formValid</strong><code>{{ formValid() }}</code></div>
+          <div><strong>passwordStrength</strong><code>{{ passwordStrength() }} / 4</code></div>
+          <div><strong>passwordStrengthLabel</strong><code>{{ passwordStrengthLabel() || '—' }}</code></div>
+        </div>
+      </details>
+    }
+
+  </div>
+</div>

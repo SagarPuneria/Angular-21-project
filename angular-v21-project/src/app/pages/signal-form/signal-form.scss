@@ -1,0 +1,305 @@
+// ─── Page layout ──────────────────────────────────────────────────────────────
+
+.page-wrapper {
+  min-height: 100vh;
+  background: #fdf2f4;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 48px 16px 64px;
+}
+
+.page-header {
+  text-align: center;
+  margin-bottom: 32px;
+
+  h1 {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #1a1a2e;
+    margin: 0 0 8px;
+  }
+
+  .page-subtitle {
+    color: #6b7280;
+    font-size: 0.95rem;
+
+    code {
+      background: #fce7ec;
+      color: #c0392b;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 0.875rem;
+    }
+  }
+}
+
+// ─── Form card ────────────────────────────────────────────────────────────────
+
+.form-card {
+  width: 100%;
+  max-width: 480px;
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
+  padding: 32px 36px;
+
+  .form-title {
+    font-size: 1.35rem;
+    font-weight: 700;
+    color: #1a1a2e;
+    margin: 0 0 8px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .form-subtitle {
+    font-size: 0.875rem;
+    color: #6b7280;
+    margin: 0 0 24px;
+    line-height: 1.5;
+
+    code {
+      background: #fce7ec;
+      color: #c0392b;
+      padding: 1px 5px;
+      border-radius: 4px;
+      font-size: 0.825rem;
+    }
+  }
+}
+
+// ─── Badge ────────────────────────────────────────────────────────────────────
+
+.badge {
+  display: inline-block;
+  background: #e8192c;
+  color: #fff;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  padding: 3px 8px;
+  border-radius: 100px;
+  text-transform: uppercase;
+}
+
+// ─── Fields ───────────────────────────────────────────────────────────────────
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 20px;
+
+  label {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #374151;
+  }
+
+  input {
+    padding: 10px 14px;
+    border: 1.5px solid #e5e7eb;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    color: #111827;
+    background: #fff;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    outline: none;
+
+    &::placeholder {
+      color: #9ca3af;
+    }
+
+    &:focus {
+      border-color: #e8192c;
+      box-shadow: 0 0 0 3px rgba(232, 25, 44, 0.1);
+    }
+  }
+
+  // Invalid state — shows when touched + error exists
+  &.invalid input {
+    border-color: #e8192c;
+    background: #fff8f9;
+  }
+}
+
+// ─── Error message ────────────────────────────────────────────────────────────
+
+.error-msg {
+  font-size: 0.8rem;
+  color: #e8192c;
+  font-weight: 500;
+}
+
+// ─── Password strength ────────────────────────────────────────────────────────
+
+.strength-bar {
+  height: 4px;
+  background: #e5e7eb;
+  border-radius: 2px;
+  overflow: hidden;
+  margin-top: 6px;
+
+  .strength-fill {
+    height: 100%;
+    border-radius: 2px;
+    transition: width 0.3s ease, background-color 0.3s ease;
+
+    &.weak   { background: #e8192c; }
+    &.fair   { background: #f59e0b; }
+    &.good   { background: #3b82f6; }
+    &.strong { background: #10b981; }
+  }
+}
+
+.strength-label {
+  font-size: 0.78rem;
+  font-weight: 600;
+  margin-top: 2px;
+
+  &.weak   { color: #e8192c; }
+  &.fair   { color: #f59e0b; }
+  &.good   { color: #3b82f6; }
+  &.strong { color: #10b981; }
+}
+
+// ─── Form hint ────────────────────────────────────────────────────────────────
+
+.form-hint {
+  font-size: 0.82rem;
+  color: #9ca3af;
+  margin: -8px 0 16px;
+}
+
+// ─── Buttons ──────────────────────────────────────────────────────────────────
+
+.btn {
+  width: 100%;
+  padding: 12px;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.2s, transform 0.1s;
+
+  &:active {
+    transform: scale(0.98);
+  }
+
+  &.btn-primary {
+    background: linear-gradient(135deg, #e8192c, #ff6b7a);
+    color: #fff;
+
+    &:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
+    }
+  }
+
+  &.btn-secondary {
+    background: #f3f4f6;
+    color: #374151;
+    margin-top: 16px;
+  }
+}
+
+// ─── Success panel ────────────────────────────────────────────────────────────
+
+.success-panel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 16px 0;
+
+  .success-icon {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #10b981, #34d399);
+    color: #fff;
+    font-size: 1.75rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 16px;
+  }
+
+  h2 {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #1a1a2e;
+    margin: 0 0 20px;
+  }
+
+  .submitted-values {
+    width: 100%;
+    background: #f9fafb;
+    border: 1px dashed #e5e7eb;
+    border-radius: 10px;
+    padding: 16px 20px;
+    text-align: left;
+    margin-bottom: 8px;
+
+    p {
+      margin: 6px 0;
+      font-size: 0.9rem;
+      color: #374151;
+
+      span {
+        font-weight: 600;
+        margin-right: 6px;
+      }
+    }
+  }
+}
+
+// ─── Signal State Inspector ───────────────────────────────────────────────────
+
+.inspector {
+  margin-top: 24px;
+  border-top: 1px solid #f3f4f6;
+  padding-top: 16px;
+
+  summary {
+    font-size: 0.82rem;
+    color: #9ca3af;
+    cursor: pointer;
+    user-select: none;
+    list-style: none;
+
+    &::-webkit-details-marker {
+      display: none;
+    }
+  }
+
+  .inspector-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-top: 12px;
+
+    div {
+      background: #f9fafb;
+      border: 1px solid #e5e7eb;
+      border-radius: 6px;
+      padding: 8px 10px;
+      font-size: 0.78rem;
+
+      strong {
+        display: block;
+        color: #6b7280;
+        margin-bottom: 2px;
+      }
+
+      code {
+        color: #e8192c;
+        word-break: break-all;
+      }
+    }
+  }
+}

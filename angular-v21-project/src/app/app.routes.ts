@@ -61,6 +61,10 @@ export const routes: Routes = [
     loadComponent: () =>
       import('./pages/controls-demo/controls-demo').then(m => m.ControlsDemo),
   },
+  {
+    path: 'signal-form',
+    loadComponent: () => import('./pages/signal-form/signal-form').then(m => m.SignalForm),
+  },
 
   // Enroll — explicitly lazy loaded (separate JS chunk, fetched only on navigation)
   {
