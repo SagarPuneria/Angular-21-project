@@ -45,6 +45,47 @@ export class FormArrayExample {
     ]),
   }); */
 
+  /*
+   * ─── 📌 FINAL TAKEAWAY ───────────────────────────────────────────────────────
+   *
+   * ① new FormGroup / FormControl / FormArray  →  plain JS class instantiation
+   * ─────────────────────────────────────────────────────────────────────────────
+   *  These are ordinary TypeScript classes — NOT Angular services.
+   *  The `new` keyword creates an instance exactly like `new Date()` or `new Map()`.
+   *  Angular's DI system is NOT involved at all.
+   *
+   *    // No DI, no constructor(), no Angular involvement
+   *    readonly skillsForm    = new FormGroup({...});
+   *    readonly emailControl  = new FormControl('');
+   *    readonly phoneNumbers  = new FormArray([]);
+   *
+   *
+   * ② FormBuilder  →  an injectable Angular SERVICE (convenience wrapper)
+   * ─────────────────────────────────────────────────────────────────────────────
+   *  FormBuilder is decorated with @Injectable, so Angular manages its lifecycle.
+   *  It must be obtained via inject() (modern) or constructor injection (legacy).
+   *  Internally its methods call new FormGroup() / new FormControl() / new FormArray()
+   *  — the runtime result is identical to approach ①.
+   *
+   *    private readonly formBuilder = inject(FormBuilder);  // DI required
+   *    readonly skillsForm = this.formBuilder.group({...}); // shorthand syntax
+   *
+   *
+   * ─── COMPARISON ──────────────────────────────────────────────────────────────
+   *
+   *  ┌─────────────────────────┬──────────────────────────┬──────────────────────────────────┐
+   *  │                         │  new FormGroup()         │  formBuilder.group()             │
+   *  ├─────────────────────────┼──────────────────────────┼──────────────────────────────────┤
+   *  │ Needs inject()          │  ❌ No                   │  ✅ Yes (for FormBuilder itself)  │
+   *  │ Needs constructor()     │  ❌ No                   │  ❌ No  (use inject())            │
+   *  │ Works as field init     │  ✅ Yes                  │  ✅ Yes                           │
+   *  │ Angular DI involved     │  ❌ No                   │  ✅ Yes                           │
+   *  │ Runtime result          │  Same                    │  Same                            │
+   *  └─────────────────────────┴──────────────────────────┴──────────────────────────────────┘
+   *
+   * ─────────────────────────────────────────────────────────────────────────────
+   */
+
   // --- Phone Numbers (FormArray of FormGroups) ---
 
   // Factory method: produces a fresh FormGroup for one phone entry.
