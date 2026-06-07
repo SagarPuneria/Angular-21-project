@@ -1,5 +1,43 @@
 import { Component, computed, signal } from '@angular/core';
 
+/*
+ * ─── Why toSignal() is NOT used here (unlike controls-demo.ts) ──────────────
+ *
+ * toSignal() is a BRIDGE utility — it converts an Observable into a signal so
+ * that signal-aware APIs (computed, template bindings) can consume it.
+ *
+ * You need toSignal() only when your source of truth is an Observable:
+ *
+ *   controls-demo.ts (FormGroup / FormControl approach)
+ *   ────────────────────────────────────────────────────
+ *   - State is owned by FormGroup / FormControl — plain TypeScript class instances.
+ *   - Their properties (.valid, .dirty, .touched) are regular class getters — NOT signals.
+ *   - computed(() => this.form.valid) ← ❌ reads a getter once, never re-evaluates.
+ *   - FormGroup exposes an Observable (form.events) that emits on every change.
+ *   - toSignal() bridges that Observable → signal so the template can react.
+ *
+ *     Observable (form.events)  →  toSignal()  →  signal  →  template
+ *
+ *   signal-form.ts (this file — signal-native approach)
+ *   ────────────────────────────────────────────────────
+ *   - Every piece of state IS a signal from the start: signal(''), signal(false).
+ *   - computed() only reads signal() instances — Angular tracks dependencies correctly.
+ *   - computed(() => !this.nameError()) ← ✅ nameError is a computed signal; re-evaluates
+ *     automatically whenever name() changes.
+ *   - No Observable exists anywhere → no bridge needed → no toSignal().
+ *
+ *     signal()  →  computed()  →  template      (pure signal graph, no Observable involved)
+ *
+ * Rule of thumb:
+ *   ┌─────────────────────────────────────┬──────────────────────────────────┐
+ *   │ Source of truth                     │ What to use in computed/template │
+ *   ├─────────────────────────────────────┼──────────────────────────────────┤
+ *   │ signal() / computed()               │ Use directly — no bridge needed  │
+ *   │ Observable (RxJS, HttpClient, etc.) │ toSignal() to bridge first       │
+ *   │ FormGroup / FormControl getters     │ toSignal(form.events.pipe(...))  │
+ *   └─────────────────────────────────────┴──────────────────────────────────┘
+ */
+
 @Component({
   selector: 'app-signal-form',
   imports: [],
