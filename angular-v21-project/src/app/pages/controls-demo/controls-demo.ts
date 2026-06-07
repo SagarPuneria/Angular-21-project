@@ -67,7 +67,12 @@ export class ControlsDemo {
 
   // ⚠️ computed() does NOT work here because controlsForm.valid/dirty/touched are plain
   //    class properties — not signals. computed() only re-runs when signals change.
-  //
+  // readonly state = computed(() => ({
+  //   valid: this.controlsForm.valid,
+  //   dirty: this.controlsForm.dirty,
+  //   touched: this.controlsForm.touched,
+  // }));
+
   // ✅ Fix: toSignal() + controlsForm.events (Angular 18+ API) converts the observable
   //    stream of ALL control events (TouchedChangeEvent, DirtyChangeEvent, StatusChangeEvent…)
   //    into a signal, so the view updates on every interaction.
