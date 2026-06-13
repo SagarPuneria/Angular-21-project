@@ -55,7 +55,13 @@
   <!-- Service-Based Communication (MessageService — no Observables) -->
   <section style="padding: 0 16px;">
     <h2>Sibling Communication via Shared Service (MessageService)</h2>
-    <p>Sender and Receiver are siblings. They share state through a plain service property — no Observables, no async pipe.</p>
+    <p>
+      Sender and Receiver are siblings sharing state through <code>MessageService</code>.
+      Three approaches are demonstrated side-by-side:
+      plain property (non-reactive snapshot) ·
+      <code>BehaviorSubject</code> subscription (reactive, manual unsubscribe) ·
+      <code>async</code> pipe (reactive, auto-unsubscribe).
+    </p>
     <app-sender />
     <app-receiver />
   </section>
