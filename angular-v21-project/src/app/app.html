@@ -66,6 +66,18 @@
     <app-receiver />
   </section>
 
+  <!-- Signal-based Parent ↔ Child (input() / output() signals) -->
+  <section style="padding: 0 16px;">
+    <h2>Signal-based Parent ↔ Child Communication</h2>
+    <p>
+      Demonstrates modern Angular signal APIs:
+      <code>input()</code> replaces <code>@Input()</code> ·
+      <code>output()</code> replaces <code>@Output() EventEmitter</code> ·
+      Parent holds state in <code>signal()</code> and passes the unwrapped value down.
+    </p>
+    <app-signal-parent />
+  </section>
+
 <!-- Session 5 - Topics:
  * Routing — child routes, lazy loading, withComponentInputBinding(), route params
 -->

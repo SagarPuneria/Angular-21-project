@@ -1,0 +1,77 @@
+.signal-child-container {
+  border: 2px dashed #7c3aed;
+  border-radius: 10px;
+  padding: 16px 20px;
+  background: #faf5ff;
+
+  h4 {
+    margin: 0 0 14px;
+    color: #7c3aed;
+    font-size: 0.95rem;
+    font-weight: 700;
+  }
+
+  .label {
+    font-size: 0.8rem;
+    color: #6b7280;
+    margin: 0 0 6px;
+
+    code {
+      background: #ede9fe;
+      color: #7c3aed;
+      padding: 1px 5px;
+      border-radius: 4px;
+      font-size: 0.78rem;
+    }
+  }
+
+  .received-section {
+    margin-bottom: 14px;
+
+    .message {
+      font-weight: 600;
+      color: #1a1a2e;
+      background: #ede9fe;
+      padding: 8px 12px;
+      border-radius: 6px;
+      margin: 0;
+    }
+  }
+
+  .send-section {
+    .input-group {
+      display: flex;
+      gap: 8px;
+
+      input {
+        flex: 1;
+        padding: 8px 12px;
+        border: 1.5px solid #c4b5fd;
+        border-radius: 6px;
+        font-size: 0.875rem;
+        outline: none;
+
+        &:focus {
+          border-color: #7c3aed;
+          box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.1);
+        }
+      }
+
+      button {
+        padding: 8px 14px;
+        background: #7c3aed;
+        color: #fff;
+        border: none;
+        border-radius: 6px;
+        font-size: 0.85rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: opacity 0.2s;
+
+        &:hover {
+          opacity: 0.85;
+        }
+      }
+    }
+  }
+}

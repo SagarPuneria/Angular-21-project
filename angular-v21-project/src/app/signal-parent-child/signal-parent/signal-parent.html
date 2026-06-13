@@ -1,0 +1,36 @@
+<div class="signal-parent-container">
+  <h2>Signal Parent Component</h2>
+
+  <!-- ─── Send to child ──────────────────────────────────────────────────── -->
+  <div class="send-section">
+    <h4>Send Message to Child (via <code>input()</code> signal):</h4>
+    <div class="input-group">
+      <input
+        type="text"
+        [(ngModel)]="inputValue"
+        placeholder="Enter message for child"
+        (keyup.enter)="sendMessageToChild()"
+      />
+      <button (click)="sendMessageToChild()">Send to Child</button>
+    </div>
+    <p class="current-signal">
+      Current Signal Value: <strong>{{ messageToChild() }}</strong>
+    </p>
+  </div>
+
+  <!-- ─── Received from child ────────────────────────────────────────────── -->
+  <div class="received-section">
+    <h4>Received from Child (via <code>output()</code>):</h4>
+    <p class="message">{{ messageFromChild() }}</p>
+  </div>
+
+  <!-- ─── Child component ────────────────────────────────────────────────── -->
+  <!-- messageToChild() unwraps the signal value — child receives a plain string
+       via input(). When the signal changes, Angular re-binds the input automatically. -->
+  <div class="child-wrapper">
+    <app-signal-child
+      [parentMessage]="messageToChild()"
+      (childMessageEvent)="handleChildMessage($event)"
+    />
+  </div>
+</div>

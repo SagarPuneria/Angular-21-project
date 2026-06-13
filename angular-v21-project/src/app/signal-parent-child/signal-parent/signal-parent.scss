@@ -1,0 +1,95 @@
+.signal-parent-container {
+  border: 2px solid #2563eb;
+  border-radius: 12px;
+  padding: 20px 24px;
+  background: #eff6ff;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+
+  h2 {
+    margin: 0;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #1e40af;
+  }
+
+  h4 {
+    margin: 0 0 10px;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #1e40af;
+
+    code {
+      background: #dbeafe;
+      color: #1d4ed8;
+      padding: 1px 5px;
+      border-radius: 4px;
+      font-size: 0.78rem;
+    }
+  }
+
+  .send-section {
+    .input-group {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 10px;
+
+      input {
+        flex: 1;
+        padding: 8px 12px;
+        border: 1.5px solid #93c5fd;
+        border-radius: 6px;
+        font-size: 0.875rem;
+        outline: none;
+        background: #fff;
+
+        &:focus {
+          border-color: #2563eb;
+          box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+      }
+
+      button {
+        padding: 8px 14px;
+        background: #2563eb;
+        color: #fff;
+        border: none;
+        border-radius: 6px;
+        font-size: 0.85rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: opacity 0.2s;
+
+        &:hover {
+          opacity: 0.85;
+        }
+      }
+    }
+
+    .current-signal {
+      margin: 0;
+      font-size: 0.85rem;
+      color: #374151;
+
+      strong {
+        color: #1d4ed8;
+      }
+    }
+  }
+
+  .received-section {
+    .message {
+      margin: 0;
+      font-weight: 600;
+      color: #1a1a2e;
+      background: #dbeafe;
+      padding: 8px 12px;
+      border-radius: 6px;
+    }
+  }
+
+  .child-wrapper {
+    margin-top: 4px;
+  }
+}

@@ -1,0 +1,23 @@
+<div class="signal-child-container">
+  <h4>Signal Child Component</h4>
+
+  <!-- Message received from parent via signal input() -->
+  <div class="received-section">
+    <p class="label">📩 Received from Parent (via <code>input()</code>):</p>
+    <p class="message">{{ parentMessage() || '—' }}</p>
+  </div>
+
+  <!-- Reply back to parent via output() -->
+  <div class="send-section">
+    <p class="label">📤 Send reply to Parent (via <code>output()</code>):</p>
+    <div class="input-group">
+      <input
+        type="text"
+        [(ngModel)]="childResponse"
+        placeholder="Enter reply for parent"
+        (keyup.enter)="sendToParent()"
+      />
+      <button (click)="sendToParent()">Send to Parent</button>
+    </div>
+  </div>
+</div>
