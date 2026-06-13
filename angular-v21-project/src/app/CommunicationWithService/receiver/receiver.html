@@ -1,6 +1,18 @@
 <div style="border: 2px solid #17a2b8; padding: 16px; border-radius: 8px; margin: 8px 0;">
   <h4>Receiver</h4>
-  <p><strong>Message from Service:</strong> {{ messageService.currentMessage || 'currentMessage is empty' }}</p>
-  <!-- If currentMessage is empty, display 'currentMessage is empty' -->
-   <p><strong>Message from Receiver component:</strong> {{ message || 'currentMessage is empty' }}</p>
+
+  <!-- ⚠️ Non-reactive: reads the plain property directly — never updates after init -->
+  <p><strong>❌ Non-reactive (plain property):</strong>
+    {{ messageService.currentMessage || 'currentMessage is empty' }}
+  </p>
+
+  <!-- ⚠️ Non-reactive: this.message was assigned once in ngOnInit — stays stale -->
+  <p><strong>❌ Non-reactive (ngOnInit snapshot):</strong>
+    {{ message || 'message is empty' }}
+  </p>
+
+  <!-- ✅ Reactive: reactiveMessage is updated by the BehaviorSubject subscription -->
+  <p><strong>✅ Reactive (BehaviorSubject subscription):</strong>
+    {{ reactiveMessage || 'reactiveMessage is empty' }}
+  </p>
 </div>

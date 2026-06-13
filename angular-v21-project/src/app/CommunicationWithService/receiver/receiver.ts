@@ -1,4 +1,5 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, OnDestroy } from '@angular/core';
+import { Subscription } from 'rxjs';
 import { MessageService } from '../message.service';
 
 @Component({
@@ -6,9 +7,30 @@ import { MessageService } from '../message.service';
   imports: [],
   templateUrl: './receiver.html',
 })
-export class Receiver {
+export class Receiver implements OnDestroy {
   messageService = inject(MessageService);
+
+  // ─── Non-reactive (one-time snapshot) ────────────────────────────────────
+  // Assigned once in ngOnInit — does NOT update when Sender sends a new message.
   message: string = 'working or not working';
+
+  // ─── Reactive (live updates via BehaviorSubject) ──────────────────────────
+  // Updated automatically every time Sender calls messageService.updateMessage().
+  reactiveMessage: string = '';
+
+  // ✅ Field initializer — works because:
+  //    1. messageService is declared above (inject() runs before this line).
+  //    2. reactiveMessage is declared above (BehaviorSubject replays the current value immediately on subscribe,
+  //       then emits every subsequent value pushed via next() — reactiveMessage must already exist as a field).
+  //    Declaration order in the class body = initialization order at runtime.
+  // Stored so we can unsubscribe in ngOnDestroy and prevent memory leaks.
+  private readonly subscription: Subscription = this.messageService.currentMessage$.subscribe(
+    msg => {
+      this.reactiveMessage = msg;
+    },
+  );
+
+  // constructor is no longer needed for the subscription.
 
   ngOnInit() {
     // ⚠️ Non-reactive assignment — reads the service value exactly once at init time.
@@ -20,5 +42,10 @@ export class Receiver {
     // BehaviorSubject) in the service, then subscribe here (or use the async pipe in the
     // template) so the view automatically reflects every future change.
     this.message = this.messageService.currentMessage;
+  }
+
+  ngOnDestroy(): void {
+    // Always unsubscribe when the component is destroyed to avoid memory leaks.
+    this.subscription.unsubscribe();
   }
 }
