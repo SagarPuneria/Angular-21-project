@@ -6,13 +6,14 @@ import { DataBinding } from './data-binding/data-binding';
 import { Sender } from './CommunicationWithService/sender/sender';
 import { Receiver } from './CommunicationWithService/receiver/receiver';
 import { SignalParent } from './signal-parent-child/signal-parent/signal-parent';
+import { ViewChildExample } from './view-child-example/view-child-example';
 import { AuthService } from './auth/auth.service';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.html',
   styleUrl: './app.scss',
-  imports: [DataBindingDemo, Child, DataBinding, Sender, Receiver, SignalParent, RouterOutlet, RouterLink, RouterLinkActive]
+  imports: [DataBindingDemo, Child, DataBinding, Sender, Receiver, SignalParent, ViewChildExample, RouterOutlet, RouterLink, RouterLinkActive]
 })
 export class App {
   protected readonly title = signal('angular-v21-project');

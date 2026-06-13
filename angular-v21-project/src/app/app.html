@@ -78,6 +78,17 @@
     <app-signal-parent />
   </section>
 
+  <!-- @ViewChild — imperative parent access to a child component reference -->
+  <section style="padding: 0 16px;">
+    <h2>@ViewChild — Imperative Child Access</h2>
+    <p>
+      <code>@ViewChild</code> gives the parent a direct TypeScript reference to a child component instance.
+      The reference is resolved after the view renders and is available in <code>ngAfterViewInit()</code>.
+      Use it to call child methods or read child properties imperatively.
+    </p>
+    <app-view-child-example />
+  </section>
+
 <!-- Session 5 - Topics:
  * Routing — child routes, lazy loading, withComponentInputBinding(), route params
 -->

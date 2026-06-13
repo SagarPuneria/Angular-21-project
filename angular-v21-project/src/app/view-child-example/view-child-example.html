@@ -1,0 +1,30 @@
+<div class="view-child-wrapper">
+  <h3>@ViewChild Example - Parent Component</h3>
+
+  <div class="section-card">
+    <h4 class="section-title">Access Child Component via @ViewChild</h4>
+    <p class="section-desc">Parent can access child component's properties and methods using @ViewChild</p>
+
+    <!-- Child component rendered in parent's template -->
+    <app-child-item />
+
+    <!-- Parent controls — call child methods imperatively via @ViewChild reference -->
+    <div class="parent-controls">
+      <p class="controls-label">Parent Controls:</p>
+      <div class="btn-row">
+        <button (click)="incrementChildCounter()">Increment Child Counter from Parent</button>
+        <button (click)="resetChildCounter()">Reset Child Counter from Parent</button>
+        <button (click)="readChildMessage()">Read Child Message</button>
+        <button (click)="getChildInfo()">Get Child Info</button>
+      </div>
+
+      <!-- Results from imperative reads -->
+      @if (parentMessage) {
+        <p class="result">📩 Child Message: <strong>{{ parentMessage }}</strong></p>
+      }
+      @if (childInfo) {
+        <p class="result">ℹ️ Child Info: <strong>{{ childInfo }}</strong></p>
+      }
+    </div>
+  </div>
+</div>
