@@ -15,4 +15,15 @@
   <p><strong>✅ Reactive (BehaviorSubject subscription):</strong>
     {{ reactiveMessage || 'reactiveMessage is empty' }}
   </p>
+
+  <!--
+    ✅ Async pipe — the cleanest reactive approach:
+    - No subscribe() call needed in the component
+    - No unsubscribe() / ngOnDestroy needed — Angular handles it automatically
+    - currentMessage$ is the raw Observable exposed from the component
+    - '| async' subscribes, unwraps the value, and unsubscribes on destroy
+  -->
+  <p><strong>✅ Reactive (async pipe):</strong>
+    {{ currentMessage$ | async }}
+  </p>
 </div>
