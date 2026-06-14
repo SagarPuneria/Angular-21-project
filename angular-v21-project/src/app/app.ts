@@ -9,13 +9,14 @@ import { SignalParent } from './signal-parent-child/signal-parent/signal-parent'
 import { ViewChildExample } from './view-child-example/view-child-example';
 import { SubjectExample } from './CommunicationWithService/subject-example/subject-example';
 import { BehaviorSubjectExample } from './CommunicationWithService/behavior-subject-example/behavior-subject-example';
+import { BehaviorSubjectDeepDive } from './CommunicationWithService/behavior-subject-deep-dive/behavior-subject-deep-dive';
 import { AuthService } from './auth/auth.service';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.html',
   styleUrl: './app.scss',
-  imports: [DataBindingDemo, Child, DataBinding, Sender, Receiver, SignalParent, ViewChildExample, SubjectExample, BehaviorSubjectExample, RouterOutlet, RouterLink, RouterLinkActive]
+  imports: [DataBindingDemo, Child, DataBinding, Sender, Receiver, SignalParent, ViewChildExample, SubjectExample, BehaviorSubjectExample, BehaviorSubjectDeepDive, RouterOutlet, RouterLink, RouterLinkActive]
 })
 export class App {
   protected readonly title = signal('angular-v21-project');

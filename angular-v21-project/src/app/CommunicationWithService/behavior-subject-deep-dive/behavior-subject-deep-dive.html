@@ -1,0 +1,93 @@
+<div class="deep-dive-wrapper">
+  <h2>BehaviorSubject — Deep Dive</h2>
+
+  <!-- ─── Demo 1: Requires an Initial Value ─────────────────────────────── -->
+  <div class="demo-card">
+    <h3>Demo 1 — Requires an Initial Value</h3>
+    <div class="code-hint">
+      <code>new BehaviorSubject&lt;string&gt;('Initial Value')</code>
+      <p>
+        The <strong>Early Subscriber</strong> subscribed at component creation and immediately
+        received <em>'Initial Value'</em> — no <code>.next()</code> call needed.
+      </p>
+    </div>
+
+    <div class="input-row">
+      <input
+        #emitInput
+        type="text"
+        placeholder="Type a value and emit"
+        (keyup.enter)="emitValue(emitInput)"
+      />
+      <button class="btn-emit" (click)="emitValue(emitInput)">Emit Value</button>
+    </div>
+
+    <div class="subscribers-row">
+      <!-- Early Subscriber -->
+      <div class="subscriber-panel early">
+        <div class="panel-header">
+          <span class="panel-title">Early Subscriber</span>
+          <span class="badge badge-green">Subscribed at start</span>
+        </div>
+        <ul class="message-list">
+          @for (msg of earlyMessages; track $index) {
+            <li [class.latest]="$last">Received: "{{ msg }}"</li>
+          }
+        </ul>
+      </div>
+
+      <!-- Late Subscriber -->
+      <div class="subscriber-panel late">
+        <div class="panel-header">
+          <span class="panel-title">Late Subscriber</span>
+          <span class="badge" [class.badge-orange]="!lateSubscribed" [class.badge-grey]="lateSubscribed">
+            {{ lateSubscribed ? 'Subscribed late' : 'Not yet subscribed' }}
+          </span>
+        </div>
+
+        <button
+          class="btn-subscribe"
+          [class.btn-subscribed]="lateSubscribed"
+          [disabled]="lateSubscribed"
+          (click)="subscribeNowLate()"
+        >
+          {{ lateSubscribed ? 'Already Subscribed' : 'Subscribe Now (Late)' }}
+        </button>
+
+        @if (!lateSubscribed) {
+          <div class="late-hint">
+            <p>
+              Emit a few values first, then click the button above.
+              The late subscriber will instantly receive the <strong>last emitted value</strong>.
+            </p>
+          </div>
+        }
+
+        <ul class="message-list">
+          @for (msg of lateMessages; track $index) {
+            <li [class.latest]="$last">Received: "{{ msg }}"</li>
+          }
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─── Demo 3: Always Has a Current Value (.getValue()) ──────────────── -->
+  <div class="demo-card">
+    <h3>Demo 3 — Always Has a Current Value (<code>.getValue()</code>)</h3>
+    <div class="code-hint">
+      <p>
+        Unlike a plain <code>Subject</code>, a <code>BehaviorSubject</code> always holds the last
+        value in memory. You can read it synchronously at any time — no subscription needed.
+        This makes it ideal for <strong>state management</strong>
+        (e.g. current user, theme, shopping cart).
+      </p>
+    </div>
+    <button class="btn-read" (click)="readCurrentValue()">Read Current Value Synchronously</button>
+    @if (currentStoredValue) {
+      <div class="snapshot-result">
+        Current stored value: <strong>{{ currentStoredValue }}</strong>
+      </div>
+    }
+  </div>
+</div>
