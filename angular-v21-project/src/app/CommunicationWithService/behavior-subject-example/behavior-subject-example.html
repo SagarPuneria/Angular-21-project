@@ -1,0 +1,49 @@
+<div class="behavior-subject-card">
+  <h3>BehaviorSubject Example</h3>
+
+  <!-- Current value — reactive, updated by subscription -->
+  <div class="current-value-box">
+    <p class="label">Current Value:</p>
+    <p class="value">{{ currentValue || '—' }}</p>
+  </div>
+
+  <!-- Input row: update + get snapshot -->
+  <div class="input-row">
+    <input
+      #valueInput
+      type="text"
+      placeholder="Enter a new value"
+      (keyup.enter)="updateValue(valueInput)"
+    />
+    <button class="btn-update" (click)="updateValue(valueInput)">Update Value</button>
+    <button class="btn-snapshot" (click)="getCurrentValue()">Get Current Value</button>
+  </div>
+
+  <!-- Snapshot result — only shown after clicking "Get Current Value" -->
+  @if (snapshotValue) {
+    <p class="snapshot-result">
+      📸 Snapshot: <strong>{{ snapshotValue }}</strong>
+    </p>
+  }
+
+  <!-- Value history — accumulates every emission including initial value -->
+  <div class="history-section">
+    <h4>Value History:</h4>
+    @if (valueHistory.length === 0) {
+      <p class="empty-state">No values yet.</p>
+    } @else {
+      <ol class="history-list">
+        @for (item of valueHistory; track $index) {
+          <li>{{ item }}</li>
+        }
+      </ol>
+    }
+  </div>
+
+  <!-- Key difference callout -->
+  <div class="key-difference">
+    <strong>Key Difference:</strong> BehaviorSubject always has a current value
+    and emits it immediately to new subscribers. The history list starts pre-populated
+    because the initial value is emitted synchronously on subscribe.
+  </div>
+</div>

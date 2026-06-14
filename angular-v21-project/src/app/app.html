@@ -101,6 +101,19 @@
     <app-subject-example />
   </section>
 
+  <!-- BehaviorSubject — holds current value, full Observer object pattern -->
+  <section style="padding: 0 16px;">
+    <h2>BehaviorSubject — Stateful Stream with Value History</h2>
+    <p>
+      <code>BehaviorSubject</code> emits its current held value immediately on subscribe,
+      then every subsequent <code>next()</code> emission. Demonstrates the full
+      <strong>Observer object</strong> pattern: <code>&#123; next, error, complete &#125;</code>
+      vs shorthand callback. "Get Current Value" reads synchronously via
+      <code>getValue()</code> without subscribing.
+    </p>
+    <app-behavior-subject-example />
+  </section>
+
 <!-- Session 5 - Topics:
  * Routing — child routes, lazy loading, withComponentInputBinding(), route params
 -->
