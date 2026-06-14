@@ -85,6 +85,16 @@ export class MessageService {
     this._currentMessage.next(msg);      // reactive: notifies all active subscribers
   }
 
+  // Returns the current held value of the BehaviorSubject synchronously.
+  // Useful when a component needs a one-time snapshot without subscribing —
+  // e.g. reading the value in a click handler or on ngOnInit without setting up
+  // a full subscription.
+  // ⚠️ This is a snapshot — it does NOT update automatically. For live updates,
+  // subscribe to currentMessage$ instead.
+  getCurrentMessage(): string {
+    return this._currentMessage.getValue();
+  }
+
   // ─── Subject (no initial value, no replay) ────────────────────────────────
   // Subject only forwards future emissions to current subscribers.
   // Unlike BehaviorSubject it does NOT hold a current value and does NOT replay
