@@ -39,7 +39,7 @@ export class SubjectExample implements OnInit, OnDestroy {
 
   // Accumulates all messages received via Subject — Subject doesn't hold state,
   // so the component maintains its own array.
-  messages: string[] = [];
+  messages: string[] = ['Subject has', 'no initial value', 'no replay'];
 
   private subscription!: Subscription;
 
