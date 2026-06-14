@@ -77,13 +77,14 @@ Two signals in the TypeScript file tell you a component is standalone:
 
 ```typescript
 // Angular 17–21 style — no `standalone: true` needed (it's the default)
+// Workspace: src/app/data-binding/data-binding.ts
 @Component({
-  selector:    'app-data-binding',
-  templateUrl: './data-binding.component.html',
-  styleUrl:    './data-binding.component.scss',
-  imports:     [CommonModule, FormsModule]   // <-- signals standalone
+  selector:  'app-data-binding',
+  templateUrl: './data-binding.html',
+  styleUrl:  './data-binding.scss',
+  imports:   [CurrencyPipe],   // only the pipes/components this template actually uses
 })
-export class DataBindingComponent implements OnInit {
+export class DataBinding implements OnInit {
   // ...
 }
 ```
@@ -112,25 +113,26 @@ platformBrowserDynamic()
 ### Angular 17–21 (Standalone) — `main.ts`
 ```typescript
 import { bootstrapApplication } from '@angular/platform-browser';
-import { AppComponent }         from './app/app.component';
 import { appConfig }            from './app/app.config';
+import { App }                  from './app/app';
 
-bootstrapApplication(AppComponent, appConfig)
+bootstrapApplication(App, appConfig)
   .catch(err => console.error(err));
 ```
 
 ### `app.config.ts` — Providers for Standalone
 ```typescript
-import { ApplicationConfig }    from '@angular/core';
-import { provideRouter }        from '@angular/router';
-import { provideHttpClient, withFetch } from '@angular/common/http';
-import { routes }               from './app.routes';
+import { ApplicationConfig, provideBrowserGlobalErrorListeners } from '@angular/core';
+import { provideRouter, withComponentInputBinding }              from '@angular/router';
+import { provideHttpClient, withFetch }                          from '@angular/common/http';
+import { routes }                                                from './app.routes';
 
 export const appConfig: ApplicationConfig = {
   providers: [
-    provideRouter(routes),
-    provideHttpClient(withFetch())
-  ]
+    provideBrowserGlobalErrorListeners(),          // global error handler
+    provideRouter(routes, withComponentInputBinding()), // route params bind to input() signals
+    provideHttpClient(withFetch()),                // HTTP via the Fetch API
+  ],
 };
 ```
 
@@ -815,6 +817,47 @@ export class ChildComponent {
 }
 ```
 
+### Workspace Implementation — `src/app/child/child.ts`
+
+The workspace uses the Angular 16-era `@Input()`/`@Output()` decorators intentionally as a **learning reference** — so both old and new styles exist side-by-side in the project:
+
+```typescript
+// src/app/child/child.ts
+import { Component, Input, Output, EventEmitter } from '@angular/core';
+
+@Component({
+  selector: 'app-child',
+  imports: [],
+  templateUrl: './child.html',
+  styles: ``,
+})
+export class Child {
+  @Input() parentMessage: string = '';
+
+  @Output() childEvent = new EventEmitter<string>();
+
+  sendToParent(): void {
+    this.childEvent.emit('Hello from Child Component!');
+  }
+}
+```
+
+```html
+<!-- src/app/child/child.html -->
+<div style="border: 2px solid #007bff; padding: 16px; border-radius: 8px; margin: 16px 0;">
+  <h3>Child Component</h3>
+  <p><strong>Message from Parent:</strong> {{ parentMessage }}</p>
+  <button (click)="sendToParent()">Send Message to Parent</button>
+</div>
+```
+
+> Note the naming differences from the conceptual example above:
+> - Input property is `parentMessage` (not `messageFromParent`)
+> - Output is `childEvent` (not `messageSentToParent`)
+> - Method is `sendToParent()` (not `sendMessage()`)
+>
+> The **Signal Parent-Child** demo (`src/app/signal-parent-child/`) shows the modern `input()`/`output()` approach covered in Session 4.
+
 ---
 
 ## 14. Dependency Injection — `inject()` vs Constructor
@@ -834,7 +877,7 @@ export class DataBindingComponent implements OnInit {
   constructor(private employeeService: EmployeeService) {}
 
   ngOnInit(): void {
-    this.employees = this.employeeService.getAllEmployees();
+    this.employees = this.employeeService.getEmployees();
   }
 }
 ```
@@ -850,7 +893,7 @@ export class DataBindingComponent implements OnInit {
   employees: any[] = [];
 
   ngOnInit(): void {
-    this.employees = this.employeeService.getAllEmployees();
+    this.employees = this.employeeService.getEmployees();
   }
 }
 ```
@@ -888,7 +931,7 @@ The session ended with a practical demo showing end-to-end data flow: Service �
 
 ### Employee Service
 ```typescript
-// employee.service.ts
+// src/app/services/employee.service.ts
 import { Injectable } from '@angular/core';
 
 export interface Employee {
@@ -896,6 +939,9 @@ export interface Employee {
   name:       string;
   department: string;
   role:       string;
+  email:      string;
+  salary:     number;
+  status:     'Active' | 'Inactive';
 }
 
 @Injectable({ providedIn: 'root' })
@@ -903,13 +949,17 @@ export class EmployeeService {
 
   // In a real project, this data comes from an HTTP API call
   private employees: Employee[] = [
-    { id: 1, name: 'Alice',   department: 'Engineering', role: 'Developer' },
-    { id: 2, name: 'Bob',     department: 'Design',      role: 'UI Designer' },
-    { id: 3, name: 'Carol',   department: 'Product',     role: 'PM' },
-    { id: 4, name: 'Dave',    department: 'Engineering', role: 'Tech Lead' },
+    { id: 1, name: 'Alice Johnson', department: 'Engineering', role: 'Senior Developer',   email: 'alice@company.com', salary: 95000,  status: 'Active'   },
+    { id: 2, name: 'Bob Smith',     department: 'Design',      role: 'UI/UX Designer',     email: 'bob@company.com',   salary: 78000,  status: 'Active'   },
+    { id: 3, name: 'Carol White',   department: 'Engineering', role: 'Tech Lead',           email: 'carol@company.com', salary: 115000, status: 'Active'   },
+    { id: 4, name: 'David Brown',   department: 'Marketing',   role: 'Marketing Manager',   email: 'david@company.com', salary: 82000,  status: 'Inactive' },
+    { id: 5, name: 'Eva Martinez',  department: 'HR',          role: 'HR Specialist',       email: 'eva@company.com',   salary: 68000,  status: 'Active'   },
+    { id: 6, name: 'Frank Lee',     department: 'Engineering', role: 'Junior Developer',    email: 'frank@company.com', salary: 62000,  status: 'Active'   },
+    { id: 7, name: 'Grace Kim',     department: 'Finance',     role: 'Financial Analyst',   email: 'grace@company.com', salary: 88000,  status: 'Active'   },
+    { id: 8, name: 'Henry Wilson',  department: 'Marketing',   role: 'Content Strategist',  email: 'henry@company.com', salary: 71000,  status: 'Inactive' },
   ];
 
-  getAllEmployees(): Employee[] {
+  getEmployees(): Employee[] {
     return this.employees;
   }
 }
@@ -917,31 +967,31 @@ export class EmployeeService {
 
 ### Data Binding Component (Angular 21 style)
 ```typescript
-// data-binding.component.ts
+// src/app/data-binding/data-binding.ts
 import { Component, OnInit, inject } from '@angular/core';
-import { NgFor }                      from '@angular/common';
-import { EmployeeService, Employee }  from '../services/employee.service';
+import { CurrencyPipe }              from '@angular/common';
+import { EmployeeService, Employee } from '../services/employee.service';
 
 @Component({
   selector:    'app-data-binding',
-  templateUrl: './data-binding.component.html',
-  styleUrl:    './data-binding.component.scss',
-  imports:     [NgFor]       // or just use @for in Angular 17+ (no import needed)
+  templateUrl: './data-binding.html',
+  styleUrl:    './data-binding.scss',
+  imports:     [CurrencyPipe],   // use @for built-in control flow — no NgFor import needed
 })
-export class DataBindingComponent implements OnInit {
+export class DataBinding implements OnInit {
 
   private employeeService = inject(EmployeeService);
   employees: Employee[] = [];
 
   ngOnInit(): void {
-    this.employees = this.employeeService.getAllEmployees();
+    this.employees = this.employeeService.getEmployees();
   }
 }
 ```
 
 ### HTML Template
 ```html
-<!-- data-binding.component.html -->
+<!-- data-binding.html -->
 <table>
   <thead>
     <tr>
@@ -969,7 +1019,7 @@ export class DataBindingComponent implements OnInit {
 
 ### Data Flow
 ```
-EmployeeService.getAllEmployees()
+EmployeeService.getEmployees()
        ↓
 DataBindingComponent.ngOnInit()  (assigns to this.employees)
        ↓

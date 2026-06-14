@@ -28,8 +28,10 @@
 11. [Form Validation and State](#11-form-validation-and-state)
 12. [FormArray — Dynamic Repeated Fields](#12-formarray--dynamic-repeated-fields)
 13. [`patchValue`, `setValue`, and `getRawValue`](#13-patchvalue-setvalue-and-getrawvalue)
-14. [Signal Forms — Experimental (Angular 21)](#14-signal-forms--experimental-angular-21)
-15. [Key Takeaways from Session 5](#key-takeaways-from-session-5)
+14. [Service-Backed Form Flow — Register → Summary](#14-service-backed-form-flow--register--summary)
+15. [FormControl — Advanced Options and `toSignal` vs `computed`](#15-formcontrol--advanced-options-and-tosignal-vs-computed)
+16. [Signal Forms — Experimental (Angular 21)](#16-signal-forms--experimental-angular-21)
+17. [Key Takeaways from Session 5](#key-takeaways-from-session-5)
 
 ---
 
@@ -122,6 +124,40 @@ export const routes: Routes = [
       { path: 'overview', loadComponent: () => import('./pages/courses/overview/course-overview').then(m => m.CourseOverview) },
       { path: 'details',  loadComponent: () => import('./pages/courses/details/course-details').then(m => m.CourseDetails) },
     ],
+  },
+
+  // Products — lazy loaded list + detail with route param :id
+  {
+    path: 'products',
+    loadComponent: () => import('./pages/product-list/product-list').then(m => m.ProductList),
+  },
+  {
+    path: 'products/:id',
+    loadComponent: () => import('./pages/product-detail/product-detail').then(m => m.ProductDetail),
+  },
+
+  // Registration flow — register form → summary page (data shared via RegistrationDataService)
+  {
+    path: 'register',
+    loadComponent: () => import('./pages/register/register').then(m => m.Register),
+  },
+  {
+    path: 'summary',
+    loadComponent: () => import('./pages/summary/summary').then(m => m.Summary),
+  },
+
+  // Forms demos
+  {
+    path: 'form-array',
+    loadComponent: () => import('./pages/form-array/form-array').then(m => m.FormArrayExample),
+  },
+  {
+    path: 'controls-demo',
+    loadComponent: () => import('./pages/controls-demo/controls-demo').then(m => m.ControlsDemo),
+  },
+  {
+    path: 'signal-form',
+    loadComponent: () => import('./pages/signal-form/signal-form').then(m => m.SignalForm),
   },
 
   // Enroll — lazy loaded (separate JS chunk)
@@ -320,13 +356,20 @@ The `import()` call inside `loadComponent` is a **dynamic import** — JavaScrip
 
 ### All Routes in This Project
 
-| Route | Loading Strategy |
-|---|---|
-| `home`, `about` | Eager (imported at top of `app.routes.ts`) |
-| `courses`, `overview`, `details` | Lazy (`loadComponent`) |
-| `enroll` | Lazy — least-frequent action |
-| `dashboard` | Lazy + guarded by `authGuard` |
-| `login` | Lazy — public |
+| Route | Loading Strategy | Notes |
+|---|---|---|
+| `home`, `about` | Eager | Imported at top of `app.routes.ts` |
+| `courses`, `overview`, `details` | Lazy (`loadComponent`) | Parent + child routes |
+| `products` | Lazy | Product list |
+| `products/:id` | Lazy | Product detail — `:id` auto-bound to `input()` via `withComponentInputBinding()` |
+| `register` | Lazy | Registration form; submits data to `RegistrationDataService` |
+| `summary` | Lazy | Shows data stored by `RegistrationDataService` |
+| `form-array` | Lazy | `FormArray` demo (dynamic phone numbers + skills) |
+| `controls-demo` | Lazy | `FormGroup`/`FormControl` advanced options (`nonNullable`, `toSignal` vs `computed`) |
+| `signal-form` | Lazy | Signal-based form experiment (no `FormControl`) |
+| `enroll` | Lazy | Least-frequent action — a typical lazy-load justification |
+| `dashboard` | Lazy + guarded by `authGuard` | Protected route |
+| `login` | Lazy | Public — handles `?returnUrl` redirect |
 
 ---
 
@@ -541,22 +584,78 @@ With `withComponentInputBinding()` enabled in `app.config.ts`, route parameters 
 provideRouter(routes, withComponentInputBinding())
 ```
 
+The workspace demonstrates this with the `ProductList` → `ProductDetail` flow in `src/app/pages/product-list/` and `src/app/pages/product-detail/`:
+
 ```typescript
-// product-detail.ts — signal input bound to :id route param
-import { Component, input, OnInit, inject } from '@angular/core';
-import { ProductService } from '../services/product.service';
-
-@Component({ selector: 'app-product-detail', ... })
-export class ProductDetail implements OnInit {
-  id = input<string>('');    // ← Angular binds :id from the URL automatically
-
-  private productService = inject(ProductService);
-  product = signal<Product | null>(null);
-
-  ngOnInit(): void {
-    this.productService.getById(this.id()).subscribe(p => this.product.set(p));
-  }
+// pages/product-list/products.data.ts — shared product data
+export interface Product {
+  id: number;
+  name: string;
+  price: number;
 }
+
+export const ALL_PRODUCTS: Product[] = [
+  { id: 1, name: 'Angular Book', price: 29 },
+  { id: 2, name: 'TypeScript Course', price: 49 },
+  { id: 3, name: 'RxJS Guide', price: 19 },
+];
+```
+
+```typescript
+// pages/product-list/product-list.ts
+import { Component } from '@angular/core';
+import { RouterLink } from '@angular/router';
+import { ALL_PRODUCTS, Product } from './products.data';
+
+@Component({
+  selector: 'app-product-list',
+  imports: [RouterLink],
+  templateUrl: './product-list.html',
+})
+export class ProductList {
+  products: Product[] = ALL_PRODUCTS;
+}
+```
+
+```html
+<!-- product-list.html — navigate to detail with the product's id -->
+@for (product of products; track product.id) {
+  <a [routerLink]="['/products', product.id]">{{ product.name }} — ${{ product.price }}</a>
+}
+```
+
+```typescript
+// pages/product-detail/product-detail.ts
+import { Component, computed, input } from '@angular/core';
+import { RouterLink } from '@angular/router';
+import { ALL_PRODUCTS, Product } from '../product-list/products.data';
+
+@Component({
+  selector: 'app-product-detail',
+  imports: [RouterLink],
+  templateUrl: './product-detail.html',
+})
+export class ProductDetail {
+  // Route param :id is automatically bound via withComponentInputBinding() in app.config.ts.
+  // No ActivatedRoute, no ngOnInit subscription needed.
+  id = input<string>('');
+
+  // computed() reads id() — a signal — so it re-evaluates whenever :id changes.
+  product = computed<Product | undefined>(() =>
+    ALL_PRODUCTS.find(p => String(p.id) === this.id()),
+  );
+}
+```
+
+```html
+<!-- product-detail.html -->
+@if (product()) {
+  <h2>{{ product()!.name }}</h2>
+  <p>Price: ${{ product()!.price }}</p>
+} @else {
+  <p>Product not found.</p>
+}
+<a routerLink="/products">← Back to list</a>
 ```
 
 ### Reading Route Parameters — Traditional Approach
@@ -1000,7 +1099,258 @@ this.form.get('email')?.reset();            // reset only one control
 
 ---
 
-## 14. Signal Forms — Experimental (Angular 21)
+## 14. Service-Backed Form Flow — Register → Summary
+
+### The Pattern
+
+A common pattern in real Angular apps: a form submits data, the data is stored in a shared service, and a second component reads it to display a confirmation. This avoids passing large objects through route params and is a natural extension of the DI-based service pattern from Session 4.
+
+```
+User fills /register form
+  → Register.submit() calls RegistrationDataService.setData(formValue)
+  → Router navigates to /summary
+  → Summary reads RegistrationDataService.data() (a readonly signal)
+  → Displays the submitted data
+```
+
+### `RegistrationDataService`
+
+```typescript
+// services/registration-data.service.ts
+import { Injectable, signal } from '@angular/core';
+
+export interface RegistrationData {
+  fullName: string;
+  email: string;
+  city: string;
+  attendanceMode: 'In-Person' | 'Online' | 'Hybrid' | '';
+}
+
+@Injectable({ providedIn: 'root' })
+export class RegistrationDataService {
+  // Private writable signal — only this service can set the value
+  private readonly formData = signal<RegistrationData | null>(null);
+
+  // Public read-only signal — components read from this
+  readonly data = this.formData.asReadonly();
+
+  setData(value: RegistrationData): void { this.formData.set(value); }
+  clearData(): void { this.formData.set(null); }
+}
+```
+
+Key points:
+- Uses `signal<T | null>()` for nullable state — `null` means "no data submitted yet"
+- `.asReadonly()` exposes a read-only signal; no component can call `.set()` on it
+- `providedIn: 'root'` means the same instance is shared between `Register` and `Summary`
+
+### `Register` Component
+
+```typescript
+// pages/register/register.ts
+import { Component, inject } from '@angular/core';
+import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
+import { RegistrationData, RegistrationDataService } from '../../services/registration-data.service';
+
+@Component({
+  selector: 'app-register',
+  imports: [ReactiveFormsModule],
+  templateUrl: './register.html',
+})
+export class Register {
+  private readonly formBuilder = inject(FormBuilder);
+  private readonly router = inject(Router);
+  private readonly registrationDataService = inject(RegistrationDataService);
+
+  readonly attendanceModes = ['In-Person', 'Online', 'Hybrid'] as const;
+
+  readonly registrationForm = this.formBuilder.group({
+    fullName:       ['', [Validators.required, Validators.minLength(3)]],
+    email:          ['', [Validators.required, Validators.email]],
+    city:           ['', [Validators.required]],
+    attendanceMode: ['', [Validators.required]],
+  });
+
+  showError(controlName: 'fullName' | 'email' | 'city' | 'attendanceMode'): boolean {
+    const control = this.registrationForm.controls[controlName];
+    return !!(control.invalid && (control.dirty || control.touched));
+  }
+
+  loadDemoData(): void {
+    this.registrationForm.patchValue({
+      fullName: 'Chandishwar Chittimalla',
+      email: 'ccchandishwar@gmail.com',
+      city: 'Hyderabad',
+      attendanceMode: 'Online',
+    });
+  }
+
+  submit(): void {
+    if (this.registrationForm.invalid) {
+      this.registrationForm.markAllAsTouched();  // show all validation errors at once
+      return;
+    }
+    const formValue = this.registrationForm.getRawValue() as RegistrationData;
+    this.registrationDataService.setData(formValue);   // store in service
+    void this.router.navigate(['/summary']);            // navigate to summary
+  }
+}
+```
+
+### `Summary` Component
+
+```typescript
+// pages/summary/summary.ts
+import { Component, computed, inject } from '@angular/core';
+import { Router } from '@angular/router';
+import { RegistrationDataService } from '../../services/registration-data.service';
+
+@Component({
+  selector: 'app-summary',
+  imports: [],
+  templateUrl: './summary.html',
+})
+export class Summary {
+  private readonly router = inject(Router);
+  private readonly registrationDataService = inject(RegistrationDataService);
+
+  // Read the signal directly — no subscription needed
+  readonly data = this.registrationDataService.data;
+
+  // computed() works here because data is a signal()
+  readonly hasData = computed(() => !!this.data());
+
+  edit(): void  { void this.router.navigate(['/register']); }
+  clear(): void { this.registrationDataService.clearData(); }
+}
+```
+
+```html
+<!-- summary.html -->
+@if (hasData()) {
+  <p><strong>Name:</strong> {{ data()!.fullName }}</p>
+  <p><strong>Email:</strong> {{ data()!.email }}</p>
+  <p><strong>City:</strong> {{ data()!.city }}</p>
+  <p><strong>Mode:</strong> {{ data()!.attendanceMode }}</p>
+  <button (click)="edit()">Edit</button>
+  <button (click)="clear()">Clear</button>
+} @else {
+  <p>No registration data. <a routerLink="/register">Go to Register</a></p>
+}
+```
+
+### Why Not Pass Data via Route Params?
+
+Route params are strings — embedding a large object in the URL requires serialization, is limited by URL length, and is visible to the user. A shared service solves all these issues cleanly, follows the DI principle from Session 4, and keeps the URL simple.
+
+---
+
+## 15. FormControl — Advanced Options and `toSignal` vs `computed`
+
+The workspace `/controls-demo` route (`src/app/pages/controls-demo/controls-demo.ts`) demonstrates three things that come up when you move beyond basic `FormBuilder.group()`:
+
+1. `FormGroup` with `new FormControl` directly — including the `nonNullable` option
+2. A standalone `FormControl` used outside any `FormGroup`
+3. The critical rule: **`computed()` cannot track `FormGroup`/`FormControl` state — use `toSignal()` instead**
+
+### `nonNullable` FormControl
+
+By default, `FormControl.reset()` sets the value to `null`. The `nonNullable: true` option makes `reset()` restore the **initial value** instead:
+
+```typescript
+// Default (nullable) — reset() → null
+const control = new FormControl('');
+control.reset();          // value is now null
+
+// nonNullable: true — reset() → initial value
+const control = new FormControl('', { nonNullable: true });
+control.reset();          // value is now '' (the initial value)
+```
+
+### `FormGroup` with `new FormControl` Directly (Workspace)
+
+```typescript
+// controls-demo.ts — Section 1
+readonly profileForm = new FormGroup({
+  firstName: new FormControl('', {
+    nonNullable: true,
+    validators: [Validators.required, Validators.minLength(2)],
+  }),
+  age: new FormControl<number | null>(null, [
+    Validators.required,
+    Validators.min(0),
+    Validators.max(120),
+  ]),
+});
+```
+
+Using `new FormControl` directly instead of `FormBuilder.group()` gives explicit control over the `nonNullable` option and the generic type parameter (`FormControl<number | null>`).
+
+### Standalone `FormControl` (Outside a `FormGroup`)
+
+A `FormControl` can be used independently — bound directly to an input with `[formControl]`:
+
+```typescript
+// controls-demo.ts — Section 2
+readonly emailControl = new FormControl('', {
+  nonNullable: true,
+  validators: [Validators.required, Validators.email],
+});
+```
+
+```html
+<!-- Bind with [formControl] (not formControlName — that requires a FormGroup) -->
+<input [formControl]="emailControl" type="email" />
+@if (emailControl.invalid && emailControl.touched) {
+  <span class="error">Enter a valid email address.</span>
+}
+```
+
+### `computed()` Does NOT Track `FormGroup` State — Use `toSignal()`
+
+This is a critical rule documented in the workspace:
+
+```typescript
+// ❌ WRONG — computed() reads .valid/.dirty/.touched which are plain class getters, NOT signals
+// computed() establishes zero reactive dependencies — it will NEVER re-run
+readonly state = computed(() => ({
+  valid:   this.controlsForm.valid,     // plain getter — not a signal
+  dirty:   this.controlsForm.dirty,     // plain getter — not a signal
+  touched: this.controlsForm.touched,   // plain getter — not a signal
+}));
+```
+
+```typescript
+// ✅ CORRECT — toSignal() bridges the form.events Observable into a signal
+// form.events (Angular 18+) emits on every control interaction
+import { toSignal } from '@angular/core/rxjs-interop';
+import { map } from 'rxjs';
+
+readonly state = toSignal(
+  this.controlsForm.events.pipe(
+    map(() => ({
+      valid:   this.controlsForm.valid,
+      dirty:   this.controlsForm.dirty,
+      touched: this.controlsForm.touched,
+    })),
+  ),
+);
+```
+
+`form.events` (Angular 18+) is an Observable that emits a typed event (`TouchedChangeEvent`, `DirtyChangeEvent`, `StatusChangeEvent`, `ValueChangeEvent`) on every control interaction. `toSignal()` converts this stream into a signal so `@if (state()?.valid)` in the template reacts correctly.
+
+### Rule of Thumb
+
+| Source of truth | How to use in `computed()` / template |
+|---|---|
+| `signal()` / `computed()` | Use directly — full reactivity |
+| Observable (RxJS, HttpClient, `form.events`) | `toSignal()` to bridge first |
+| `FormGroup` / `FormControl` getters (`.valid`, `.dirty`, `.touched`) | `toSignal(form.events.pipe(map(...)))` |
+
+---
+
+## 16. Signal Forms — Experimental (Angular 21)
 
 ### What Are Signal Forms?
 
@@ -1020,66 +1370,84 @@ The same motivation that drove signals into components applies to forms:
 
 Fewer change detection cycles = better performance, especially for large forms with many fields.
 
-### Signal Form Pattern (Current Angular 21 Approach)
+### Signal Form Pattern (Workspace Implementation)
+
+The workspace `/signal-form` route (`src/app/pages/signal-form/signal-form.ts`) demonstrates this. Note the difference from the simple `touched = signal(false)` approach — the workspace uses **per-field touch tracking** to show errors only on the specific field the user has interacted with:
 
 ```typescript
-// signal-form.ts
+// pages/signal-form/signal-form.ts
 import { Component, computed, signal } from '@angular/core';
 
 @Component({
   selector: 'app-signal-form',
+  imports: [],
   templateUrl: './signal-form.html',
 })
-export class SignalFormComponent {
-  // Each field is a writable signal
-  name     = signal('');
-  email    = signal('');
-  password = signal('');
-  touched  = signal(false);   // track if user has interacted
+export class SignalForm {
+  // ─── Form field signals ───────────────────────────────────────────────────
+  // Each field is a plain signal — no FormControl, no FormGroup, no DI needed.
+  readonly name     = signal('');
+  readonly email    = signal('');
+  readonly password = signal('');
 
-  // Validation as computed signals — auto-recalculate when inputs change
-  nameError = computed((): string | null => {
-    if (!this.name())               return 'Name is required';
-    if (this.name().length < 3)    return 'Minimum 3 characters';
+  // Per-field touched tracking in a single object signal
+  // (grouped to avoid three separate signals)
+  readonly touched = signal({ name: false, email: false, password: false });
+
+  // ─── Validation computed signals ─────────────────────────────────────────
+  // computed() re-evaluates automatically whenever the signal it reads changes.
+  // Returns a string error message or null (valid).
+
+  readonly nameError = computed(() => {
+    const v = this.name().trim();
+    if (!v) return 'Name is required.';
+    if (v.length < 2) return 'Name must be at least 2 characters.';
     return null;
   });
 
-  emailError = computed((): string | null => {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!this.email())               return 'Email is required';
-    if (!emailRegex.test(this.email())) return 'Invalid email address';
+  readonly emailError = computed(() => {
+    const v = this.email().trim();
+    if (!v) return 'Email is required.';
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v)) return 'Enter a valid email address.';
     return null;
   });
 
-  passwordError = computed((): string | null => {
-    if (!this.password())            return 'Password is required';
-    if (this.password().length < 8)  return 'Minimum 8 characters';
+  readonly passwordError = computed(() => {
+    const v = this.password();
+    if (!v) return 'Password is required.';
+    if (v.length < 8) return 'Password must be at least 8 characters.';
     return null;
   });
 
-  // Form-level validity — all errors must be null
-  isValid = computed(() =>
-    !this.nameError() && !this.emailError() && !this.passwordError()
+  // Form-level validity — all error signals must return null
+  readonly isValid = computed(() =>
+    !this.nameError() && !this.emailError() && !this.passwordError(),
   );
 
-  onSubmit(): void {
-    this.touched.set(true);
+  touch(field: 'name' | 'email' | 'password'): void {
+    this.touched.update(t => ({ ...t, [field]: true }));
+  }
+
+  submit(): void {
+    // Mark all fields touched to reveal all errors at once
+    this.touched.set({ name: true, email: true, password: true });
     if (this.isValid()) {
-      console.log({ name: this.name(), email: this.email() });
+      console.log({ name: this.name(), email: this.email(), password: this.password() });
     }
   }
 }
 ```
 
 ```html
-<!-- signal-form.html -->
-<form (ngSubmit)="onSubmit()">
+<!-- signal-form.html — plain event binding, no formControlName directive needed -->
+<form (ngSubmit)="submit()">
 
   <input
     [value]="name()"
     (input)="name.set($any($event.target).value)"
+    (blur)="touch('name')"
     placeholder="Name" />
-  @if (touched() && nameError()) {
+  @if (touched().name && nameError()) {
     <span class="error">{{ nameError() }}</span>
   }
 
@@ -1087,8 +1455,9 @@ export class SignalFormComponent {
     type="email"
     [value]="email()"
     (input)="email.set($any($event.target).value)"
+    (blur)="touch('email')"
     placeholder="Email" />
-  @if (touched() && emailError()) {
+  @if (touched().email && emailError()) {
     <span class="error">{{ emailError() }}</span>
   }
 
@@ -1096,15 +1465,19 @@ export class SignalFormComponent {
     type="password"
     [value]="password()"
     (input)="password.set($any($event.target).value)"
+    (blur)="touch('password')"
     placeholder="Password" />
-  @if (touched() && passwordError()) {
+  @if (touched().password && passwordError()) {
     <span class="error">{{ passwordError() }}</span>
   }
 
   <button type="submit" [disabled]="!isValid()">Submit</button>
-
 </form>
 ```
+
+**Key implementation insight**: `computed()` works here because every value read inside the callbacks (`this.name()`, `this.email()`, etc.) is a `signal()`. Angular tracks these dependencies and re-runs the computed signal automatically. This is the opposite of `controls-demo` where `FormControl` getters are plain class properties — not signals — and `computed()` never re-runs.
+
+> See `signal-form.ts` for the inline documentation explaining exactly when `toSignal()` is and isn't needed.
 
 ### Signal Forms vs Reactive Forms — When to Use Which
 
@@ -1137,7 +1510,10 @@ export class SignalFormComponent {
 13. **`FormArray`** is for fields that repeat (multiple phone numbers, skills, addresses) — `FormGroup` for fixed-shape data
 14. **Validation messages should check `.touched`** — don't show errors before the user has interacted
 15. **`patchValue()`** updates some fields; **`setValue()`** requires all fields; **`getRawValue()`** reads all values including disabled controls
-16. **Signal Forms** are experimental in Angular 21 — understand them conceptually but use stable Reactive Forms in production
+16. **Service-backed form flow**: form submits → service stores data via `signal()` → next component reads via `.asReadonly()` signal — avoids URL serialization and keeps data in a typed service
+17. **`nonNullable: true`** on `FormControl` makes `reset()` restore the initial value instead of `null`; use `new FormControl<T | null>` when explicit generic typing is needed
+18. **`computed()` cannot track `FormGroup`/`FormControl` state** — their `.valid`/`.dirty`/`.touched` are plain getters, not signals; use `toSignal(form.events.pipe(map(...)))` instead
+19. **Signal Forms** are experimental in Angular 21 — use `signal()` + `computed()` per-field touch tracking; understand the pattern but use stable Reactive Forms in production
 
 ---
 

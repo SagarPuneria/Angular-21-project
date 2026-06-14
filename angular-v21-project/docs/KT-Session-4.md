@@ -201,19 +201,57 @@ SenderComponent  ──writes to──>  MessageService  ──read by──>  R
 
 ### MessageService (in the workspace)
 
+The workspace `message.service.ts` holds three communication mechanisms side-by-side so you can compare them directly:
+
 ```typescript
-// message.service.ts
+// src/app/CommunicationWithService/message.service.ts
 import { Injectable } from '@angular/core';
+import { BehaviorSubject, Subject } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
 export class MessageService {
-  currentMessage: string = '';
+
+  // ─── Non-reactive (snapshot approach — for comparison) ───────────────────
+  // Plain property — any component reading this gets the value at init time only.
+  // There is no mechanism to notify components when it changes.
+  currentMessage: string = 'No message yet';
+
+  // ─── BehaviorSubject (reactive — current value + replay) ─────────────────
+  // Holds the current value AND emits it to any new subscriber immediately.
+  // Private: only this service can push new values via .next().
+  private readonly _currentMessage = new BehaviorSubject<string>('No message yet');
+
+  // Public read-only Observable — components subscribe to this, never the subject directly.
+  readonly currentMessage$ = this._currentMessage.asObservable();
 
   updateMessage(msg: string): void {
-    this.currentMessage = msg;
+    this.currentMessage = msg;           // update plain property (non-reactive)
+    this._currentMessage.next(msg);      // update reactive stream (notifies all subscribers)
+  }
+
+  // Synchronous snapshot of the current BehaviorSubject value — no subscription needed.
+  // Useful for one-time reads (e.g. in a click handler).
+  // ⚠️ Does NOT react to future emissions — subscribe to currentMessage$ for live updates.
+  getCurrentMessage(): string {
+    return this._currentMessage.getValue();
+  }
+
+  // ─── Subject (no initial value, no replay) ───────────────────────────────
+  // Only forwards future emissions to current subscribers.
+  // A late subscriber misses all previous emissions.
+  private readonly _messageSubject = new Subject<string>();
+
+  // Public Observable surface — components subscribe to this.
+  readonly message$ = this._messageSubject.asObservable();
+
+  sendSubjectMessage(msg: string): void {
+    this._messageSubject.next(msg);
   }
 }
 ```
+
+> The Sender/Receiver demo in the workspace uses `currentMessage` (non-reactive property) to show the baseline problem, and `currentMessage$` (BehaviorSubject stream) as the reactive solution.  
+> The `message$` Subject stream is used by the `SubjectExample` component to demonstrate Subject's "no-replay" behaviour.
 
 ### Sender Component
 
@@ -341,52 +379,77 @@ Signal changes at component level 10
 
 ### Signal-Based Input/Output (Angular 17+ — Preferred)
 
+The workspace demonstrates this with `SignalParent` + `SignalChild` in `src/app/signal-parent-child/`:
+
 ```typescript
-// child.ts — Signal-based
+// signal-child/signal-child.ts
 import { Component, input, output } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 
-@Component({ selector: 'app-child', ... })
-export class ChildComponent {
-  // Signal input — writable from parent, read-only in child (call as function)
-  messageFromParent = input<string>('');    // replaces @Input()
+@Component({
+  selector: 'app-signal-child',
+  imports: [FormsModule],
+  templateUrl: './signal-child.html',
+})
+export class SignalChild {
+  // input<T>() creates a read-only signal. Parent binds with [parentMessage]="value".
+  // Unlike @Input(), this integrates with the signal graph — no ngOnChanges needed.
+  readonly parentMessage = input<string>('');
 
-  // Signal output — emit events to parent
-  messageSentToParent = output<string>();   // replaces @Output() + EventEmitter
+  // output<T>() replaces @Output() + EventEmitter<T>.
+  // Parent listens with (childMessageEvent)="handler($event)".
+  readonly childMessageEvent = output<string>();
+
+  // Local UI buffer — plain string (not shared reactive state)
+  childResponse = '';
 
   sendToParent(): void {
-    this.messageSentToParent.emit('Hello from child!');
+    if (this.childResponse.trim()) {
+      this.childMessageEvent.emit(this.childResponse);
+      this.childResponse = '';
+    }
   }
 }
 ```
 
 ```html
-<!-- child template — access signal value by calling it as a function -->
-<p>{{ messageFromParent() }}</p>
+<!-- signal-child.html — call signal as function to read its value -->
+<p>Message from parent: {{ parentMessage() }}</p>
+<input [(ngModel)]="childResponse" placeholder="Reply to parent..." />
 <button (click)="sendToParent()">Send to Parent</button>
 ```
 
 ```typescript
-// parent.ts — Signal-based
+// signal-parent/signal-parent.ts
 import { Component, signal } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { SignalChild } from '../signal-child/signal-child';
 
-@Component({ selector: 'app-parent', ... })
-export class ParentComponent {
-  messageToChild   = signal('Hello from parent!');  // writable signal
-  messageFromChild = signal('');
+@Component({
+  selector: 'app-signal-parent',
+  imports: [FormsModule, SignalChild],
+  templateUrl: './signal-parent.html',
+})
+export class SignalParent {
+  // signal() — reactive writable state; when .set() is called, the child's
+  // input() signal updates automatically and Angular re-renders only that subtree.
+  readonly messageToChild = signal('Hello from Parent!');
+  messageFromChild = '';
 
   onChildMessage(msg: string): void {
-    this.messageFromChild.set(msg);
+    this.messageFromChild = msg;
   }
 }
 ```
 
 ```html
-<!-- parent template — pass signal as property binding -->
-<app-child
-  [messageFromParent]="messageToChild()"
-  (messageSentToParent)="onChildMessage($event)">
-</app-child>
-<p>Child said: {{ messageFromChild() }}</p>
+<!-- signal-parent.html -->
+<input [(ngModel)]="messageToChild" placeholder="Message to child..." />
+<app-signal-child
+  [parentMessage]="messageToChild()"
+  (childMessageEvent)="onChildMessage($event)">
+</app-signal-child>
+<p>Child replied: {{ messageFromChild }}</p>
 ```
 
 ### Signal vs Regular Variable for Component State
@@ -412,62 +475,86 @@ increment() {
 
 `@ViewChild` gives a parent component **direct access** to a child component's public properties and methods.
 
+The workspace demonstrates this with `ViewChildExample` + `ChildItem` in `src/app/view-child-example/`.
+
 ### Setup
 
 ```typescript
-// child-item.ts
+// view-child-example/child-item/child-item.ts
 import { Component } from '@angular/core';
 
-@Component({ selector: 'app-child-item', template: '<p>Counter: {{ counter }}</p>' })
-export class ChildItemComponent {
-  counter = 0;
+@Component({ selector: 'app-child-item', ... })
+export class ChildItem {
+  childMessage: string = 'Hello from Child Component!';
+  counter: number = 0;
 
-  incrementCounter(): void { this.counter++; }
-  resetCounter():     void { this.counter = 0; }
+  incrementCounter(): void {
+    this.counter++;
+    console.log('Counter incremented in child:', this.counter);
+  }
 
-  // private method — NOT accessible from parent via @ViewChild
-  private internalReset(): void { this.counter = -1; }
+  resetCounter(): void {
+    this.counter = 0;
+    console.log('Counter reset in child');
+  }
+
+  // Returns a summary string — parent reads this via @ViewChild reference
+  getChildInfo(): string {
+    return `Child Component — Counter: ${this.counter}, Message: ${this.childMessage}`;
+  }
 }
 ```
 
 ```typescript
-// parent.ts
+// view-child-example/view-child-example.ts
 import { Component, ViewChild, AfterViewInit } from '@angular/core';
-import { ChildItemComponent } from './child-item';
+import { ChildItem } from './child-item/child-item';
 
 @Component({
-  selector: 'app-parent',
-  imports:  [ChildItemComponent],
-  template: `
-    <app-child-item></app-child-item>
-    <button (click)="incrementChild()">+ Counter</button>
-    <button (click)="resetChild()">Reset</button>
-  `
+  selector: 'app-view-child-example',
+  imports:  [ChildItem],
+  templateUrl: './view-child-example.html',
 })
-export class ParentComponent implements AfterViewInit {
-  @ViewChild(ChildItemComponent) childItem!: ChildItemComponent;
+export class ViewChildExample implements AfterViewInit {
+  // @ViewChild query — resolved after the view is initialized.
+  // The '!' assertion tells TypeScript this will be set by Angular.
+  @ViewChild(ChildItem) childComponent!: ChildItem;
+
+  parentMessage: string = '';
+  childInfo: string = '';
 
   ngAfterViewInit(): void {
-    // ✅ child is available here — NOT in ngOnInit
-    console.log('Child component loaded:', this.childItem);
+    // ✅ safe to access childComponent here — Angular has already rendered the child
+    console.log('Child component loaded:', this.childComponent);
+    console.log('Initial child message:', this.childComponent.childMessage);
   }
 
-  incrementChild(): void {
-    this.childItem.incrementCounter();   // ✅ public method
+  readChildMessage(): void {
+    this.parentMessage = this.childComponent.childMessage;
   }
 
-  resetChild(): void {
-    this.childItem.resetCounter();       // ✅ public method
+  incrementChildCounter(): void {
+    this.childComponent.incrementCounter();           // calls child's public method
   }
 
-  // this.childItem.internalReset()      // ❌ TypeScript error — private method
+  getChildInfo(): void {
+    this.childInfo = this.childComponent.getChildInfo();
+  }
 }
 ```
 
 ### Rules
 - `@ViewChild` reference is available only **after** `ngAfterViewInit` (not in `ngOnInit`)
-- Only **public** members of the child component are accessible
-- `private` members in the child are **not** accessible from the parent (TypeScript enforces this)
+- Only **public** members of the child are accessible; `private` members are blocked by TypeScript
+- **Modern alternative — `viewChild()` signal query (Angular 17+):**
+
+```typescript
+import { viewChild } from '@angular/core';
+
+// Signal-based query — integrates with the signal graph
+readonly childComponent = viewChild(ChildItem);            // Signal<ChildItem | undefined>
+readonly childComponentReq = viewChild.required(ChildItem); // Signal<ChildItem>  (always defined after init)
+```
 
 ---
 
@@ -790,6 +877,74 @@ export class SubjectDemoComponent implements OnInit, OnDestroy {
 </ul>
 ```
 
+### Workspace Implementations
+
+The workspace has three dedicated components inside `src/app/CommunicationWithService/` that demonstrate each approach in isolation:
+
+**`SubjectExample`** (`subject-example/`) — Subject demo
+- Subscribes to `messageService.message$` (Subject stream) in `ngOnInit`
+- Each incoming emission is pushed to a local `messages: string[]` array
+- Unsubscribes in `ngOnDestroy`
+- Shows that Subject has no initial value — the initial array is seeded manually
+
+**`BehaviorSubjectExample`** (`behavior-subject-example/`) — BehaviorSubject via service
+- Subscribes to `messageService.currentMessage$` (BehaviorSubject stream)
+- Demonstrates immediate replay of the current value to a new subscriber
+- Uses the full Observer object `{ next, error, complete }` to handle all notification channels
+
+**`BehaviorSubjectDeepDive`** (`behavior-subject-deep-dive/`) — self-contained BehaviorSubject exploration
+- Owns a `BehaviorSubject<string>('Initial Value')` directly (not via a service)
+- **Early Subscriber** (subscribes in `ngOnInit`) — receives the initial value immediately without any `.next()` call
+- **Late Subscriber** (subscribes on button click) — receives only the current held value at that moment, not the full history
+- **`getValue()` snapshot** — `subject.getValue()` returns the current value synchronously without subscribing; useful for one-time reads in event handlers
+- Unsubscribes both subscriptions in `ngOnDestroy`
+
+```typescript
+// behavior-subject-deep-dive/behavior-subject-deep-dive.ts (excerpt)
+export class BehaviorSubjectDeepDive implements OnInit, OnDestroy {
+  private readonly subject = new BehaviorSubject<string>('Initial Value');
+
+  earlyMessages: string[] = [];   // populated from ngOnInit subscription
+  lateMessages: string[] = [];    // populated only after "Subscribe Late" button click
+  lateSubscribed = false;
+  currentStoredValue: string = '';
+
+  private earlySubscription!: Subscription;
+  private lateSubscription?: Subscription;
+
+  ngOnInit(): void {
+    // Early subscriber — receives 'Initial Value' synchronously here (no .next() call needed)
+    this.earlySubscription = this.subject.subscribe(value => {
+      this.earlyMessages.push(value);
+    });
+  }
+
+  emitValue(input: HTMLInputElement): void {
+    this.subject.next(input.value.trim());
+    input.value = '';
+  }
+
+  subscribeNowLate(): void {
+    if (this.lateSubscribed) return;
+    this.lateSubscribed = true;
+    // Late subscriber — immediately receives the CURRENT held value (last emitted), not the full history
+    this.lateSubscription = this.subject.subscribe(value => {
+      this.lateMessages.push(value);
+    });
+  }
+
+  readCurrentValue(): void {
+    // Synchronous snapshot — no subscription needed
+    this.currentStoredValue = this.subject.getValue();
+  }
+
+  ngOnDestroy(): void {
+    this.earlySubscription.unsubscribe();
+    this.lateSubscription?.unsubscribe();
+  }
+}
+```
+
 ---
 
 ## 11. HTTP Interceptors
@@ -1058,6 +1213,77 @@ export class PostListComponent implements OnInit {
 | Update (full) | PUT | `http.put<T>(url/id, body)` | 200 OK |
 | Update (partial) | PATCH | `http.patch<T>(url/id, partial)` | 200 OK |
 | Delete | DELETE | `http.delete<void>(url/id)` | 200 OK / 204 No Content |
+
+### Workspace Implementation
+
+The workspace CRUD demo lives in `src/app/http-example/` and targets the public JSONPlaceholder API (`https://jsonplaceholder.typicode.com/posts`).
+
+```typescript
+// http-example/posts.service.ts
+import { Injectable, inject } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
+
+export interface Post {
+  userId: number;
+  id?: number;
+  title: string;
+  body: string;
+}
+
+@Injectable({ providedIn: 'root' })
+export class PostsService {
+  private readonly http = inject(HttpClient);
+  private readonly apiUrl = 'https://jsonplaceholder.typicode.com/posts';
+
+  getPosts():                          Observable<Post[]> { return this.http.get<Post[]>(this.apiUrl); }
+  getPostById(id: number):             Observable<Post>   { return this.http.get<Post>(`${this.apiUrl}/${id}`); }
+  createPost(post: Post):              Observable<Post>   { return this.http.post<Post>(this.apiUrl, post); }
+  updatePost(id: number, post: Post):  Observable<Post>   { return this.http.put<Post>(`${this.apiUrl}/${id}`, post); }
+  deletePost(id: number):              Observable<void>   { return this.http.delete<void>(`${this.apiUrl}/${id}`); }
+}
+```
+
+```typescript
+// http-example/http-ex.ts (excerpt — GET all + GET by ID)
+import { Component, inject, signal } from '@angular/core';
+import { Post, PostsService } from './posts.service';
+
+@Component({
+  selector: 'app-http-ex',
+  imports: [TitleCasePipe],
+  templateUrl: './http-ex.html',
+})
+export class HttpEx {
+  private readonly postsService = inject(PostsService);
+
+  // ─── GET all posts ────────────────────────────────────────────────────────
+  posts   = signal<Post[]>([]);
+  loading = signal<boolean>(false);
+  error   = signal<string | null>(null);
+
+  getPosts(): void {
+    this.loading.set(true);
+    this.error.set(null);
+
+    // Full Observer object — explicit control over loading/error state per request
+    this.postsService.getPosts().subscribe({
+      next: (data) => { this.posts.set(data); this.loading.set(false); },
+      error: (err)  => { this.error.set('Failed to fetch posts: ' + err.message); this.loading.set(false); },
+    });
+  }
+
+  // ─── GET single post ──────────────────────────────────────────────────────
+  postId     = signal<number>(1);
+  singlePost = signal<Post | null>(null);
+
+  // ... POST, PUT, DELETE methods follow the same pattern
+}
+```
+
+> **JSONPlaceholder note**: POST/PUT/DELETE succeed and return valid responses, but the API is read-only — changes are NOT persisted. POST always returns `id: 101`.
+
+> **Why `subscribe()` not `toSignal()`?** `toSignal()` works for simple reads. Using `subscribe()` + full Observer `{ next, error, complete }` gives explicit per-request control over `loading` and `error` signals — essential when each CRUD operation has its own lifecycle.
 
 ---
 
