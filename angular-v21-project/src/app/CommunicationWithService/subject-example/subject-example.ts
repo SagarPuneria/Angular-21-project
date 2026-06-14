@@ -6,7 +6,6 @@ import { MessageService } from '../message.service';
  * ─── Subject vs BehaviorSubject ─────────────────────────────────────────────
  *
  * Subject (used here)
- *   • Subscribe to the Subject's Observable only in ngOnInit.
  *   • No initial value — new subscribers receive NOTHING until the next emission.
  *   • No replay — a subscriber that joins after an emission misses it entirely.
  *   • Useful when you only care about future events (e.g. button clicks, events).
@@ -14,14 +13,19 @@ import { MessageService } from '../message.service';
  *     accumulates a history of everything sent since the component rendered.
  *
  * BehaviorSubject (used in MessageService for currentMessage$)
- *   • Subscribe to the BehaviorSubject's Observable can be done at field declaration.
  *   • Holds the current value — new subscribers immediately get the latest value.
  *   • Replay of 1 — a subscriber that joins late still gets the current state.
  *   • Useful for shared state (e.g. auth status, selected item, last message).
  *
- * Key rule for Subject: the subscription is created in ngOnInit (not at field declaration)
- * because `sendMessage` uses a template reference variable (`input.value`), and
- * the subscription is torn down in ngOnDestroy to prevent memory leaks.
+ * Angular standard: subscribe to both Subject and BehaviorSubject in ngOnInit.
+ *   • All field initializers have already run — no declaration-order risk.
+ *   • @Input() / route params are available here if the subscription depends on them.
+ *   • Works identically for every Observable type — one consistent pattern.
+ *   • Tear down in ngOnDestroy to prevent memory leaks.
+ *
+ * Field initializer subscription (e.g. `private sub = this.svc.obs$.subscribe(...)`)
+ * also works for BehaviorSubject (synchronous replay), but ngOnInit is preferred
+ * as the conventional, safer default.
  */
 
 @Component({

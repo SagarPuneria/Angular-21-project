@@ -1,4 +1,4 @@
-import { Component, inject, OnDestroy } from '@angular/core';
+import { Component, inject, OnInit, OnDestroy } from '@angular/core';
 import { AsyncPipe } from '@angular/common';
 import { Subscription } from 'rxjs';
 import { MessageService } from '../message.service';
@@ -8,7 +8,10 @@ import { MessageService } from '../message.service';
   imports: [AsyncPipe],
   templateUrl: './receiver.html',
 })
-export class Receiver implements OnDestroy {
+export class Receiver implements OnInit, OnDestroy {
+
+  // ─── Shared service injection ─────────────────────────────────────────────
+  messageService = inject(MessageService);
 
   // ─── Approach 1: Non-reactive approach (one-time snapshot) ────────────────────────────────────
   // Assigned once in ngOnInit — does NOT update when Sender sends a new message.
@@ -27,23 +30,23 @@ export class Receiver implements OnDestroy {
   }
 
   // ─── Approach 2: Reactive approach (live updates via BehaviorSubject) ──────────────────────────
-  messageService = inject(MessageService);
   // Updated automatically every time Sender calls messageService.updateMessage().
   reactiveMessage: string = '';
 
   // ✅ Field initializer — works because:
   //    1. messageService is declared above (inject() runs before this line).
-  //    2. reactiveMessage is declared above (BehaviorSubject replays the current value immediately on subscribe(Here subscribe asynchronous function),
+  //    2. reactiveMessage is declared above (BehaviorSubject replays the current value immediately on subscribe,
   //       then emits its current value synchronously(live updates) pushed via next() — reactiveMessage must already exist as a field).
   //    Declaration order in the class body = initialization order at runtime.
   // Stored so we can unsubscribe in ngOnDestroy and prevent memory leaks.
+  // Note: ngOnInit also works fine with BehaviorSubject — both produce identical behavior.
   private readonly subscription: Subscription = this.messageService.currentMessage$.subscribe(
     msg => {
       this.reactiveMessage = msg;
     },
   );
 
-  // constructor is no longer needed for the subscription.
+  // constructor is no longer needed for the subscription, since we are using field initializers.
 
   ngOnDestroy(): void {
     // Always unsubscribe when the component is destroyed to avoid memory leaks.
