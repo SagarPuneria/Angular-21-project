@@ -1,6 +1,7 @@
 import { Component, OnInit, OnDestroy, inject } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { MessageService } from '../message.service';
+import { AsyncPipe } from '@angular/common';
 
 /*
  * ─── Observer object pattern: { next, error, complete } ──────────────────────
@@ -40,7 +41,7 @@ import { MessageService } from '../message.service';
 
 @Component({
   selector: 'app-behavior-subject-example',
-  imports: [],
+  imports: [AsyncPipe],
   templateUrl: './behavior-subject-example.html',
   styleUrl: './behavior-subject-example.scss',
 })
@@ -90,6 +91,10 @@ export class BehaviorSubjectExample implements OnInit, OnDestroy {
       complete: () => console.log('BehaviorSubject stream completed'),
     });
   }
+
+  // Exposed directly to template — async pipe subscribes/unsubscribes automatically.
+  // NOTE: No currentValue field needed; the pipe unwraps the Observable in the template.
+  readonly currentMessage$ = this.messageService.currentMessage$;
 
   updateValue(input: HTMLInputElement): void {
     if (input.value.trim()) {

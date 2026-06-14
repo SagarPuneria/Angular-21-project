@@ -5,6 +5,8 @@
   <div class="current-value-box">
     <p class="label">Current Value:</p>
     <p class="value">{{ currentValue || '—' }}</p>
+    <!-- AsyncPipe must be added to imports: [AsyncPipe] in the decorator -->
+    <p class="value">{{ (currentMessage$ | async) || '—' }}</p>
   </div>
 
   <!-- Input row: update + get snapshot -->
