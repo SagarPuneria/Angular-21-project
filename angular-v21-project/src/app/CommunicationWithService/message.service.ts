@@ -64,6 +64,26 @@ import { BehaviorSubject, Subject } from 'rxjs';
  * service methods — one place, full control.
  */
 
+/*
+ * ─── Current Value: BehaviorSubject vs Subject ───────────────────────────────
+ *
+ * BehaviorSubject — always holds a current value
+ *   private readonly _currentMessage = new BehaviorSubject<string>('No message yet');
+ *   Timeline:
+ *   t=0  BehaviorSubject created  → stores 'No message yet'
+ *   t=1  .next('Hello')           → stores 'Hello', notifies subscriber A
+ *   t=2  Component B subscribes   → immediately gets 'Hello' (emits current held value)
+ *   t=3  .next('World')           → stores 'World', notifies A and B
+ *
+ * Subject — no current value, no memory
+ *   private readonly _messageSubject = new Subject<string>();
+ *   Timeline:
+ *   t=0  Subject created           → empty, nothing stored
+ *   t=1  .next('Hello')            → notifies subscriber A only
+ *   t=2  Component B subscribes    → gets nothing (missed 'Hello')
+ *   t=3  .next('World')            → notifies A and B
+ */
+
 @Injectable({ providedIn: 'root' })
 export class MessageService {
 
