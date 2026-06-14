@@ -1,0 +1,183 @@
+.http-ex-wrapper {
+  padding: 0 4px;
+
+  h2 {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: #1a1a2e;
+    margin: 0 0 24px;
+  }
+}
+
+.http-section {
+  padding: 20px 0;
+
+  h3 {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: #374151;
+    margin: 0 0 16px;
+  }
+}
+
+hr {
+  border: none;
+  border-top: 1px solid #e5e7eb;
+  margin: 4px 0;
+}
+
+// ─── Buttons ─────────────────────────────────────────────────────────────────
+
+.btn {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.88rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.2s;
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+
+  &:hover:not(:disabled) { opacity: 0.87; }
+}
+
+.btn-blue   { background: #2563eb; color: #fff; }
+.btn-orange { background: #f59e0b; color: #fff; }
+.btn-red    { background: #dc2626; color: #fff; }
+
+// ─── Inline row (ID input + button) ──────────────────────────────────────────
+
+.inline-row {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  margin-bottom: 16px;
+
+  input[type='number'] {
+    width: 100px;
+    padding: 10px 12px;
+    border: 1.5px solid #d1d5db;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    outline: none;
+
+    &:focus { border-color: #2563eb; }
+  }
+}
+
+// ─── Form groups ─────────────────────────────────────────────────────────────
+
+.form-group {
+  margin-bottom: 14px;
+
+  label {
+    display: block;
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: #374151;
+    margin-bottom: 6px;
+  }
+
+  input,
+  textarea {
+    width: 100%;
+    padding: 10px 14px;
+    border: 1.5px solid #d1d5db;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    font-family: inherit;
+    outline: none;
+    resize: vertical;
+    box-sizing: border-box;
+
+    &:focus { border-color: #2563eb; }
+  }
+}
+
+// ─── Posts list ───────────────────────────────────────────────────────────────
+
+.result-count {
+  font-weight: 700;
+  color: #1a1a2e;
+  margin: 16px 0 12px;
+  font-size: 0.95rem;
+}
+
+.posts-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  max-height: 500px;
+  overflow-y: auto;
+  padding-right: 4px;
+}
+
+.post-card {
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 14px 16px;
+
+  h4 {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #2563eb;
+    margin: 0 0 6px;
+  }
+
+  p {
+    font-size: 0.82rem;
+    color: #6b7280;
+    margin: 0 0 8px;
+    line-height: 1.5;
+  }
+
+  .user-id {
+    font-size: 0.75rem;
+    color: #9ca3af;
+  }
+
+  &.single-post {
+    border-color: #2563eb;
+    background: #eff6ff;
+    margin-top: 16px;
+  }
+}
+
+// ─── Success / error ─────────────────────────────────────────────────────────
+
+.success-card {
+  margin-top: 16px;
+  background: #f0fff4;
+  border: 1.5px solid #28a745;
+  border-radius: 8px;
+  padding: 14px 16px;
+  font-size: 0.85rem;
+  color: #374151;
+
+  .success-title {
+    font-weight: 700;
+    color: #16a34a;
+    margin-bottom: 8px;
+  }
+
+  p { margin: 2px 0; }
+
+  .user-id {
+    font-size: 0.78rem;
+    color: #6b7280;
+    display: block;
+    margin-top: 4px;
+  }
+}
+
+.error-msg {
+  color: #dc2626;
+  font-size: 0.85rem;
+  margin: 10px 0;
+  font-weight: 500;
+}

@@ -115,6 +115,18 @@
     <app-behavior-subject-deep-dive />
   </section>
 
+  <section style="padding: 0 16px;">
+    <h2>HTTP CRUD — HttpClient with Signals</h2>
+    <p>
+      GET · POST · PUT · DELETE using <code>HttpClient</code> and the
+      <a href="https://jsonplaceholder.typicode.com" target="_blank">JSONPlaceholder</a> API.
+      All state managed with <code>signal()</code>. Service methods return
+      <code>Observable&lt;T&gt;</code> — component subscribes with the full
+      <code>&#123; next, error &#125;</code> Observer pattern.
+    </p>
+    <app-http-ex />
+  </section>
+
 <!-- Session 5 - Topics:
  * Routing — child routes, lazy loading, withComponentInputBinding(), route params
 -->

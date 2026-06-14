@@ -1,0 +1,166 @@
+<div class="http-ex-wrapper">
+  <h2>HTTP Methods Example</h2>
+
+  <!-- ─── GET All Posts ──────────────────────────────────────────────────── -->
+  <section class="http-section">
+    <h3>Fetch All Posts</h3>
+
+    <button class="btn btn-blue" (click)="getPosts()" [disabled]="loading()">
+      @if (loading()) { Loading... } @else { Fetch All Posts }
+    </button>
+
+    @if (error()) {
+      <p class="error-msg">{{ error() }}</p>
+    }
+
+    @if (posts().length > 0) {
+      <p class="result-count">Posts ({{ posts().length }})</p>
+      <div class="posts-list">
+        @for (post of posts(); track post.id) {
+          <div class="post-card">
+            <h4>{{ post.id }}. {{ post.title | titlecase }}</h4>
+            <p>{{ post.body }}</p>
+            <span class="user-id">User ID: {{ post.userId }}</span>
+          </div>
+        }
+      </div>
+    }
+  </section>
+
+  <hr />
+
+  <!-- ─── GET Single Post ────────────────────────────────────────────────── -->
+  <section class="http-section">
+    <h3>Fetch Single Post by ID</h3>
+
+    <div class="inline-row">
+      <input
+        type="number"
+        [value]="postId()"
+        (input)="updatePostId($event)"
+        min="1"
+        max="100"
+      />
+      <button class="btn btn-blue" (click)="getPostById()" [disabled]="loadingSingle()">
+        @if (loadingSingle()) { Loading... } @else { Fetch Post }
+      </button>
+    </div>
+
+    @if (errorSingle()) {
+      <p class="error-msg">{{ errorSingle() }}</p>
+    }
+
+    @if (singlePost()) {
+      <div class="post-card single-post">
+        <h4>{{ singlePost()!.id }}. {{ singlePost()!.title | titlecase }}</h4>
+        <p>{{ singlePost()!.body }}</p>
+        <span class="user-id">User ID: {{ singlePost()!.userId }}</span>
+      </div>
+    }
+  </section>
+
+  <hr />
+
+  <!-- ─── POST — Create New Post ────────────────────────────────────────── -->
+  <section class="http-section">
+    <h3>Create New Post (POST)</h3>
+
+    <div class="form-group">
+      <label>User ID:</label>
+      <input type="number" [value]="newPostUserId()" (input)="updateNewPostUserId($event)" min="1" />
+    </div>
+    <div class="form-group">
+      <label>Title:</label>
+      <input type="text" [value]="newPostTitle()" (input)="updateNewPostTitle($event)" placeholder="Enter post title" />
+    </div>
+    <div class="form-group">
+      <label>Body:</label>
+      <textarea [value]="newPostBody()" (input)="updateNewPostBody($event)" placeholder="Enter post body" rows="3"></textarea>
+    </div>
+
+    @if (errorPost()) {
+      <p class="error-msg">{{ errorPost() }}</p>
+    }
+
+    <button class="btn btn-blue" (click)="createPost()" [disabled]="loadingPost()">
+      @if (loadingPost()) { Creating... } @else { Create Post }
+    </button>
+
+    @if (createdPost()) {
+      <div class="success-card">
+        <p class="success-title">✓ Post Created Successfully!</p>
+        <p><strong>ID:</strong> {{ createdPost()!.id }}</p>
+        <p><strong>Title:</strong> {{ createdPost()!.title }}</p>
+        <p><strong>Body:</strong> {{ createdPost()!.body }}</p>
+        <span class="user-id">User ID: {{ createdPost()!.userId }}</span>
+      </div>
+    }
+  </section>
+
+  <hr />
+
+  <!-- ─── PUT — Update Post ─────────────────────────────────────────────── -->
+  <section class="http-section">
+    <h3>Update Post (PUT)</h3>
+
+    <div class="form-group">
+      <label>Post ID:</label>
+      <input type="number" [value]="updateId()" (input)="updateUpdateId($event)" min="1" max="100" />
+    </div>
+    <div class="form-group">
+      <label>New Title:</label>
+      <input type="text" [value]="updateTitle()" (input)="updateUpdateTitle($event)" placeholder="Enter new title" />
+    </div>
+    <div class="form-group">
+      <label>New Body:</label>
+      <textarea [value]="updateBody()" (input)="updateUpdateBody($event)" placeholder="Enter new body" rows="3"></textarea>
+    </div>
+
+    @if (errorUpdate()) {
+      <p class="error-msg">{{ errorUpdate() }}</p>
+    }
+
+    <button class="btn btn-orange" (click)="updatePost()" [disabled]="loadingUpdate()">
+      @if (loadingUpdate()) { Updating... } @else { Update Post }
+    </button>
+
+    @if (updatedPost()) {
+      <div class="success-card">
+        <p class="success-title">✓ Post Updated Successfully!</p>
+        <p><strong>ID:</strong> {{ updatedPost()!.id }}</p>
+        <p><strong>Title:</strong> {{ updatedPost()!.title }}</p>
+        <p><strong>Body:</strong> {{ updatedPost()!.body }}</p>
+      </div>
+    }
+  </section>
+
+  <hr />
+
+  <!-- ─── DELETE ────────────────────────────────────────────────────────── -->
+  <section class="http-section">
+    <h3>Delete Post (DELETE)</h3>
+
+    <div class="inline-row">
+      <input
+        type="number"
+        [value]="deletePostId()"
+        (input)="updateDeletePostId($event)"
+        min="1"
+        max="100"
+      />
+      <button class="btn btn-red" (click)="deletePost()" [disabled]="loadingDelete()">
+        @if (loadingDelete()) { Deleting... } @else { Delete Post }
+      </button>
+    </div>
+
+    @if (errorDelete()) {
+      <p class="error-msg">{{ errorDelete() }}</p>
+    }
+
+    @if (deleteSuccess()) {
+      <div class="success-card">
+        <p class="success-title">✓ {{ deleteSuccess() }}</p>
+      </div>
+    }
+  </section>
+</div>
