@@ -64,6 +64,23 @@ export class BehaviorSubjectExample implements OnInit, OnDestroy {
   ngOnInit(): void {
     // Full Observer object — handles next, error, and complete separately.
     // This is the recommended pattern for production code.
+    //
+    // ─── Why subscribe() here instead of async pipe ───────────────────────────
+    // async pipe works perfectly for displaying the latest single value in the template:
+    //   {{ messageService.currentMessage$ | async }}
+    // Angular handles subscription and unsubscribe automatically — no OnDestroy needed.
+    //
+    // However, async pipe CANNOT accumulate history into an array.
+    // It only unwraps the latest emission — previous values are discarded.
+    // valueHistory.push(value) requires a subscribe() callback to capture each emission.
+    //
+    // Since valueHistory accumulation already requires subscribe() + ngOnDestroy,
+    // keeping a single subscription for both currentValue and valueHistory is cleaner
+    // than splitting into async pipe (currentValue) + subscribe (history).
+    //
+    // Rule of thumb:
+    //   async pipe  → display latest value in template only (no transformation needed)
+    //   subscribe() → accumulate, transform, or derive state from emissions
     this.subscription = this.messageService.currentMessage$.subscribe({
       next: (value) => {
         this.currentValue = value;         // reactive current value
