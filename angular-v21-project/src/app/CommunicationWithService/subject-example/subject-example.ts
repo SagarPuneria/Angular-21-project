@@ -46,6 +46,7 @@ export class SubjectExample implements OnInit, OnDestroy {
   ngOnInit(): void {
     // Subscribe to the Subject's Observable stream.
     // Only emissions that occur AFTER this point are received.
+    // subscribe() always registers the observer synchronously — but whether the callback fires sync or async depends entirely on what creates the Observable.
     this.subscription = this.messageService.message$.subscribe((message) => {
       this.messages.push(message);
     });

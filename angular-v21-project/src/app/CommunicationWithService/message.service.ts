@@ -1,6 +1,36 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Subject } from 'rxjs';
 
+/*
+ * ─── Observable Emission Timing — Sync vs Async ──────────────────────────────
+ *
+ * subscribe() itself always runs synchronously — it registers the observer on
+ * the same call stack. Whether the CALLBACK fires sync or async depends entirely
+ * on the Observable SOURCE, not on subscribe().
+ *
+ * Synchronous sources — callback fires on the same call stack as subscribe() / next():
+ *   BehaviorSubject   → replays current value synchronously inside _subscribe()
+ *   Subject           → callback fires synchronously when .next() is called
+ *   of(), from()      → emit all values synchronously before moving to the next line
+ *
+ * Asynchronous sources — callback fires later, off the current call stack:
+ *   HttpClient        → HTTP response arrives via microtask / macrotask
+ *   timer(),interval()→ scheduled via setTimeout / setInterval
+ *   fromEvent()       → fires when a DOM event occurs (user interaction)
+ *
+ * ┌──────────────────────────┬─────────────────┐
+ * │ Observable source        │ Emission timing │
+ * ├──────────────────────────┼─────────────────┤
+ * │ BehaviorSubject          │ ✅ Sync          │
+ * │ Subject                  │ ✅ Sync          │
+ * │ of(), from()             │ ✅ Sync          │
+ * │ HttpClient               │ ⏳ Async         │
+ * │ timer(), interval()      │ ⏳ Async         │
+ * │ fromEvent() (DOM events) │ ⏳ Async         │
+ * └──────────────────────────┴─────────────────┘
+ * NOTE: The subscribe() call itself is always synchronous — it's the source that decides when the callback runs.
+ */
+
 @Injectable({ providedIn: 'root' })
 export class MessageService {
 

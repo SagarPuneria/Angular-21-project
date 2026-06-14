@@ -40,6 +40,7 @@ export class Receiver implements OnInit, OnDestroy {
   //    Declaration order in the class body = initialization order at runtime.
   // Stored so we can unsubscribe in ngOnDestroy and prevent memory leaks.
   // Note: ngOnInit also works fine with BehaviorSubject — both produce identical behavior.
+  // subscribe() always registers the observer synchronously — but whether the callback fires sync or async depends entirely on what creates the Observable.
   private readonly subscription: Subscription = this.messageService.currentMessage$.subscribe(
     msg => {
       this.reactiveMessage = msg;
