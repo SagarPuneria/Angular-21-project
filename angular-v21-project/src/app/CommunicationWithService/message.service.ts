@@ -9,7 +9,7 @@ import { BehaviorSubject, Subject } from 'rxjs';
  * on the Observable SOURCE, not on subscribe().
  *
  * Synchronous sources — callback fires on the same call stack as subscribe() / next():
- *   BehaviorSubject   → replays current value synchronously inside _subscribe()
+ *   BehaviorSubject   → emits current held value synchronously inside _subscribe()
  *   Subject           → callback fires synchronously when .next() is called
  *   of(), from()      → emit all values synchronously before moving to the next line
  *
@@ -29,6 +29,39 @@ import { BehaviorSubject, Subject } from 'rxjs';
  * │ fromEvent() (DOM events) │ ⏳ Async         │
  * └──────────────────────────┴─────────────────┘
  * NOTE: The subscribe() call itself is always synchronous — it's the source that decides when the callback runs.
+ */
+
+/*
+ * ─── Why Subject/BehaviorSubject is private + exposed as Observable ───────────
+ *
+ * The pattern in this service:
+ *   private readonly _messageSubject  = new Subject<string>();   // write access
+ *   readonly         message$         = _messageSubject.asObservable(); // read access
+ *
+ * Flow:
+ *   Component calls sendSubjectMessage(value)
+ *     → service calls _messageSubject.next(value)   ← PUSH happens on the Subject
+ *     → subscribers receive via message$             ← RETRIEVE happens on the Observable
+ *
+ * Why keep the Subject private?
+ *   Subject exposes three dangerous methods to anyone who holds a reference:
+ *     .next(value)    — push a new value (intended only for the service)
+ *     .error(err)     — terminate the stream with an error
+ *     .complete()     — close the stream permanently; no further emissions possible
+ *
+ *   If Subject were public, any component anywhere in the app could call
+ *   .error() or .complete() and silently break every other subscriber.
+ *   Predictability and control would be lost.
+ *
+ * Why expose as Observable?
+ *   Observable is read-only by design — it has no .next(), .error(), .complete().
+ *   Subscribers can only LISTEN; they cannot push values or kill the stream.
+ *   This enforces a single source of truth: all writes go through the service methods,
+ *   giving the service full control over when, what, and how values are emitted.
+ *
+ * General principle: keep mutable state (Subject) private; expose immutable
+ * read surfaces (Observable) publicly. All mutations happen through explicit
+ * service methods — one place, full control.
  */
 
 @Injectable({ providedIn: 'root' })
