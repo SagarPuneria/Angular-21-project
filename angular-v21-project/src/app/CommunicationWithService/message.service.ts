@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Subject } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
 export class MessageService {
@@ -20,5 +20,21 @@ export class MessageService {
   updateMessage(msg: string): void {
     this.currentMessage = msg;           // non-reactive plain property (old approach)
     this._currentMessage.next(msg);      // reactive: notifies all active subscribers
+  }
+
+  // ─── Subject (no initial value, no replay) ────────────────────────────────
+  // Subject only forwards future emissions to current subscribers.
+  // Unlike BehaviorSubject it does NOT hold a current value and does NOT replay
+  // to new subscribers — a late subscriber misses all previous emissions.
+  //
+  // Pattern here: each emission is pushed into an array so the UI accumulates
+  // a history of all messages sent during the component's lifetime.
+  private readonly _messageSubject = new Subject<string>();
+
+  // Public Observable surface — components subscribe to this.
+  readonly message$ = this._messageSubject.asObservable();
+
+  sendSubjectMessage(msg: string): void {
+    this._messageSubject.next(msg);
   }
 }

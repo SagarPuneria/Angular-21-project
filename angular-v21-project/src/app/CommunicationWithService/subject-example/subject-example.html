@@ -1,0 +1,27 @@
+<div class="subject-example-card">
+  <h3>Subject Example</h3>
+
+  <div class="input-row">
+    <input
+      #msgInput
+      type="text"
+      placeholder="Enter a message"
+      (keyup.enter)="sendMessage(msgInput)"
+    />
+    <button (click)="sendMessage(msgInput)">Send Message</button>
+  </div>
+
+  <div class="messages-section">
+    <h4>Received Messages:</h4>
+
+    @if (messages.length === 0) {
+      <p class="empty-state">No messages yet. Send one above!</p>
+    } @else {
+      <ul class="message-list">
+        @for (msg of messages; track $index) {
+          <li>{{ msg }}</li>
+        }
+      </ul>
+    }
+  </div>
+</div>

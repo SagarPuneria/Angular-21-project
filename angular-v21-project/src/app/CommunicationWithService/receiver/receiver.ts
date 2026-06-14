@@ -33,8 +33,8 @@ export class Receiver implements OnDestroy {
 
   // ✅ Field initializer — works because:
   //    1. messageService is declared above (inject() runs before this line).
-  //    2. reactiveMessage is declared above (BehaviorSubject replays the current value immediately on subscribe,
-  //       then emits every subsequent value pushed via next() — reactiveMessage must already exist as a field).
+  //    2. reactiveMessage is declared above (BehaviorSubject replays the current value immediately on subscribe(Here subscribe asynchronous function),
+  //       then emits its current value synchronously(live updates) pushed via next() — reactiveMessage must already exist as a field).
   //    Declaration order in the class body = initialization order at runtime.
   // Stored so we can unsubscribe in ngOnDestroy and prevent memory leaks.
   private readonly subscription: Subscription = this.messageService.currentMessage$.subscribe(

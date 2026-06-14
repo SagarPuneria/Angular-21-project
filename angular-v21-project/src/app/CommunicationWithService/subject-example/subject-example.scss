@@ -1,0 +1,83 @@
+.subject-example-card {
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 2px 16px rgba(0, 0, 0, 0.09);
+  padding: 32px 36px;
+  max-width: 700px;
+  margin: 0 auto;
+
+  h3 {
+    font-size: 1.35rem;
+    font-weight: 700;
+    color: #1a1a2e;
+    margin: 0 0 24px;
+  }
+}
+
+.input-row {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 28px;
+
+  input {
+    flex: 1;
+    padding: 12px 16px;
+    border: 1.5px solid #d1d5db;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    outline: none;
+    transition: border-color 0.2s;
+
+    &:focus { border-color: #28a745; }
+  }
+
+  button {
+    padding: 12px 22px;
+    background: #28a745;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: opacity 0.2s;
+
+    &:hover { opacity: 0.87; }
+  }
+}
+
+.messages-section {
+  h4 {
+    font-size: 1rem;
+    font-weight: 700;
+    color: #1a1a2e;
+    margin: 0 0 14px;
+  }
+}
+
+.empty-state {
+  color: #9ca3af;
+  font-style: italic;
+  font-size: 0.9rem;
+  text-align: center;
+  padding: 24px 0;
+}
+
+.message-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+
+  li {
+    padding: 12px 16px;
+    background: #f8f9fa;
+    border-left: 4px solid #28a745;
+    border-radius: 4px;
+    font-size: 0.9rem;
+    color: #374151;
+  }
+}

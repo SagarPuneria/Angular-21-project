@@ -89,6 +89,18 @@
     <app-view-child-example />
   </section>
 
+  <!-- Subject — no initial value, accumulates messages as an array -->
+  <section style="padding: 0 16px;">
+    <h2>Subject — Fire-and-Forget Observable Stream</h2>
+    <p>
+      <code>Subject</code> emits only to <em>current</em> subscribers — no initial value, no replay.
+      Unlike <code>BehaviorSubject</code>, a late subscriber misses all previous emissions.
+      Each message is pushed into an array so the UI accumulates a full history.
+      Subscription is created in <code>ngOnInit</code> and torn down in <code>ngOnDestroy</code>.
+    </p>
+    <app-subject-example />
+  </section>
+
 <!-- Session 5 - Topics:
  * Routing — child routes, lazy loading, withComponentInputBinding(), route params
 -->
