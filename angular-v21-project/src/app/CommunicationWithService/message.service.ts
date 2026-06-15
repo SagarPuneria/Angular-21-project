@@ -65,6 +65,42 @@ import { BehaviorSubject, Subject } from 'rxjs';
  */
 
 /*
+ * ─── State Management: BehaviorSubject vs Subject ────────────────────────────
+ *
+ * "For state management, BehaviorSubject is better than Subject" — PARTIALLY TRUE.
+ *
+ * ✅ True for RxJS-based shared state:
+ *   BehaviorSubject guarantees that any late subscriber immediately receives the
+ *   current value. Subject has no memory — a late subscriber gets nothing and
+ *   misses whatever state was emitted before it subscribed.
+ *
+ * ❌ Wrong for events / commands:
+ *   Subject is the CORRECT tool when there is no meaningful "current value":
+ *     "file saved" notification  → past saves are irrelevant to new subscribers
+ *     button click stream        → there is no "current click" to replay
+ *   Using BehaviorSubject here forces a dummy initial value (null / false) that
+ *   every new subscriber fires on unnecessarily.
+ *
+ * ⚡ Angular 21 recommendation — prefer signal() for state:
+ *   signal() has no boilerplate, is always synchronous, composes with computed(),
+ *   and never needs unsubscription. Reach for BehaviorSubject only when you need
+ *   RxJS operators (switchMap, combineLatest, debounceTime, etc.).
+ *
+ * ┌─────────────────────────────┬──────────────────────┬───────────────────┐
+ * │ Use case                    │ Correct tool         │ Reason            │
+ * ├─────────────────────────────┼──────────────────────┼───────────────────┤
+ * │ Current user / auth state   │ signal() / BS        │ New component     │
+ * │ Loading / error state       │ signal() / BS        │ needs current     │
+ * │ Selected item in a list     │ signal() / BS        │ value on init     │
+ * ├─────────────────────────────┼──────────────────────┼───────────────────┤
+ * │ "Save succeeded" toast      │ Subject              │ No meaningful     │
+ * │ Button click stream         │ Subject              │ current value     │
+ * │ One-off HTTP trigger        │ Subject              │ to replay         │
+ * └─────────────────────────────┴──────────────────────┴───────────────────┘
+ * BS = BehaviorSubject
+ */
+
+/*
  * ─── Current Value: BehaviorSubject vs Subject ───────────────────────────────
  *
  * BehaviorSubject — always holds a current value
