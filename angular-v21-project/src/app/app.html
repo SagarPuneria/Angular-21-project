@@ -78,6 +78,19 @@
     <app-signal-parent />
   </section>
 
+  <!-- Dynamic Component — createComponent() + outputToObservable() -->
+  <section style="padding: 0 16px;">
+    <h2>Dynamic Component — Runtime Creation</h2>
+    <p>
+      <code>createComponent()</code> mounts a component at runtime with no template entry.
+      Inputs are set via <code>componentRef.setInput()</code>.
+      Outputs are subscribed via <code>outputToObservable()</code> from
+      <code>@angular/core/rxjs-interop</code> — unlocking the full RxJS pipeline.
+      Use this for wizard steps, plugin slots, and feature-flag-driven UIs.
+    </p>
+    <app-dynamic-host />
+  </section>
+
   <!-- @ViewChild — imperative parent access to a child component reference -->
   <section style="padding: 0 16px;">
     <h2>@ViewChild — Imperative Child Access</h2>

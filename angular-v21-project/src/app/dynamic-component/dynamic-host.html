@@ -1,0 +1,83 @@
+<div class="dynamic-host-container">
+  <h2>Dynamic Component — <code>createComponent()</code> + <code>outputToObservable()</code></h2>
+
+  <!-- ─── Concept comparison ───────────────────────────────────────────────── -->
+  <div class="comparison">
+    <div class="approach">
+      <p class="approach-label approach-label--static">📋 Template binding (static)</p>
+      <pre><code>&lt;app-signal-child
+  [parentMessage]="value"
+  (childMessageEvent)="handler($event)"
+/&gt;</code></pre>
+      <p class="approach-note">Child type is fixed at compile time. Angular resolves inputs/outputs via the template.</p>
+    </div>
+
+    <div class="approach">
+      <p class="approach-label approach-label--dynamic">⚡ Dynamic creation (runtime)</p>
+      <pre><code>// 1 — create
+const ref = vcr.createComponent(SignalChild);
+
+// 2 — set input
+ref.setInput('parentMessage', value);
+
+// 3 — subscribe to output
+outputToObservable(ref.instance.childMessageEvent)
+  .subscribe(msg => ...);</code></pre>
+      <p class="approach-note">Child type resolved at runtime — works for wizard steps, plugin slots, feature flags.</p>
+    </div>
+  </div>
+
+  <!-- ─── Controls ─────────────────────────────────────────────────────────── -->
+  <div class="controls">
+    @if (!isCreated()) {
+      <button class="btn btn-create" (click)="createChild()">
+        ▶ Create Child Dynamically
+      </button>
+    } @else {
+      <div class="input-row">
+        <input
+          type="text"
+          [(ngModel)]="inputValue"
+          placeholder="New message to child"
+          (keyup.enter)="sendToChild()"
+        />
+        <button class="btn btn-send" (click)="sendToChild()">
+          Send Input Update
+        </button>
+      </div>
+      <button class="btn btn-destroy" (click)="destroyChild()">
+        ✕ Destroy Child
+      </button>
+    }
+  </div>
+
+  <!-- ─── Outlet — dynamic component renders here ──────────────────────────── -->
+  <div class="outlet-wrapper">
+    @if (isCreated()) {
+      <p class="outlet-label">
+        ↓ <code>SignalChild</code> mounted at <code>&lt;ng-container #outlet&gt;</code> via <code>createComponent()</code>
+      </p>
+    }
+    <ng-container #outlet></ng-container>
+  </div>
+
+  <!-- ─── Messages log ─────────────────────────────────────────────────────── -->
+  @if (messagesFromChild().length > 0) {
+    <div class="messages-log">
+      <div class="log-header">
+        <p class="log-title">
+          📥 Received via <code>outputToObservable(ref.instance.childMessageEvent)</code>
+        </p>
+        <button class="btn-clear" (click)="clearMessages()">Clear</button>
+      </div>
+      <ul>
+        @for (msg of messagesFromChild(); track $index) {
+          <li>
+            <span class="log-index">#{{ $index + 1 }}</span>
+            <span class="log-msg">{{ msg }}</span>
+          </li>
+        }
+      </ul>
+    </div>
+  }
+</div>

@@ -11,13 +11,14 @@ import { SubjectExample } from './CommunicationWithService/subject-example/subje
 import { BehaviorSubjectExample } from './CommunicationWithService/behavior-subject-example/behavior-subject-example';
 import { BehaviorSubjectDeepDive } from './CommunicationWithService/behavior-subject-deep-dive/behavior-subject-deep-dive';
 import { HttpEx } from './http-example/http-ex';
+import { DynamicHost } from './dynamic-component/dynamic-host';
 import { AuthService } from './auth/auth.service';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.html',
   styleUrl: './app.scss',
-  imports: [DataBindingDemo, Child, DataBinding, Sender, Receiver, SignalParent, ViewChildExample, SubjectExample, BehaviorSubjectExample, BehaviorSubjectDeepDive, HttpEx, RouterOutlet, RouterLink, RouterLinkActive]
+  imports: [DataBindingDemo, Child, DataBinding, Sender, Receiver, SignalParent, DynamicHost, ViewChildExample, SubjectExample, BehaviorSubjectExample, BehaviorSubjectDeepDive, HttpEx, RouterOutlet, RouterLink, RouterLinkActive]
 })
 export class App {
   protected readonly title = signal('angular-v21-project');
