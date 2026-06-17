@@ -1,0 +1,123 @@
+<div class="interceptor-container">
+  <h2>HTTP Interceptors</h2>
+
+  <div class="interceptor-grid">
+
+    <!-- Concept Panel -->
+    <div class="concept-panel">
+      <h3>Two Interceptors Active</h3>
+
+      <div class="interceptor-card auth">
+        <p class="ic-name">1. authTokenInterceptor</p>
+        <p class="ic-desc">Clones every request and adds <code>Authorization: Bearer &lt;token&gt;</code></p>
+        <pre><code>export const authTokenInterceptor: HttpInterceptorFn = (req, next) =&gt; &#123;
+  const clonedReq = req.clone(&#123;
+    setHeaders: &#123; Authorization: `Bearer $&#123;token&#125;` &#125;
+  &#125;);
+  return next(clonedReq);  // forward cloned request
+&#125;;</code></pre>
+      </div>
+
+      <div class="interceptor-card logging">
+        <p class="ic-name">2. loggingInterceptor</p>
+        <p class="ic-desc">Times each request and logs method, URL, status, duration to <code>RequestLogService</code></p>
+        <pre><code>export const loggingInterceptor: HttpInterceptorFn = (req, next) =&gt; &#123;
+  const startTime = performance.now();
+  return next(req).pipe(
+    tap(&#123; next: event =&gt; logService.logResponse(...) &#125;)
+  );
+&#125;;</code></pre>
+      </div>
+
+      <div class="registration">
+        <p class="reg-title">Registered in <code>app.config.ts</code></p>
+        <pre><code>provideHttpClient(
+  withFetch(),
+  withInterceptors([
+    authTokenInterceptor,
+    loggingInterceptor,
+  ])
+)</code></pre>
+      </div>
+    </div>
+
+    <!-- Live Demo Panel -->
+    <div class="demo-panel">
+      <h3>Live Request Log</h3>
+      <p class="demo-hint">Every request is intercepted — auth header added + timing recorded.</p>
+
+      <div class="controls">
+        <button class="btn btn-get" (click)="makeGetRequest()" [disabled]="loading()">
+          GET /posts/1
+        </button>
+        <button class="btn btn-post" (click)="makePostRequest()" [disabled]="loading()">
+          POST /posts
+        </button>
+        <button class="btn btn-multi" (click)="makeMultipleRequests()" [disabled]="loading()">
+          3 Parallel GETs
+        </button>
+        <button class="btn btn-clear" (click)="clearLog()">
+          Clear Log
+        </button>
+      </div>
+
+      @if (loading()) {
+        <p class="in-flight">⟳ Request in flight…</p>
+      }
+
+      @if (logService.entries().length === 0) {
+        <p class="empty-log">No requests yet. Click a button above to make an HTTP call.</p>
+      } @else {
+        <div class="log-table-wrapper">
+          <table class="log-table">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Method</th>
+                <th>URL</th>
+                <th>Auth</th>
+                <th>Status</th>
+                <th>Time</th>
+                <th>Duration</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (entry of logService.entries(); track entry.id) {
+                <tr [class.pending]="entry.status === null">
+                  <td class="td-id">{{ entry.id }}</td>
+                  <td><span class="method" [class]="'method-' + entry.method.toLowerCase()">{{ entry.method }}</span></td>
+                  <td class="td-url">{{ entry.url }}</td>
+                  <td class="td-auth">
+                    @if (entry.authHeader) {
+                      <span class="badge-auth">✓ Bearer</span>
+                    } @else {
+                      <span class="badge-none">—</span>
+                    }
+                  </td>
+                  <td>
+                    @if (entry.status === null) {
+                      <span class="status-pending">…</span>
+                    } @else {
+                      <span class="status-badge" [class.status-ok]="entry.status >= 200 && entry.status < 300" [class.status-err]="entry.status >= 400">
+                        {{ entry.status }}
+                      </span>
+                    }
+                  </td>
+                  <td class="td-time">{{ entry.startedAt }}</td>
+                  <td class="td-dur">
+                    @if (entry.durationMs !== null) {
+                      {{ entry.durationMs }} ms
+                    } @else {
+                      —
+                    }
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      }
+    </div>
+
+  </div>
+</div>

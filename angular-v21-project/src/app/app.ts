@@ -14,13 +14,15 @@ import { HttpEx } from './http-example/http-ex';
 import { DynamicHost } from './dynamic-component/dynamic-host';
 import { DynamicWithDirective } from './directive-examples/dynamic-with-directive';
 import { StructuralDirectiveDemo } from './directive-examples/structural-directive-demo';
+import { InterceptorDemo } from './interceptor-demo/interceptor-demo';
+import { UnitTestingOverview } from './unit-testing-overview/unit-testing-overview';
 import { AuthService } from './auth/auth.service';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.html',
   styleUrl: './app.scss',
-  imports: [DataBindingDemo, Child, DataBinding, Sender, Receiver, SignalParent, DynamicHost, DynamicWithDirective, StructuralDirectiveDemo, ViewChildExample, SubjectExample, BehaviorSubjectExample, BehaviorSubjectDeepDive, HttpEx, RouterOutlet, RouterLink, RouterLinkActive]
+  imports: [DataBindingDemo, Child, DataBinding, Sender, Receiver, SignalParent, DynamicHost, DynamicWithDirective, StructuralDirectiveDemo, ViewChildExample, SubjectExample, BehaviorSubjectExample, BehaviorSubjectDeepDive, HttpEx, InterceptorDemo, UnitTestingOverview, RouterOutlet, RouterLink, RouterLinkActive]
 })
 export class App {
   protected readonly title = signal('angular-v21-project');

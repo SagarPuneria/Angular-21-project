@@ -1,0 +1,146 @@
+<div class="testing-container">
+  <h2>Unit Testing — Vitest + Angular</h2>
+
+  <div class="runner-badge">
+    <span class="badge vitest">Vitest</span>
+    <span class="badge jsdom">jsdom</span>
+    <span class="badge testbed">Angular TestBed</span>
+    <span class="commands">
+      <code>npm test</code> &nbsp;·&nbsp;
+      <code>npx vitest run src/app/app.spec.ts</code>
+    </span>
+  </div>
+
+  <div class="testing-grid">
+
+    <!-- Building Blocks -->
+    <div class="card">
+      <h3>Key Building Blocks</h3>
+      <table class="concepts-table">
+        <thead>
+          <tr><th>Concept</th><th>Purpose</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>describe()</code></td><td>Test suite — groups related <code>it()</code> blocks</td></tr>
+          <tr><td><code>it()</code></td><td>Individual test case — "it should do X"</td></tr>
+          <tr><td><code>expect()</code></td><td>Assertion — checks a value matches an expectation</td></tr>
+          <tr><td><code>beforeEach()</code></td><td>Setup that runs before every test — fresh state per test</td></tr>
+          <tr><td><code>TestBed</code></td><td>Angular testing module — creates a mini app environment</td></tr>
+          <tr><td><code>ComponentFixture</code></td><td>Wrapper for a component instance and its DOM</td></tr>
+          <tr><td><code>HttpTestingController</code></td><td>Intercepts HTTP calls in tests — no real network</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Boilerplate Structure -->
+    <div class="card">
+      <h3>Test File Structure</h3>
+      <pre><code>// app.spec.ts
+import &#123; TestBed &#125; from '&#64;angular/core/testing';
+import &#123; App &#125; from './app';
+
+describe('App', () =&gt; &#123;
+
+  beforeEach(async () =&gt; &#123;
+    await TestBed.configureTestingModule(&#123;
+      imports: [App],   // component under test
+    &#125;).compileComponents();
+  &#125;);
+
+  it('should create the app', () =&gt; &#123;
+    const fixture = TestBed.createComponent(App);
+    const app = fixture.componentInstance;
+    expect(app).toBeTruthy();        // component exists
+  &#125;);
+
+  it('should have correct title', () =&gt; &#123;
+    const fixture = TestBed.createComponent(App);
+    const app = fixture.componentInstance;
+    expect(app.title()).toEqual('angular-v21-project');
+  &#125;);
+&#125;);</code></pre>
+    </div>
+
+    <!-- Common Matchers -->
+    <div class="card">
+      <h3>Common <code>expect()</code> Matchers</h3>
+      <pre><code>expect(value).toBeTruthy()         // not null/undefined/false/0
+expect(value).toBeFalsy()          // null/undefined/false/0
+expect(value).toBe(42)             // strict equality ===
+expect(value).toEqual(&#123; a: 1 &#125;)   // deep object equality
+expect(value).toContain('text')    // string or array contains
+expect(value).toBeNull()           // exactly null
+expect(value).toBeUndefined()      // exactly undefined
+expect(fn).toHaveBeenCalled()      // spy was called
+expect(fn).toHaveBeenCalledWith(x) // spy called with args</code></pre>
+    </div>
+
+    <!-- HTTP Testing -->
+    <div class="card">
+      <h3>Testing HTTP Calls</h3>
+      <pre><code>import &#123; HttpTestingController,
+         provideHttpClientTesting &#125; from '&#64;angular/common/http/testing';
+import &#123; provideHttpClient &#125; from '&#64;angular/common/http';
+
+describe('PostsService', () =&gt; &#123;
+  let service: PostsService;
+  let httpMock: HttpTestingController;
+
+  beforeEach(() =&gt; &#123;
+    TestBed.configureTestingModule(&#123;
+      providers: [
+        PostsService,
+        provideHttpClient(),
+        provideHttpClientTesting(),  // ← no real network
+      ],
+    &#125;);
+    service = TestBed.inject(PostsService);
+    httpMock = TestBed.inject(HttpTestingController);
+  &#125;);
+
+  afterEach(() =&gt; httpMock.verify());  // no pending requests
+
+  it('should GET posts', () =&gt; &#123;
+    let result: Post[] = [];
+    service.getPosts().subscribe(data =&gt; (result = data));
+
+    const req = httpMock.expectOne('/api/posts');
+    expect(req.request.method).toBe('GET');
+    req.flush([&#123; id: 1, title: 'Test' &#125;]);   // mock response
+
+    expect(result.length).toBe(1);
+    expect(result[0].title).toBe('Test');
+  &#125;);
+&#125;);</code></pre>
+    </div>
+
+    <!-- Spec Files in Workspace -->
+    <div class="card spec-files">
+      <h3>Spec Files in This Workspace</h3>
+      <div class="file-list">
+        <div class="file-item">
+          <span class="file-icon">📄</span>
+          <div>
+            <p class="file-name">app.spec.ts</p>
+            <p class="file-desc">Root component — title signal, component creation</p>
+          </div>
+        </div>
+        <div class="file-item">
+          <span class="file-icon">📄</span>
+          <div>
+            <p class="file-name">data-binding-demo.spec.ts</p>
+            <p class="file-desc">Component + DOM tests — text interpolation, signal state</p>
+          </div>
+        </div>
+        <div class="file-item">
+          <span class="file-icon">📄</span>
+          <div>
+            <p class="file-name">http-ex.spec.ts</p>
+            <p class="file-desc">23 tests — HttpTestingController, all 5 CRUD operations, signal assertions</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
