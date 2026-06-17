@@ -2,6 +2,7 @@ import { Routes } from '@angular/router';
 import { Home } from './pages/home/home';
 import { About } from './pages/about/about';
 import { authGuard } from './auth/auth.guard';
+import { unsavedChangesGuard } from './auth/can-deactivate.guard';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'home', pathMatch: 'full' },
@@ -64,6 +65,14 @@ export const routes: Routes = [
   {
     path: 'signal-form',
     loadComponent: () => import('./pages/signal-form/signal-form').then(m => m.SignalForm),
+  },
+
+  // canDeactivate guard demo — warns before leaving if form is dirty
+  {
+    path: 'deactivate-demo',
+    canDeactivate: [unsavedChangesGuard],
+    loadComponent: () =>
+      import('./pages/deactivate-demo/deactivate-demo').then(m => m.DeactivateDemo),
   },
 
   // Enroll — explicitly lazy loaded (separate JS chunk, fetched only on navigation)

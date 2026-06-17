@@ -202,25 +202,19 @@
   </details>
 
   <!-- ═══════════════════════════════════════════════════════════════════
-       SESSION 5 · Routing
+       SESSION 5 · Routing & Reactive Forms
   ═══════════════════════════════════════════════════════════════════ -->
   <details class="session-panel" open>
     <summary class="session-summary">
       <span class="session-badge">S5</span>
-      <span class="session-title">🗺️ Session 5 · Routing</span>
-      <span class="session-meta">Child routes · Lazy loading · <code>withComponentInputBinding()</code> · Route guards</span>
+      <span class="session-title">🗺️ Session 5 · Routing &amp; Reactive Forms</span>
+      <span class="session-meta">Lazy loading · Child routes · Route guards (canActivate / canDeactivate) · Route params · Reactive Forms · FormArray · Signal Forms</span>
       <span class="chevron"></span>
     </summary>
 
-    <!-- Topic 5.1 -->
-    <details class="topic-panel" open>
-      <summary class="topic-summary">
-        <span class="topic-index">5.1</span>
-        Angular 21 Routing Demo
-        <span class="topic-desc">Products · Courses (child routes) · Enroll (lazy) · Dashboard (canActivate guard) · Forms · Controls</span>
-        <span class="chevron"></span>
-      </summary>
-      <div class="topic-body routing-section">
+    <!-- ── Shared navigation hub + router-outlet for all S5 demos ── -->
+    <div class="s5-nav-hub">
+      <nav class="tab-nav">
         <!-- Copilot Prompt: 
         Create a routing with angular 21 features, with 4 following tabs:
         1. Home,
@@ -229,40 +223,237 @@
         4. Enroll lazy.
         Courses tab has 2 child routes(Overview, Details) and Enroll lazy tab has lazy loaded.
         Add attractive colorful fonts. -->
-        <nav class="tab-nav">
-          <a routerLink="/home"     routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" class="tab-home">🏠 Home</a>
-          <a routerLink="/about"    routerLinkActive="active" class="tab-about">👥 About</a>
-          <!-- Copilot Prompt: 
-          I need to:
-            1. Create ProductList component with 3 products
-            2. Create ProductDetail component using input() for the route param :id (since withComponentInputBinding() is enabled)
-            3. Update app.routes.ts to add /products and /products/:id routes
-            4. Add a Products link to the nav in app.html
-            5. Style the product cards with SCSS to match the design—each showing the product name, "Digital Product • ID #X", and price badge
-            6. Use computed() to look up the product by ID and display "Product Not Found" if it doesn't exist
-            7. Leverage modern Angular 21 features like input(), computed(), RouterLink, and @for for the implementation Setting up the ProductDetail component... Setting up the input binding...
-          -->
-          <a routerLink="/products" routerLinkActive="active" class="tab-products">🛒 Products <span class="lazy-tag">lazy</span></a>
-          <a routerLink="/courses"  routerLinkActive="active" class="tab-courses">📚 Courses <span class="lazy-tag">lazy</span></a>
-          <a routerLink="/enroll"   routerLinkActive="active" class="tab-enroll">🎓 Enroll <span class="lazy-tag">lazy</span></a>
-          <!-- Copilot Prompt: I want to implement Dashboard component that should use canActivate route guard to implement login and logout functionality.-->
-          @if (auth.loggedIn()) {
-            <a routerLink="/dashboard" routerLinkActive="active" class="tab-dashboard">🔐 Dashboard</a>
-            <button class="nav-logout-btn" (click)="auth.logout()">→ Logout</button>
-          } @else {
-            <a routerLink="/login" routerLinkActive="active" class="tab-login">🔑 Login</a>
-          }
-          <a routerLink="/register"     routerLinkActive="active" class="tab-register">🧾 Registration (Form Route)</a>
-          <a routerLink="/form-array"   routerLinkActive="active" class="tab-form-array">🧩 Form Array Example</a>
-          <a routerLink="/summary"      routerLinkActive="active" class="tab-summary">📄 Summary Route</a>
-          <a routerLink="/controls-demo" routerLinkActive="active" class="tab-controls">🎛️ Controls Demo</a>
-          <a routerLink="/signal-form"  routerLinkActive="active" class="tab-signal-form">⚡ Signal Form</a>
-        </nav>
-        <div class="outlet-wrapper">
-          <router-outlet />
+        <a routerLink="/home"           routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" class="tab-home">🏠 Home</a>
+        <a routerLink="/about"          routerLinkActive="active" class="tab-about">👥 About</a>
+        <!-- Copilot Prompt: 
+        I need to:
+          1. Create ProductList component with 3 products
+          2. Create ProductDetail component using input() for the route param :id (since withComponentInputBinding() is enabled)
+          3. Update app.routes.ts to add /products and /products/:id routes
+          4. Add a Products link to the nav in app.html
+          5. Style the product cards with SCSS to match the design—each showing the product name, "Digital Product • ID #X", and price badge
+          6. Use computed() to look up the product by ID and display "Product Not Found" if it doesn't exist
+          7. Leverage modern Angular 21 features like input(), computed(), RouterLink, and @for for the implementation Setting up the ProductDetail component... Setting up the input binding...
+        -->
+        <a routerLink="/products"       routerLinkActive="active" class="tab-products">🛒 Products <span class="lazy-tag">lazy</span></a>
+        <a routerLink="/courses"        routerLinkActive="active" class="tab-courses">📚 Courses <span class="lazy-tag">lazy</span></a>
+        <a routerLink="/enroll"         routerLinkActive="active" class="tab-enroll">🎓 Enroll <span class="lazy-tag">lazy</span></a>
+        <!-- Copilot Prompt: I want to implement Dashboard component that should use canActivate route guard to implement login and logout functionality.-->
+        @if (auth.loggedIn()) {
+          <a routerLink="/dashboard"    routerLinkActive="active" class="tab-dashboard">🔐 Dashboard</a>
+          <button class="nav-logout-btn" (click)="auth.logout()">→ Logout</button>
+        } @else {
+          <a routerLink="/login"        routerLinkActive="active" class="tab-login">🔑 Login</a>
+        }
+        <a routerLink="/deactivate-demo" routerLinkActive="active" class="tab-deactivate">🚧 canDeactivate Demo</a>
+        <a routerLink="/register"        routerLinkActive="active" class="tab-register">🧾 Register</a>
+        <a routerLink="/form-array"      routerLinkActive="active" class="tab-form-array">🧩 Form Array</a>
+        <a routerLink="/summary"         routerLinkActive="active" class="tab-summary">📄 Summary</a>
+        <a routerLink="/controls-demo"   routerLinkActive="active" class="tab-controls">🎛️ Controls Demo</a>
+        <a routerLink="/signal-form"     routerLinkActive="active" class="tab-signal-form">⚡ Signal Form</a>
+      </nav>
+      <div class="outlet-wrapper">
+        <router-outlet />
+      </div>
+    </div>
+
+    <!-- Topic 5.1 -->
+    <details class="topic-panel" open>
+      <summary class="topic-summary">
+        <span class="topic-index">5.1</span>
+        Core Routing — SPA Navigation
+        <span class="topic-desc"><code>RouterOutlet</code> · <code>RouterLink</code> · <code>RouterLinkActive</code> · redirect / wildcard / child routes</span>
+        <span class="chevron"></span>
+      </summary>
+      <div class="topic-body">
+        <p class="topic-note">
+          Angular Router maps URLs to components without full page reloads. <code>&lt;router-outlet&gt;</code> is the
+          placeholder where matched components render. <code>routerLink</code> replaces <code>href</code> for client-side
+          navigation. <code>routerLinkActive</code> adds a CSS class when the route is active.
+          Route types: redirect (<code>pathMatch: 'full'</code>), specific, wildcard (<code>**</code>), and child routes.
+          The <strong>Courses</strong> route uses child routes — its own nested <code>&lt;router-outlet&gt;</code>
+          renders <em>Overview</em> and <em>Details</em>.
+        </p>
+        <div class="s5-quick-nav">
+          <span class="s5-nav-label">▶ Try it:</span>
+          <a routerLink="/home"    routerLinkActive="active" [routerLinkActiveOptions]="{exact:true}" class="tab-home">🏠 Home</a>
+          <a routerLink="/about"   routerLinkActive="active" class="tab-about">👥 About</a>
+          <a routerLink="/courses" routerLinkActive="active" class="tab-courses">📚 Courses (child routes)</a>
         </div>
       </div>
     </details>
+
+    <!-- Topic 5.2 -->
+    <details class="topic-panel" open>
+      <summary class="topic-summary">
+        <span class="topic-index">5.2</span>
+        Lazy Loading — <code>loadComponent()</code>
+        <span class="topic-desc">Dynamic <code>import()</code> · separate JS chunks fetched on first navigation · smaller initial bundle</span>
+        <span class="chevron"></span>
+      </summary>
+      <div class="topic-body">
+        <p class="topic-note">
+          Lazy loading defers the download of a component's JS chunk until the user actually navigates there.
+          <code>loadComponent: () =&gt; import('./path').then(m =&gt; m.MyComponent)</code> is a dynamic import —
+          the module is fetched on demand, not bundled at startup.
+          <strong>Enroll</strong> is the classic example: only 1 in 10 users clicks it, so it shouldn't be in the initial bundle.
+          In the browser Network tab you'll see a new chunk appear when you first visit a lazy route.
+        </p>
+        <div class="s5-quick-nav">
+          <span class="s5-nav-label">▶ Try it:</span>
+          <a routerLink="/enroll"   routerLinkActive="active" class="tab-enroll">🎓 Enroll <span class="lazy-tag">lazy</span></a>
+          <a routerLink="/products" routerLinkActive="active" class="tab-products">🛒 Products <span class="lazy-tag">lazy</span></a>
+        </div>
+      </div>
+    </details>
+
+    <!-- Topic 5.3 -->
+    <details class="topic-panel" open>
+      <summary class="topic-summary">
+        <span class="topic-index">5.3</span>
+        Route Guards — <code>canActivate</code>
+        <span class="topic-desc">Functional <code>CanActivateFn</code> · block unauthenticated access · <code>returnUrl</code> redirect</span>
+        <span class="chevron"></span>
+      </summary>
+      <div class="topic-body">
+        <p class="topic-note">
+          A <code>canActivate</code> guard runs before a route is entered. The functional <code>CanActivateFn</code>
+          (Angular 17+) uses <code>inject()</code> — no class needed.
+          <strong>Dashboard</strong> is protected: unauthenticated users are redirected to
+          <code>/login?returnUrl=/dashboard</code>. After login, the <code>Login</code> component reads
+          <code>returnUrl</code> from query params and navigates there automatically.
+          Guard returns <code>true</code> to allow, <code>false</code> to block, or a <code>UrlTree</code> to redirect.
+        </p>
+        <div class="s5-quick-nav">
+          <span class="s5-nav-label">▶ Try it:</span>
+          <a routerLink="/dashboard" routerLinkActive="active" class="tab-dashboard">🔐 Dashboard (guarded)</a>
+          <a routerLink="/login"     routerLinkActive="active" class="tab-login">🔑 Login (admin / 1234)</a>
+        </div>
+      </div>
+    </details>
+
+    <!-- Topic 5.4 -->
+    <details class="topic-panel" open>
+      <summary class="topic-summary">
+        <span class="topic-index">5.4</span>
+        Route Guards — <code>canDeactivate</code>
+        <span class="topic-desc">Functional <code>CanDeactivateFn</code> · unsaved-changes protection · <code>form.dirty</code> check</span>
+        <span class="chevron"></span>
+      </summary>
+      <div class="topic-body">
+        <p class="topic-note">
+          <code>canDeactivate</code> runs <em>before</em> the user navigates <em>away</em> from a route.
+          The guard calls <code>component.hasUnsavedChanges()</code> — if the method returns <code>true</code>,
+          the browser shows a confirmation dialog. This prevents accidental loss of form data.
+          The component implements a <code>HasUnsavedChanges</code> interface; the guard is a plain
+          <code>CanDeactivateFn&lt;HasUnsavedChanges&gt;</code> function — no class, no decorator needed.
+        </p>
+        <div class="s5-quick-nav">
+          <span class="s5-nav-label">▶ Try it:</span>
+          <a routerLink="/deactivate-demo" routerLinkActive="active" class="tab-deactivate">🚧 canDeactivate Demo — type, then navigate away</a>
+        </div>
+      </div>
+    </details>
+
+    <!-- Topic 5.5 -->
+    <details class="topic-panel" open>
+      <summary class="topic-summary">
+        <span class="topic-index">5.5</span>
+        Route Parameters &amp; <code>withComponentInputBinding()</code>
+        <span class="topic-desc"><code>:id</code> segment auto-bound to <code>input()</code> signal · <code>computed()</code> lookup · no <code>ActivatedRoute</code></span>
+        <span class="chevron"></span>
+      </summary>
+      <div class="topic-body">
+        <p class="topic-note">
+          Route params embed data directly in the URL (<code>/products/2</code>). With
+          <code>withComponentInputBinding()</code> enabled in <code>app.config.ts</code>, the <code>:id</code>
+          segment is <em>automatically bound</em> to a matching <code>input&lt;string&gt;('id')</code> on the component —
+          no <code>ActivatedRoute</code> subscription needed. A <code>computed()</code> signal then looks up the product
+          in the static array and re-runs whenever the param signal changes.
+        </p>
+        <div class="s5-quick-nav">
+          <span class="s5-nav-label">▶ Try it:</span>
+          <a routerLink="/products" routerLinkActive="active" class="tab-products">🛒 Product List → click a product for detail</a>
+        </div>
+      </div>
+    </details>
+
+    <!-- Topic 5.6 -->
+    <details class="topic-panel" open>
+      <summary class="topic-summary">
+        <span class="topic-index">5.6</span>
+        Reactive Forms — <code>FormBuilder</code>, <code>FormGroup</code>, <code>Validators</code>
+        <span class="topic-desc">Typed controls · state flags (<code>.dirty</code> / <code>.touched</code>) · <code>patchValue</code> / <code>setValue</code> · service-backed flow</span>
+        <span class="chevron"></span>
+      </summary>
+      <div class="topic-body">
+        <p class="topic-note">
+          Reactive Forms define the form model in TypeScript. <code>inject(FormBuilder)</code> creates
+          <code>FormGroup</code> with typed <code>FormControl</code>s and <code>Validators</code>.
+          Errors show only after the user has <em>touched</em> a field (not on load).
+          <code>patchValue()</code> updates specific fields; <code>setValue()</code> requires all fields.
+          <code>getRawValue()</code> returns a typed object including disabled controls.
+          The <strong>Register → Summary</strong> flow demonstrates sharing data across routes via a singleton
+          <code>RegistrationDataService</code> (no HTTP needed).
+        </p>
+        <div class="s5-quick-nav">
+          <span class="s5-nav-label">▶ Try it:</span>
+          <a routerLink="/register" routerLinkActive="active" class="tab-register">🧾 Registration Form</a>
+          <a routerLink="/summary"  routerLinkActive="active" class="tab-summary">📄 Summary (post-submit)</a>
+        </div>
+      </div>
+    </details>
+
+    <!-- Topic 5.7 -->
+    <details class="topic-panel" open>
+      <summary class="topic-summary">
+        <span class="topic-index">5.7</span>
+        <code>FormArray</code> — Dynamic Repeated Fields
+        <span class="topic-desc">Variable-length field groups · <code>push()</code> / <code>removeAt()</code> · <code>formArrayName</code> + <code>[formGroupName]</code></span>
+        <span class="chevron"></span>
+      </summary>
+      <div class="topic-body">
+        <p class="topic-note">
+          <code>FormArray</code> manages a variable number of identical field groups — e.g. multiple phone numbers
+          or skills. Use <code>formArrayName</code> on the container, then <code>[formGroupName]="i"</code> on
+          each child (by <code>$index</code>). <code>push()</code> adds a new group;
+          <code>removeAt(index)</code> removes one. A typed getter avoids casts in the template:
+          <code>get phones() &#123; return this.form.get('phones') as FormArray; &#125;</code>
+        </p>
+        <div class="s5-quick-nav">
+          <span class="s5-nav-label">▶ Try it:</span>
+          <a routerLink="/form-array" routerLinkActive="active" class="tab-form-array">🧩 FormArray Demo (phones + skills)</a>
+        </div>
+      </div>
+    </details>
+
+    <!-- Topic 5.8 -->
+    <details class="topic-panel" open>
+      <summary class="topic-summary">
+        <span class="topic-index">5.8</span>
+        <code>FormControl</code> Advanced &amp; Signal Forms (Angular 21)
+        <span class="topic-desc"><code>nonNullable</code> · <code>toSignal</code> vs <code>computed()</code> · experimental signal-based forms without <code>FormControl</code></span>
+        <span class="chevron"></span>
+      </summary>
+      <div class="topic-body">
+        <p class="topic-note">
+          <code>&#123; nonNullable: true &#125;</code> on a <code>FormControl</code> changes <code>reset()</code>
+          to restore the initial value instead of setting <code>null</code>.
+          <strong>Never</strong> use <code>computed()</code> to read <code>form.valid</code> / <code>form.dirty</code>
+          — those are plain class getters, not signals, so <code>computed()</code> won't re-run.
+          Use <code>toSignal(form.events.pipe(map(...)))</code> instead.
+          <strong>Signal Forms</strong> (Angular 21, experimental) replace <code>FormControl</code> entirely with
+          plain <code>signal()</code> state and <code>computed()</code> for derived validity — no
+          <code>ReactiveFormsModule</code> needed.
+        </p>
+        <div class="s5-quick-nav">
+          <span class="s5-nav-label">▶ Try it:</span>
+          <a routerLink="/controls-demo" routerLinkActive="active" class="tab-controls">🎛️ Controls Demo (nonNullable + toSignal)</a>
+          <a routerLink="/signal-form"   routerLinkActive="active" class="tab-signal-form">⚡ Signal Form (experimental)</a>
+        </div>
+      </div>
+    </details>
+
   </details>
 
 </div>

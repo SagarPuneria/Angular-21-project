@@ -234,7 +234,8 @@
     &.tab-courses { background: #dcfce7; color: #16a34a; border-color: #86efac; }
     &.tab-enroll  { background: #f3e8ff; color: #9333ea; border-color: #d8b4fe; }
     &.tab-dashboard { background: #ede9fe; color: #7c3aed; border-color: #c4b5fd; }
-    &.tab-login   { background: #fef9c3; color: #a16207; border-color: #fde047; margin-left: auto; }
+    &.tab-login      { background: #fef9c3; color: #a16207; border-color: #fde047; margin-left: auto; }
+    &.tab-deactivate  { background: #fdf2ff; color: #7c3aed; border-color: #d8b4fe; }
 
     &.tab-home.active,      &.tab-home:hover      { background: #dc2626; color: #fff; border-color: #dc2626; }
     &.tab-about.active,     &.tab-about:hover     { background: #2563eb; color: #fff; border-color: #2563eb; }
@@ -246,7 +247,8 @@
     &.tab-courses.active,   &.tab-courses:hover   { background: #16a34a; color: #fff; border-color: #16a34a; }
     &.tab-enroll.active,    &.tab-enroll:hover    { background: #9333ea; color: #fff; border-color: #9333ea; }
     &.tab-dashboard.active, &.tab-dashboard:hover { background: #7c3aed; color: #fff; border-color: #7c3aed; }
-    &.tab-login.active,     &.tab-login:hover     { background: #a16207; color: #fff; border-color: #a16207; }
+    &.tab-login.active,       &.tab-login:hover       { background: #a16207; color: #fff; border-color: #a16207; }
+    &.tab-deactivate.active,  &.tab-deactivate:hover  { background: #7c3aed; color: #fff; border-color: #7c3aed; }
   }
 
   .nav-logout-btn {
@@ -261,6 +263,82 @@
     transition: opacity 0.2s;
     margin-left: auto;
     &:hover { opacity: 0.85; }
+  }
+}
+
+// ── Session 5 — Nav Hub & Quick-Nav ──────────────────────────
+.s5-nav-hub {
+  padding: 20px 24px;
+  background: #f8faf9;
+  border-bottom: 1px solid #e2eeeb;
+}
+
+.s5-quick-nav {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 12px;
+
+  .s5-nav-label {
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: #6b7280;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    flex-shrink: 0;
+  }
+
+  a {
+    padding: 7px 16px;
+    border-radius: 10px;
+    font-weight: 600;
+    font-size: 0.83rem;
+    text-decoration: none;
+    border: 2px solid transparent;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+
+    .lazy-tag {
+      font-size: 0.62rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      background: rgba(255,255,255,0.35);
+      padding: 1px 5px;
+      border-radius: 999px;
+    }
+
+    // Reuse the same tab color theme
+    &.tab-home    { background: #fee2e2; color: #dc2626; border-color: #fca5a5; }
+    &.tab-about   { background: #dbeafe; color: #2563eb; border-color: #93c5fd; }
+    &.tab-products { background: #e0f2fe; color: #0369a1; border-color: #7dd3fc; }
+    &.tab-courses { background: #dcfce7; color: #16a34a; border-color: #86efac; }
+    &.tab-enroll  { background: #f3e8ff; color: #9333ea; border-color: #d8b4fe; }
+    &.tab-dashboard { background: #ede9fe; color: #7c3aed; border-color: #c4b5fd; }
+    &.tab-login   { background: #fef9c3; color: #a16207; border-color: #fde047; }
+    &.tab-deactivate  { background: #fdf2ff; color: #7c3aed; border-color: #d8b4fe; }
+    &.tab-register { background: #dbeafe; color: #1d4ed8; border-color: #93c5fd; }
+    &.tab-form-array { background: #e0e7ff; color: #4338ca; border-color: #a5b4fc; }
+    &.tab-summary { background: #dcfce7; color: #15803d; border-color: #86efac; }
+    &.tab-controls { background: #ffedd5; color: #c2410c; border-color: #fdba74; }
+    &.tab-signal-form { background: #fce7f3; color: #be185d; border-color: #f9a8d4; }
+
+    &.tab-home:hover,       &.tab-home.active       { background: #dc2626; color: #fff; border-color: #dc2626; }
+    &.tab-about:hover,      &.tab-about.active      { background: #2563eb; color: #fff; border-color: #2563eb; }
+    &.tab-products:hover,   &.tab-products.active   { background: #0369a1; color: #fff; border-color: #0369a1; }
+    &.tab-courses:hover,    &.tab-courses.active    { background: #16a34a; color: #fff; border-color: #16a34a; }
+    &.tab-enroll:hover,     &.tab-enroll.active     { background: #9333ea; color: #fff; border-color: #9333ea; }
+    &.tab-dashboard:hover,  &.tab-dashboard.active  { background: #7c3aed; color: #fff; border-color: #7c3aed; }
+    &.tab-login:hover,      &.tab-login.active      { background: #a16207; color: #fff; border-color: #a16207; }
+    &.tab-deactivate:hover, &.tab-deactivate.active { background: #7c3aed; color: #fff; border-color: #7c3aed; }
+    &.tab-register:hover,   &.tab-register.active   { background: #1d4ed8; color: #fff; border-color: #1d4ed8; }
+    &.tab-form-array:hover, &.tab-form-array.active { background: #4338ca; color: #fff; border-color: #4338ca; }
+    &.tab-summary:hover,    &.tab-summary.active    { background: #15803d; color: #fff; border-color: #15803d; }
+    &.tab-controls:hover,   &.tab-controls.active   { background: #c2410c; color: #fff; border-color: #c2410c; }
+    &.tab-signal-form:hover, &.tab-signal-form.active { background: #be185d; color: #fff; border-color: #be185d; }
   }
 }
 

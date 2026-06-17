@@ -1,0 +1,37 @@
+<div class="deactivate-demo-page">
+
+  <h2>canDeactivate Guard — Live Demo</h2>
+  <p class="subtitle">
+    Type something in the textarea below to create <em>unsaved changes</em>.
+    Then click any navigation link — the guard will intercept and ask for confirmation.
+  </p>
+
+  <form [formGroup]="form" class="demo-form">
+    <label class="field-label">Draft Note</label>
+    <textarea
+      formControlName="note"
+      rows="5"
+      placeholder="Start typing here to dirty the form…"></textarea>
+  </form>
+
+  @if (form.dirty) {
+    <div class="unsaved-warning">
+      ⚠️ Unsaved changes detected — navigate away to trigger the guard.
+    </div>
+  } @else {
+    <div class="no-changes">
+      ✅ Form is clean — navigation is free (nothing to guard yet).
+    </div>
+  }
+
+  <div class="guard-explainer">
+    <h3>How the Guard Works</h3>
+    <ol>
+      <li>The route is configured with <code>canDeactivate: [unsavedChangesGuard]</code></li>
+      <li>Before leaving, the router calls <code>component.hasUnsavedChanges()</code></li>
+      <li>If it returns <code>true</code>, the browser shows a confirm dialog</li>
+      <li>User clicks <strong>OK</strong> → navigation proceeds; <strong>Cancel</strong> → user stays</li>
+    </ol>
+  </div>
+
+</div>
