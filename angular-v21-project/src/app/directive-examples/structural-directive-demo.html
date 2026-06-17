@@ -1,0 +1,114 @@
+<div class="structural-demo-container">
+  <h2>Custom Structural Directive</h2>
+
+  <div class="explanation">
+    <p>
+      <code>appMyStructural</code> is a custom structural directive. It accepts a boolean
+      condition and conditionally stamps content into the DOM using
+      <code>TemplateRef</code> + <code>createEmbeddedView()</code>.
+    </p>
+    <pre><code>&lt;ng-template [appMyStructural]="showBox"&gt;
+  Content appears when showBox is true
+&lt;/ng-template&gt;</code></pre>
+    <p class="note">
+      This is equivalent to <code>*ngIf</code> — both demonstrate the same pattern.
+    </p>
+  </div>
+
+  <div class="demo-grid">
+    <!-- Box 1: Initially true -->
+    <div class="demo-card">
+      <div class="card-header">
+        <p class="card-title">Box 1: Initially True</p>
+        <button class="btn-toggle" (click)="toggle(showBox1)">
+          Toggle
+        </button>
+      </div>
+      <ng-template [appMyStructural]="showBox1()">
+        <div class="box-content">
+          <p class="status">✓ Visible (showBox1 = true)</p>
+          <p class="detail">Content stamped into DOM at init</p>
+        </div>
+      </ng-template>
+    </div>
+
+    <!-- Box 2: Initially false -->
+    <div class="demo-card">
+      <div class="card-header">
+        <p class="card-title">Box 2: Initially False</p>
+        <button class="btn-toggle" (click)="toggle(showBox2)">
+          Toggle
+        </button>
+      </div>
+      <ng-template [appMyStructural]="showBox2()">
+        <div class="box-content">
+          <p class="status">✓ Visible (showBox2 = true)</p>
+          <p class="detail">Content will appear when toggled</p>
+        </div>
+      </ng-template>
+    </div>
+
+    <!-- Box 3: Initially true -->
+    <div class="demo-card">
+      <div class="card-header">
+        <p class="card-title">Box 3: Initially True</p>
+        <button class="btn-toggle" (click)="toggle(showBox3)">
+          Toggle
+        </button>
+      </div>
+      <ng-template [appMyStructural]="showBox3()">
+        <div class="box-content">
+          <p class="status">✓ Visible (showBox3 = true)</p>
+          <p class="detail">Click toggle to remove and re-add</p>
+        </div>
+      </ng-template>
+    </div>
+  </div>
+
+  <div class="comparison">
+    <h3>How It Works</h3>
+    <table>
+      <thead>
+        <tr>
+          <th>Pattern</th>
+          <th>What Happens</th>
+          <th>When to Use</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><code>&#64;if (condition) &#123; ... &#125;</code></td>
+          <td>Built-in control flow (Angular 17+)</td>
+          <td>
+            <strong>Preferred</strong> — simpler syntax, no template wrapper
+          </td>
+        </tr>
+        <tr>
+          <td><code>*ngIf="cond"</code></td>
+          <td>Structural directive (Angular 2–16)</td>
+          <td>Legacy code, older Angular versions</td>
+        </tr>
+        <tr>
+          <td><code>[appMyStructural]="cond"</code></td>
+          <td>Custom structural directive (this example)</td>
+          <td>Learning, custom conditions, reusable logic</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="code-detail">
+    <h3>Directive Internals</h3>
+    <pre><code>// Directive receives TemplateRef and ViewContainerRef
+// constructor injection sets templateRef and vcr
+
+// @Input setter triggered when condition changes
+// @Input() set appMyStructural(condition: boolean)
+
+// Logic: if condition is true, call createEmbeddedView()
+// Otherwise, call clear() to remove from DOM
+
+// Handles transition: true→false, false→true
+// Prevents duplicate views or duplicate clears</code></pre>
+  </div>
+</div>

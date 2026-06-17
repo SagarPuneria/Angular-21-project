@@ -1,0 +1,63 @@
+<div class="directive-host-container">
+  <h2>Dynamic Component via Attribute Directive</h2>
+
+  <div class="explanation">
+    <p>
+      The <code>appComponentHost</code> attribute directive marks an insertion point.
+      Use <code>@ViewChild(ComponentHostDirective)</code> to access it, then call
+      <code>this.host.vcr.createComponent()</code> to mount components dynamically.
+    </p>
+    <pre><code>@ViewChild(ComponentHostDirective) host!: ComponentHostDirective;
+this.componentRef = this.host.vcr.createComponent(SignalChild);</code></pre>
+  </div>
+
+  <div class="controls">
+    @if (!isCreated()) {
+      <button class="btn btn-create" (click)="createChild()">
+        ▶ Create Child via Directive
+      </button>
+    } @else {
+      <div class="input-row">
+        <input
+          type="text"
+          [(ngModel)]="inputValue"
+          placeholder="New message to child"
+          (keyup.enter)="sendToChild()"
+        />
+        <button class="btn btn-send" (click)="sendToChild()">
+          Send Input Update
+        </button>
+      </div>
+      <button class="btn btn-destroy" (click)="destroyChild()">
+        ✕ Destroy Child
+      </button>
+    }
+  </div>
+
+  <div class="outlet-wrapper">
+    @if (isCreated()) {
+      <p class="outlet-label">
+        ↓ <code>SignalChild</code> mounted at <code>appComponentHost</code> directive
+      </p>
+    }
+    <!-- The directive marks this as the insertion point -->
+    <ng-container appComponentHost></ng-container>
+  </div>
+
+  @if (messagesFromChild().length > 0) {
+    <div class="messages-log">
+      <div class="log-header">
+        <p class="log-title">📥 Messages from Child</p>
+        <button class="btn-clear" (click)="clearMessages()">Clear</button>
+      </div>
+      <div class="messages-list">
+        @for (msg of messagesFromChild(); track $index) {
+          <div class="message-item">
+            <span class="log-index">#{{ $index + 1 }}</span>
+            <span class="log-msg">{{ msg }}</span>
+          </div>
+        }
+      </div>
+    </div>
+  }
+</div>
