@@ -157,6 +157,39 @@
         border-left: 3px solid #003f2d;
         border-radius: 0 4px 4px 0;
       }
+
+      .s3-compare-table {
+        margin-top: 12px;
+        overflow-x: auto;
+
+        table {
+          width: 100%;
+          border-collapse: collapse;
+          font-size: 0.85rem;
+
+          thead tr {
+            background: #003f2d;
+            color: #fff;
+          }
+
+          th, td {
+            padding: 8px 14px;
+            border: 1px solid #d1fae5;
+            text-align: left;
+          }
+
+          tbody tr:nth-child(even) {
+            background: #f0fdf4;
+          }
+
+          code {
+            font-size: 0.82rem;
+            background: rgba(0, 63, 45, 0.08);
+            padding: 1px 4px;
+            border-radius: 3px;
+          }
+        }
+      }
     }
   }
 }

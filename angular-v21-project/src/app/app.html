@@ -52,6 +52,164 @@
         <app-data-binding />
       </div>
     </details>
+
+    <!-- Topic 3.4 -->
+    <details class="topic-panel" open>
+      <summary class="topic-summary">
+        <span class="topic-index">3.4</span>
+        Angular 21 vs Angular 16 — Key Differences
+        <span class="topic-desc">Standalone default · esbuild · Signals · <code>&#64;if</code>/<code>&#64;for</code> · Vitest · no <code>app.module.ts</code></span>
+        <span class="chevron"></span>
+      </summary>
+      <div class="topic-body">
+        <p class="topic-note">
+          The evolution from Angular 16 to Angular 21 introduced six major shifts:
+          <strong>Standalone components</strong> became the default (no <code>NgModule</code> required);
+          the build system moved from <strong>Webpack → esbuild</strong> (significantly faster builds);
+          <strong>Signals</strong> became the recommended reactive primitive over <code>BehaviorSubject</code>;
+          <strong>built-in control flow</strong> (<code>&#64;if</code>, <code>&#64;for</code>, <code>&#64;switch</code>) replaced structural directives
+          (<code>*ngIf</code>, <code>*ngFor</code>); <strong>Vitest</strong> replaced Karma/Jasmine;
+          and <strong>Signal Forms</strong> provide a new approach alongside Reactive Forms.
+          In Angular 19+, <code>standalone: true</code> in the <code>&#64;Component</code> decorator is fully optional — it is the implicit default.
+        </p>
+        <div class="s3-compare-table">
+          <table>
+            <thead><tr><th>Feature</th><th>Angular ≤ 16</th><th>Angular 17–21</th></tr></thead>
+            <tbody>
+              <tr><td>Module system</td><td><code>NgModule</code> mandatory</td><td>Standalone default — <code>NgModule</code> optional</td></tr>
+              <tr><td>Bootstrapping</td><td><code>bootstrapModule(AppModule)</code></td><td><code>bootstrapApplication(App, appConfig)</code></td></tr>
+              <tr><td>Build system</td><td>Webpack</td><td>esbuild (much faster)</td></tr>
+              <tr><td>Control flow</td><td><code>*ngIf</code>, <code>*ngFor</code></td><td><code>&#64;if</code>, <code>&#64;for</code>, <code>&#64;switch</code></td></tr>
+              <tr><td>Reactive state</td><td>RxJS / BehaviorSubject</td><td>Signals (stable, recommended)</td></tr>
+              <tr><td>Test runner</td><td>Karma + Jasmine</td><td>Vitest (Karma deprecated)</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </details>
+
+    <!-- Topic 3.5 -->
+    <details class="topic-panel" open>
+      <summary class="topic-summary">
+        <span class="topic-index">3.5</span>
+        Standalone Components &amp; Bootstrapping
+        <span class="topic-desc">No <code>app.module.ts</code> · <code>bootstrapApplication()</code> · <code>app.config.ts</code> providers · component-level <code>imports[]</code></span>
+        <span class="chevron"></span>
+      </summary>
+      <div class="topic-body">
+        <p class="topic-note">
+          <strong>Standalone components</strong> declare their own dependencies in <code>imports: [...]</code> inside
+          <code>&#64;Component</code> — there is no <code>app.module.ts</code> in this project.
+          The two signals of a standalone component are: (1) the <code>imports: []</code> array is present, and
+          (2) from Angular 19+, <code>standalone: true</code> is implicit and can be omitted.
+          <br><br>
+          <strong>Bootstrapping</strong> changed from <code>platformBrowserDynamic().bootstrapModule(AppModule)</code>
+          (Angular 16) to <code>bootstrapApplication(App, appConfig)</code> (Angular 17+).
+          <code>app.config.ts</code> now holds all providers — <code>provideRouter()</code>, <code>provideHttpClient()</code>, etc. —
+          that were previously split across <code>NgModule.imports</code> and <code>NgModule.providers</code>.
+          Route params bind automatically to <code>input()</code> signals via <code>withComponentInputBinding()</code>
+          registered in this file.
+        </p>
+      </div>
+    </details>
+
+    <!-- Topic 3.6 -->
+    <details class="topic-panel" open>
+      <summary class="topic-summary">
+        <span class="topic-index">3.6</span>
+        Angular Lifecycle Hooks
+        <span class="topic-desc"><code>ngOnInit</code> · <code>ngOnChanges</code> · <code>ngAfterViewInit</code> · <code>ngOnDestroy</code> — full hook order</span>
+        <span class="chevron"></span>
+      </summary>
+      <div class="topic-body">
+        <p class="topic-note">
+          Every component goes through a predictable lifecycle. The <strong>constructor</strong> is a TypeScript/OOP
+          concept — not a lifecycle hook. Angular hooks are interfaces the component implements.
+          <br><br>
+          <strong>Full order:</strong>
+          <code>constructor</code> →
+          <code>ngOnChanges</code> (before init, if <code>&#64;Input</code> present) →
+          <code>ngOnInit</code> (once, after first ngOnChanges) →
+          <code>ngDoCheck</code> (every CD cycle — avoid heavy logic here) →
+          <code>ngAfterContentInit</code> (once, after <code>&lt;ng-content&gt;</code> projected) →
+          <code>ngAfterContentChecked</code> →
+          <code>ngAfterViewInit</code> (once, after component view rendered) →
+          <code>ngAfterViewChecked</code> →
+          <code>ngOnDestroy</code> (just before removal).
+          <br><br>
+          <strong>The 3 you'll use 95% of the time:</strong>
+          <code>ngOnInit</code> — API calls, subscriptions, initial setup;
+          <code>ngOnChanges</code> — react to <code>&#64;Input</code> changes from parent;
+          <code>ngOnDestroy</code> — unsubscribe observables, clear intervals (prevent memory leaks).
+          <code>ngAfterViewInit</code> is needed when accessing <code>&#64;ViewChild</code> references.
+          <br><br>
+          The <strong>Data Binding Demo</strong> (Topic 3.1) already implements all these hooks live —
+          open the browser console to see each hook fire in sequence as the component mounts.
+        </p>
+      </div>
+    </details>
+
+    <!-- Topic 3.7 -->
+    <details class="topic-panel" open>
+      <summary class="topic-summary">
+        <span class="topic-index">3.7</span>
+        Built-in Control Flow — <code>&#64;if</code> / <code>&#64;for</code> / <code>&#64;switch</code>
+        <span class="topic-desc">Angular 17+ replaces <code>*ngIf</code> / <code>*ngFor</code> · mandatory <code>track</code> · <code>&#64;empty</code> block</span>
+        <span class="chevron"></span>
+      </summary>
+      <div class="topic-body">
+        <p class="topic-note">
+          <strong>Structural directives</strong> (<code>*ngIf</code>, <code>*ngFor</code>, <code>*ngSwitch</code>) change the DOM structure
+          by adding or removing elements. Angular 17+ replaces all three with <strong>built-in control flow blocks</strong>
+          — no import of <code>NgIf</code>, <code>NgFor</code>, or <code>CommonModule</code> needed.
+          <br><br>
+          <strong>Conditional:</strong>
+          Angular 16 used <code>*ngIf="condition; else tmpl"</code> with <code>&lt;ng-template #tmpl&gt;</code>.
+          Angular 17+ uses <code>&#64;if (condition) &#123; ... &#125; &#64;else &#123; ... &#125;</code> — reads like plain TypeScript.
+          <br><br>
+          <strong>List rendering:</strong>
+          Angular 16 used <code>*ngFor="let x of list; trackBy: fn"</code>.
+          Angular 17+ uses <code>&#64;for (item of items; track item.id) &#123; ... &#125;</code>.
+          The <code>track</code> expression is <strong>mandatory</strong> in <code>&#64;for</code> — it is the equivalent of <code>trackBy</code>
+          and ensures Angular only re-renders changed DOM nodes (critical for list performance).
+          An <code>&#64;empty &#123; ... &#125;</code> block renders when the list is empty.
+          <br><br>
+          <strong>Why track matters:</strong> Without it, Angular destroys and recreates all DOM nodes on every change-detection cycle —
+          even if only one item changed. With <code>track item.id</code>, only the changed/added/removed nodes are touched.
+          The <strong>Employee Table</strong> (Topic 3.3) uses <code>&#64;for</code> with track in practice.
+        </p>
+      </div>
+    </details>
+
+    <!-- Topic 3.8 -->
+    <details class="topic-panel" open>
+      <summary class="topic-summary">
+        <span class="topic-index">3.8</span>
+        Dependency Injection — <code>inject()</code> vs Constructor
+        <span class="topic-desc">Angular 17+ functional DI · <code>providedIn: 'root'</code> singleton · tree-shakeable services</span>
+        <span class="chevron"></span>
+      </summary>
+      <div class="topic-body">
+        <p class="topic-note">
+          <strong>Dependency Injection</strong> is Angular's mechanism for providing a service instance to a
+          component without the component creating it directly. This decouples components from service implementation.
+          <br><br>
+          <strong>Angular 16 — constructor injection:</strong>
+          <code>constructor(private svc: EmployeeService) &#123;&#125;</code> —
+          the service is listed as a constructor parameter; TypeScript's reflection metadata informs Angular what to inject.
+          <br><br>
+          <strong>Angular 17+ — <code>inject()</code> function (preferred):</strong>
+          <code>private svc = inject(EmployeeService);</code> — declared as a class field initialiser.
+          No constructor needed, works cleanly with standalone components, and is more compositional
+          (you can call <code>inject()</code> in utility functions as long as you're in an injection context).
+          <br><br>
+          <strong><code>providedIn: 'root'</code></strong> on the <code>&#64;Injectable</code> decorator creates
+          a <em>singleton</em> — one shared instance across the entire app. It is also
+          <strong>tree-shakeable</strong>: if no component injects the service it is excluded from the production bundle automatically.
+          The <code>EmployeeService</code> in this project uses this pattern — open <code>src/app/services/employee.service.ts</code> to see it live.
+        </p>
+      </div>
+    </details>
   </details>
 
   <!-- ═══════════════════════════════════════════════════════════════════
