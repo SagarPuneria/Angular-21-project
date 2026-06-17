@@ -54,6 +54,28 @@ export class BehaviorSubjectDeepDive implements OnInit, OnDestroy {
   // via getValue() without subscribing.
   currentStoredValue: string = '';
 
+  /*
+   * ─── Service Pattern: Why asObservable()? ────────────────────────────────
+   *
+   * In a REAL SERVICE (not a self-contained demo):
+   *   private readonly _subject = new BehaviorSubject<string>('Initial Value');
+   *   readonly subject$ = this._subject.asObservable();  // Hide Subject, expose Observable
+   *
+   *   Consumers subscribe ONLY to subject$ (read-only Observable).
+   *   They cannot call .next(), .error(), or .complete() on the service's Subject.
+   *   This enforces a single source of truth: all mutations happen through
+   *   explicit service methods (e.g. updateMessage(val) calls _subject.next(val)).
+   *
+   * In THIS SELF-CONTAINED COMPONENT DEMO:
+   *   We own the BehaviorSubject directly and subscribe to it directly.
+   *   There's no encapsulation risk because the component controls all access.
+   *   Direct subscribe() is acceptable here to keep the demo focused on
+   *   BehaviorSubject behavior, not service architecture.
+   *
+   * Both patterns subscribe identically — they receive the same values at the
+   * same time. The difference is API exposure and architectural safety.
+   */
+
   ngOnInit(): void {
     // Early subscriber — joins immediately at component creation.
     // BehaviorSubject emits 'Initial Value' synchronously right here —
