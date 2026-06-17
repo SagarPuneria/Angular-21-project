@@ -1,8 +1,171 @@
+// ── App Container ──────────────────────────────────────────────
+.app-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 24px 16px 48px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  font-family: 'Segoe UI', system-ui, sans-serif;
+}
+
+// ── Session Panel (top-level accordion) ────────────────────────
+.session-panel {
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.10);
+  border: 1px solid #c8ddd9;
+
+  &[open] > .session-summary .chevron { transform: rotate(180deg); }
+
+  .session-summary {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 20px;
+    background: linear-gradient(135deg, #003f2d 0%, #006a4e 100%);
+    color: #fff;
+    cursor: pointer;
+    list-style: none;
+    user-select: none;
+    flex-wrap: wrap;
+
+    &::-webkit-details-marker { display: none; }
+    &::marker { display: none; }
+
+    .session-badge {
+      background: rgba(255,255,255,0.2);
+      border: 1px solid rgba(255,255,255,0.35);
+      border-radius: 6px;
+      padding: 2px 10px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      flex-shrink: 0;
+    }
+
+    .session-title {
+      font-size: 1.05rem;
+      font-weight: 700;
+      flex: 1;
+    }
+
+    .session-meta {
+      font-size: 0.75rem;
+      color: rgba(255,255,255,0.7);
+      flex-basis: 100%;
+      padding-left: 52px;
+      margin-top: -6px;
+
+      code {
+        background: rgba(255,255,255,0.15);
+        border-radius: 3px;
+        padding: 1px 5px;
+        font-size: 0.72rem;
+      }
+    }
+
+    .chevron {
+      flex-shrink: 0;
+      width: 20px;
+      height: 20px;
+      background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 -960 960 960'%3E%3Cpath d='M480-345 240-585l56-56 184 184 184-184 56 56-240 240Z' fill='white'/%3E%3C/svg%3E") center/contain no-repeat;
+      transition: transform 0.2s ease;
+    }
+  }
+
+  // Topic panels inside session
+  .topic-panel {
+    border-top: 1px solid #e2eeeb;
+
+    &:first-of-type { border-top: none; }
+    &[open] > .topic-summary .chevron { transform: rotate(180deg); }
+
+    .topic-summary {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 11px 20px 11px 24px;
+      background: #f4f9f7;
+      cursor: pointer;
+      list-style: none;
+      user-select: none;
+      font-weight: 600;
+      font-size: 0.88rem;
+      color: #003f2d;
+      flex-wrap: wrap;
+
+      &::-webkit-details-marker { display: none; }
+      &::marker { display: none; }
+      &:hover { background: #e8f4f0; }
+
+      .topic-index {
+        font-size: 0.7rem;
+        font-weight: 700;
+        background: #003f2d;
+        color: #fff;
+        border-radius: 4px;
+        padding: 2px 7px;
+        flex-shrink: 0;
+      }
+
+      .topic-desc {
+        font-size: 0.75rem;
+        font-weight: 400;
+        color: #5a7a72;
+        flex-basis: 100%;
+        padding-left: 42px;
+        margin-top: -4px;
+
+        code {
+          background: #e0efea;
+          border-radius: 3px;
+          padding: 1px 4px;
+          font-size: 0.72rem;
+          color: #003f2d;
+        }
+      }
+
+      code {
+        background: #dff0ea;
+        border-radius: 3px;
+        padding: 1px 5px;
+        font-size: 0.8rem;
+        color: #003f2d;
+      }
+
+      .chevron {
+        flex-shrink: 0;
+        width: 16px;
+        height: 16px;
+        margin-left: auto;
+        background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 -960 960 960'%3E%3Cpath d='M480-345 240-585l56-56 184 184 184-184 56 56-240 240Z' fill='%23003f2d'/%3E%3C/svg%3E") center/contain no-repeat;
+        transition: transform 0.2s ease;
+      }
+    }
+
+    .topic-body {
+      padding: 20px 24px;
+      background: #fff;
+
+      .topic-note {
+        font-size: 0.88rem;
+        color: #374151;
+        margin-bottom: 12px;
+        padding: 8px 14px;
+        background: #f0fdf4;
+        border-left: 3px solid #003f2d;
+        border-radius: 0 4px 4px 0;
+      }
+    }
+  }
+}
+
 // ── Routing Section ────────────────────────────────────────────
 .routing-section {
-  margin: 32px auto;
-  max-width: 1100px;
-  padding: 0 16px;
+  margin: 0;
+  max-width: 100%;
+  padding: 0;
 }
 
 .routing-heading {

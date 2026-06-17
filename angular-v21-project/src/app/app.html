@@ -1,214 +1,243 @@
 <div class="app-container">
-<!-- Auth Top Bar -->
 
-  <!-- app-container | Session 3 - Topics:
- * Data binding — interpolation, property binding, two-way data binding
- * Structural directives — @if, @for
- * Class binding & style binding
- * Lifecycle hooks — ngOnInit, ngOnChanges, ngDoCheck, ngAfterViewInit, ngAfterViewChecked, ngAfterContentInit, ngAfterContentChecked, ngOnDestroy
- * Parent & Child components — how to establish communication between them
- * Services — high-level introduction (deeper dive next session 4)
- * Component creation using Copilot prompts — created a component contextually without manually writing boilerplate
--->
-  <!-- Header -->
-  <header class="app-header">
-    <h1>🚀 Angular 21 - Session 3</h1>
-    <p>
-      Comprehensive examples of interpolation, property binding, event binding, two-way binding, and
-      lifecycle hooks
-    </p>
-  </header>
-  <!-- Main Data Binding Demo Component -->
-  <app-data-binding-demo></app-data-binding-demo>
+  <!-- ═══════════════════════════════════════════════════════════════════
+       SESSION 3 · Data Binding, Directives & Lifecycle
+  ═══════════════════════════════════════════════════════════════════ -->
+  <details class="session-panel" open>
+    <summary class="session-summary">
+      <span class="session-badge">S3</span>
+      <span class="session-title">🚀 Session 3 · Data Binding, Directives &amp; Lifecycle</span>
+      <span class="session-meta">Interpolation · Property/Event Binding · <code>&#64;if</code>/<code>&#64;for</code> · Lifecycle Hooks · Parent↔Child · Services intro</span>
+      <span class="chevron"></span>
+    </summary>
 
-  <!-- Copilot Prompt: Create a component called child , pass some data from app.html , and emit some data from child component -->
-  <!-- Child Component Demo -->
-  <section style="padding: 0 16px;">
-    <h2>Parent → Child (@Input) & Child → Parent (@Output)</h2>
-    <p><strong>Message received from Child:</strong> {{ messageFromChild || 'No message yet' }}</p>
-    <app-child
-      [parentMessage]="messageToChild"
-      (childEvent)="onChildEvent($event)"
-    />
-  </section>
+    <!-- Topic 3.1 -->
+    <details class="topic-panel" open>
+      <summary class="topic-summary">
+        <span class="topic-index">3.1</span>
+        Data Binding Demo
+        <span class="topic-desc">Interpolation · property binding · event binding · two-way binding</span>
+        <span class="chevron"></span>
+      </summary>
+      <div class="topic-body">
+        <app-data-binding-demo />
+      </div>
+    </details>
 
-  <!-- Copilot Prompt: Create component called data-binding , that component reads data from service called employee , it will print the all employe data in table with good looking styles. -->
-  <!-- Employee Data Binding Component -->
-  <app-data-binding />
+    <!-- Topic 3.2 -->
+    <!-- Copilot Prompt: Create a component called child , pass some data from app.html , and emit some data from child component -->
+    <details class="topic-panel" open>
+      <summary class="topic-summary">
+        <span class="topic-index">3.2</span>
+        Parent → Child <code>&#64;Input()</code> &amp; Child → Parent <code>&#64;Output()</code>
+        <span class="topic-desc">Component communication via decorator-based Input/Output</span>
+        <span class="chevron"></span>
+      </summary>
+      <div class="topic-body">
+        <p class="topic-note"><strong>Message received from Child:</strong> {{ messageFromChild || 'No message yet' }}</p>
+        <app-child [parentMessage]="messageToChild" (childEvent)="onChildEvent($event)" />
+      </div>
+    </details>
 
+    <!-- Topic 3.3 -->
+    <!-- Copilot Prompt: Create component called data-binding , that component reads data from service called employee , it will print the all employe data in table with good looking styles. -->
+    <details class="topic-panel" open>
+      <summary class="topic-summary">
+        <span class="topic-index">3.3</span>
+        Employee Table — Data from Service
+        <span class="topic-desc">Component reads data from an injected service and renders it in a styled table</span>
+        <span class="chevron"></span>
+      </summary>
+      <div class="topic-body">
+        <app-data-binding />
+      </div>
+    </details>
+  </details>
 
-<!-- Session 4 - Topics:
- * Services — in-depth overview
- * Dependency Injection — how Angular DI works
- * Parent & Child interaction — signals, @ViewChild
- * RxJS — Observable, Subject, BehaviorSubject
- * Asynchronous programming in Angular
- * HTTP Interceptors
- * CRUD operations using JSONPlaceholder API (no DB required)
--->
-  <header class="app-header">
-    <h1>🚀 Angular 21 - Session 4</h1>
-    <p>
-      In-depth exploration of services, dependency injection, RxJS, and asynchronous programming in Angular
-    </p>
-  </header>
-  <!-- Service-Based Communication (MessageService — no Observables) -->
-  <section style="padding: 0 16px;">
-    <h2>Sibling Communication via Shared Service (MessageService)</h2>
-    <p>
-      Sender and Receiver are siblings sharing state through <code>MessageService</code>.
-      Three approaches are demonstrated side-by-side:
-      plain property (non-reactive snapshot) ·
-      <code>BehaviorSubject</code> subscription (reactive, manual unsubscribe) ·
-      <code>async</code> pipe (reactive, auto-unsubscribe).
-    </p>
-    <app-sender />
-    <app-receiver />
-  </section>
+  <!-- ═══════════════════════════════════════════════════════════════════
+       SESSION 4 · Services, DI, RxJS & Async
+  ═══════════════════════════════════════════════════════════════════ -->
+  <details class="session-panel" open>
+    <summary class="session-summary">
+      <span class="session-badge">S4</span>
+      <span class="session-title">🚀 Session 4 · Services, DI, RxJS &amp; Async</span>
+      <span class="session-meta">Services · Dependency Injection · Signals · RxJS · HTTP · Directives</span>
+      <span class="chevron"></span>
+    </summary>
 
-  <!-- Signal-based Parent ↔ Child (input() / output() signals) -->
-  <section style="padding: 0 16px;">
-    <h2>Signal-based Parent ↔ Child Communication</h2>
-    <p>
-      Demonstrates modern Angular signal APIs:
-      <code>input()</code> replaces <code>@Input()</code> ·
-      <code>output()</code> replaces <code>@Output() EventEmitter</code> ·
-      Parent holds state in <code>signal()</code> and passes the unwrapped value down.
-    </p>
-    <app-signal-parent />
-  </section>
+    <!-- Topic 4.1 -->
+    <details class="topic-panel" open>
+      <summary class="topic-summary">
+        <span class="topic-index">4.1</span>
+        Sibling Communication via <code>MessageService</code>
+        <span class="topic-desc">Plain property · BehaviorSubject subscription · async pipe — three reactive approaches side-by-side</span>
+        <span class="chevron"></span>
+      </summary>
+      <div class="topic-body">
+        <app-sender />
+        <app-receiver />
+      </div>
+    </details>
 
-  <!-- Dynamic Component — createComponent() + outputToObservable() -->
-  <section style="padding: 0 16px;">
-    <h2>Dynamic Component — Runtime Creation</h2>
-    <p>
-      <code>createComponent()</code> mounts a component at runtime with no template entry.
-      Inputs are set via <code>componentRef.setInput()</code>.
-      Outputs are subscribed via <code>outputToObservable()</code> from
-      <code>@angular/core/rxjs-interop</code> — unlocking the full RxJS pipeline.
-      Use this for wizard steps, plugin slots, and feature-flag-driven UIs.
-    </p>
-    <app-dynamic-host />
-  </section>
+    <!-- Topic 4.2 -->
+    <details class="topic-panel" open>
+      <summary class="topic-summary">
+        <span class="topic-index">4.2</span>
+        Signal-based Parent ↔ Child
+        <span class="topic-desc"><code>input()</code> replaces <code>&#64;Input()</code> · <code>output()</code> replaces EventEmitter · parent state in <code>signal()</code></span>
+        <span class="chevron"></span>
+      </summary>
+      <div class="topic-body">
+        <app-signal-parent />
+      </div>
+    </details>
 
-  <!-- @ViewChild — imperative parent access to a child component reference -->
-  <section style="padding: 0 16px;">
-    <h2>@ViewChild — Imperative Child Access</h2>
-    <p>
-      <code>@ViewChild</code> gives the parent a direct TypeScript reference to a child component instance.
-      The reference is resolved after the view renders and is available in <code>ngAfterViewInit()</code>.
-      Use it to call child methods or read child properties imperatively.
-    </p>
-    <app-view-child-example />
-  </section>
+    <!-- Topic 4.3 -->
+    <details class="topic-panel" open>
+      <summary class="topic-summary">
+        <span class="topic-index">4.3</span>
+        Dynamic Component — Runtime Creation
+        <span class="topic-desc"><code>createComponent()</code> · <code>setInput()</code> · <code>outputToObservable()</code> — wizard steps, plugin slots</span>
+        <span class="chevron"></span>
+      </summary>
+      <div class="topic-body">
+        <app-dynamic-host />
+      </div>
+    </details>
 
-  <!-- Subject — no initial value, accumulates messages as an array -->
-  <section style="padding: 0 16px;">
-    <h2>Subject — Fire-and-Forget Observable Stream</h2>
-    <p>
-      <code>Subject</code> emits only to <em>current</em> subscribers — no initial value, no replay.
-      Unlike <code>BehaviorSubject</code>, a late subscriber misses all previous emissions.
-      Each message is pushed into an array so the UI accumulates a full history.
-      Subscription is created in <code>ngOnInit</code> and torn down in <code>ngOnDestroy</code>.
-    </p>
-    <app-subject-example />
-  </section>
+    <!-- Topic 4.4 -->
+    <details class="topic-panel" open>
+      <summary class="topic-summary">
+        <span class="topic-index">4.4</span>
+        <code>&#64;ViewChild</code> — Imperative Child Access
+        <span class="topic-desc">Direct TS reference to a child instance — available in <code>ngAfterViewInit()</code></span>
+        <span class="chevron"></span>
+      </summary>
+      <div class="topic-body">
+        <app-view-child-example />
+      </div>
+    </details>
 
-  <!-- BehaviorSubject — holds current value, full Observer object pattern -->
-  <section style="padding: 0 16px;">
-    <h2>BehaviorSubject — Stateful Stream with Value History</h2>
-    <p>
-      <code>BehaviorSubject</code> emits its current held value immediately on subscribe,
-      then every subsequent <code>next()</code> emission. Demonstrates the full
-      <strong>Observer object</strong> pattern: <code>&#123; next, error, complete &#125;</code>
-      vs shorthand callback. "Get Current Value" reads synchronously via
-      <code>getValue()</code> without subscribing.
-    </p>
-    <app-behavior-subject-example />
-    <app-behavior-subject-deep-dive />
-  </section>
+    <!-- Topic 4.5 -->
+    <details class="topic-panel" open>
+      <summary class="topic-summary">
+        <span class="topic-index">4.5</span>
+        Subject — Fire-and-Forget Stream
+        <span class="topic-desc">No initial value · no replay · late subscribers miss past emissions</span>
+        <span class="chevron"></span>
+      </summary>
+      <div class="topic-body">
+        <app-subject-example />
+      </div>
+    </details>
 
- <!-- Copilot Prompt:
-  Use this URL https://jsonplaceholder.typicode.com/posts, create a simple CRUD example using HttpClient GET, POST, PUT, DELETE. Put all HTTP methods in a new service. Declare all state as signal(), use inject() for DI, @if/@for control flow, and subscribe with { next, error } observer — no ngModel, no constructor injection.
-  -->
-  <section style="padding: 0 16px;">
-    <h2>HTTP CRUD — HttpClient with Signals</h2>
-    <p>
-      GET · POST · PUT · DELETE using <code>HttpClient</code> and the
-      <a href="https://jsonplaceholder.typicode.com" target="_blank">JSONPlaceholder</a> API.
-      All state managed with <code>signal()</code>. Service methods return
-      <code>Observable&lt;T&gt;</code> — component subscribes with the full
-      <code>&#123; next, error &#125;</code> Observer pattern.
-    </p>
-    <app-http-ex />
+    <!-- Topic 4.6 -->
+    <details class="topic-panel" open>
+      <summary class="topic-summary">
+        <span class="topic-index">4.6</span>
+        BehaviorSubject — Stateful Stream
+        <span class="topic-desc">Holds current value · replays on subscribe · full Observer pattern <code>&#123; next, error, complete &#125;</code></span>
+        <span class="chevron"></span>
+      </summary>
+      <div class="topic-body">
+        <app-behavior-subject-example />
+        <app-behavior-subject-deep-dive />
+      </div>
+    </details>
 
-    <!-- Directives — Attribute Directives & Structural Directives -->
-    <section style="padding: 0 16px;">
-      <h2>Directives — Attribute & Structural Patterns</h2>
-      <p>
-        <strong>Attribute Directives</strong> mark insertion points for dynamic component creation.
-        <strong>Structural Directives</strong> conditionally stamp templates into the DOM.
-      </p>
-      <app-dynamic-with-directive />
-      <app-structural-directive-demo />
-    </section>
-  </section>
+    <!-- Topic 4.7 -->
+    <!-- Copilot Prompt:
+      Use this URL https://jsonplaceholder.typicode.com/posts, create a simple CRUD example using HttpClient GET, POST, PUT, DELETE. Put all HTTP methods in a new service. Declare all state as signal(), use inject() for DI, @if/@for control flow, and subscribe with { next, error } observer — no ngModel, no constructor injection.
+    -->
+    <details class="topic-panel" open>
+      <summary class="topic-summary">
+        <span class="topic-index">4.7</span>
+        HTTP CRUD — <code>HttpClient</code> with Signals
+        <span class="topic-desc">GET · POST · PUT · DELETE via JSONPlaceholder · all state in <code>signal()</code></span>
+        <span class="chevron"></span>
+      </summary>
+      <div class="topic-body">
+        <app-http-ex />
+      </div>
+    </details>
 
-<!-- Session 5 - Topics:
- * Routing — child routes, lazy loading, withComponentInputBinding(), route params
--->
-  <header class="app-header">
-    <h1>🗺️ Angular 21 - Session 5 · Routing</h1>
-    <p>Child routes · Lazy loading · <code>withComponentInputBinding()</code></p>
-  </header>
+    <!-- Topic 4.8 -->
+    <details class="topic-panel" open>
+      <summary class="topic-summary">
+        <span class="topic-index">4.8</span>
+        Directives — Attribute &amp; Structural
+        <span class="topic-desc">Attribute directives mark insertion points · Structural directives stamp templates into the DOM</span>
+        <span class="chevron"></span>
+      </summary>
+      <div class="topic-body">
+        <app-dynamic-with-directive />
+        <app-structural-directive-demo />
+      </div>
+    </details>
+  </details>
 
-  <!-- Copilot Prompt: 
-  Create a routing with angular 21 features, with 4 following tabs:
-  1. Home,
-  2. About,
-  3. Courses,
-  4. Enroll lazy.
-  Courses tab has 2 child routes(Overview, Details) and Enroll lazy tab has lazy loaded.
-  Add attractive colorful fonts. -->
-  <section class="routing-section">
-    <div class="routing-heading">
-      <h2>🗺️ Angular 21 Routing Demo</h2>
-      <p>Child routes on Courses · Lazy loaded Courses & Enroll · <code>withComponentInputBinding()</code> enabled</p>
-    </div>
+  <!-- ═══════════════════════════════════════════════════════════════════
+       SESSION 5 · Routing
+  ═══════════════════════════════════════════════════════════════════ -->
+  <details class="session-panel" open>
+    <summary class="session-summary">
+      <span class="session-badge">S5</span>
+      <span class="session-title">🗺️ Session 5 · Routing</span>
+      <span class="session-meta">Child routes · Lazy loading · <code>withComponentInputBinding()</code> · Route guards</span>
+      <span class="chevron"></span>
+    </summary>
 
-    <nav class="tab-nav">
-      <a routerLink="/home"     routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" class="tab-home">🏠 Home</a>
-      <a routerLink="/about"    routerLinkActive="active" class="tab-about">👥 About</a>
-      <!-- Copilot Prompt: 
-      I need to:
-        1. Create ProductList component with 3 products
-        2. Create ProductDetail component using input() for the route param :id (since withComponentInputBinding() is enabled)
-        3. Update app.routes.ts to add /products and /products/:id routes
-        4. Add a Products link to the nav in app.html
-        5. Style the product cards with SCSS to match the design—each showing the product name, "Digital Product • ID #X", and price badge
-        6. Use computed() to look up the product by ID and display "Product Not Found" if it doesn't exist
-        7. Leverage modern Angular 21 features like input(), computed(), RouterLink, and @for for the implementation Setting up the ProductDetail component... Setting up the input binding...
-      -->
-      <a routerLink="/products" routerLinkActive="active" class="tab-products">🛒 Products <span class="lazy-tag">lazy</span></a>
-      <a routerLink="/courses"  routerLinkActive="active" class="tab-courses">📚 Courses <span class="lazy-tag">lazy</span></a>
-      <a routerLink="/enroll"   routerLinkActive="active" class="tab-enroll">🎓 Enroll <span class="lazy-tag">lazy</span></a>
-      <!-- Copilot Prompt: I want to implement Dashboard component that should use canActivate route guard to implement login and logout functionality.-->
-      @if (auth.loggedIn()) {
-        <a routerLink="/dashboard" routerLinkActive="active" class="tab-dashboard">🔐 Dashboard</a>
-        <button class="nav-logout-btn" (click)="auth.logout()">→ Logout</button>
-      } @else {
-        <a routerLink="/login" routerLinkActive="active" class="tab-login">🔑 Login</a>
-      }
-      <a routerLink="/register" routerLinkActive="active" class="tab-register">🧾 Registration (Form Route)</a>
-      <a routerLink="/form-array" routerLinkActive="active" class="tab-form-array">🧩 Form Array Example</a>
-      <a routerLink="/summary" routerLinkActive="active" class="tab-summary">📄 Summary Route</a>
-      <a routerLink="/controls-demo" routerLinkActive="active" class="tab-controls">🎛️ Controls Demo</a>
-      <a routerLink="/signal-form" routerLinkActive="active" class="tab-signal-form">⚡ Signal Form</a>
-    </nav>
-
-    <div class="outlet-wrapper">
-      <router-outlet />
-    </div>
-  </section>
+    <!-- Topic 5.1 -->
+    <details class="topic-panel" open>
+      <summary class="topic-summary">
+        <span class="topic-index">5.1</span>
+        Angular 21 Routing Demo
+        <span class="topic-desc">Products · Courses (child routes) · Enroll (lazy) · Dashboard (canActivate guard) · Forms · Controls</span>
+        <span class="chevron"></span>
+      </summary>
+      <div class="topic-body routing-section">
+        <!-- Copilot Prompt: 
+        Create a routing with angular 21 features, with 4 following tabs:
+        1. Home,
+        2. About,
+        3. Courses,
+        4. Enroll lazy.
+        Courses tab has 2 child routes(Overview, Details) and Enroll lazy tab has lazy loaded.
+        Add attractive colorful fonts. -->
+        <nav class="tab-nav">
+          <a routerLink="/home"     routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" class="tab-home">🏠 Home</a>
+          <a routerLink="/about"    routerLinkActive="active" class="tab-about">👥 About</a>
+          <!-- Copilot Prompt: 
+          I need to:
+            1. Create ProductList component with 3 products
+            2. Create ProductDetail component using input() for the route param :id (since withComponentInputBinding() is enabled)
+            3. Update app.routes.ts to add /products and /products/:id routes
+            4. Add a Products link to the nav in app.html
+            5. Style the product cards with SCSS to match the design—each showing the product name, "Digital Product • ID #X", and price badge
+            6. Use computed() to look up the product by ID and display "Product Not Found" if it doesn't exist
+            7. Leverage modern Angular 21 features like input(), computed(), RouterLink, and @for for the implementation Setting up the ProductDetail component... Setting up the input binding...
+          -->
+          <a routerLink="/products" routerLinkActive="active" class="tab-products">🛒 Products <span class="lazy-tag">lazy</span></a>
+          <a routerLink="/courses"  routerLinkActive="active" class="tab-courses">📚 Courses <span class="lazy-tag">lazy</span></a>
+          <a routerLink="/enroll"   routerLinkActive="active" class="tab-enroll">🎓 Enroll <span class="lazy-tag">lazy</span></a>
+          <!-- Copilot Prompt: I want to implement Dashboard component that should use canActivate route guard to implement login and logout functionality.-->
+          @if (auth.loggedIn()) {
+            <a routerLink="/dashboard" routerLinkActive="active" class="tab-dashboard">🔐 Dashboard</a>
+            <button class="nav-logout-btn" (click)="auth.logout()">→ Logout</button>
+          } @else {
+            <a routerLink="/login" routerLinkActive="active" class="tab-login">🔑 Login</a>
+          }
+          <a routerLink="/register"     routerLinkActive="active" class="tab-register">🧾 Registration (Form Route)</a>
+          <a routerLink="/form-array"   routerLinkActive="active" class="tab-form-array">🧩 Form Array Example</a>
+          <a routerLink="/summary"      routerLinkActive="active" class="tab-summary">📄 Summary Route</a>
+          <a routerLink="/controls-demo" routerLinkActive="active" class="tab-controls">🎛️ Controls Demo</a>
+          <a routerLink="/signal-form"  routerLinkActive="active" class="tab-signal-form">⚡ Signal Form</a>
+        </nav>
+        <div class="outlet-wrapper">
+          <router-outlet />
+        </div>
+      </div>
+    </details>
+  </details>
 
 </div>
